@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUZU 先生 · 日本語レッスン</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF6F0;
+    --blush: #F2E0D5;
+    --rose: #C9897A;
+    --deep: #6B3D3D;
+    --ink: #2C1F1F;
+    --sage: #8B9E8A;
+    --gold: #C4A46B;
+    --mist: #E8EEE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Zen Kaku Gothic New', 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,137,122,0.15) 0%, transparent 70%);
+  }
+
+  .hero-left::after {
+    content: '日';
+    position: absolute;
+    bottom: -40px; left: -20px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 280px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .kana-tag {
+    font-family: 'Noto Serif JP', serif;
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 300;
+    color: #FAF6F0;
+    line-height: 1.3;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-title span {
+    color: var(--rose);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(250,246,240,0.6);
+    line-height: 1.9;
+    max-width: 360px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--rose);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.3s ease;
+  }
+  .btn-primary:hover::before { left: 0; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,137,122,0.4); }
+
+  .btn-secondary {
+    background: transparent;
+    color: rgba(250,246,240,0.7);
+    border: 1px solid rgba(250,246,240,0.2);
+    padding: 14px 32px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    border-color: var(--rose);
+    color: var(--rose);
+  }
+
+  .hero-right {
+    background: var(--blush);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px;
+  }
+
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 80% 20%, rgba(201,137,122,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(139,158,138,0.1) 0%, transparent 60%);
+  }
+
+  .sakura-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .petal {
+    position: absolute;
+    font-size: 20px;
+    animation: floatPetal linear infinite;
+    opacity: 0.3;
+  }
+
+  @keyframes floatPetal {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  .teacher-card {
+    background: white;
+    padding: 48px 40px;
+    max-width: 380px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(107,61,61,0.08);
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.5s;
+  }
+
+  .teacher-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 60px;
+    background: var(--rose);
+  }
+
+  .teacher-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 28px;
+    color: white;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+
+  .teacher-name-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 4px;
+  }
+
+  .teacher-name-en {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .divider {
+    width: 40px; height: 1px;
+    background: var(--rose);
+    margin-bottom: 20px;
+    opacity: 0.4;
+  }
+
+  .teacher-desc {
+    font-size: 13px;
+    line-height: 2;
+    color: #7a6060;
+    font-weight: 300;
+  }
+
+  .lang-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .lang-badge {
+    background: var(--mist);
+    color: var(--sage);
+    font-size: 11px;
+    padding: 5px 14px;
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  /* SAFE SPACE SECTION */
+  .safe-outer { background: white; }
+  .safe-section {
+    padding: 100px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--rose);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  .section-body {
+    font-size: 14px;
+    line-height: 2.2;
+    color: #7a6060;
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .safe-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .safe-card {
+    background: var(--cream);
+    padding: 28px 24px;
+    border-left: 2px solid transparent;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+  .safe-card:hover {
+    border-left-color: var(--rose);
+    transform: translateX(4px);
+  }
+
+  .safe-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .safe-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    color: var(--deep);
+    margin-bottom: 8px;
+  }
+
+  .safe-desc {
+    font-size: 12px;
+    color: #9a8080;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* LESSONS SECTION */
+  .lessons-section {
+    background: var(--deep);
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lessons-section::before {
+    content: 'レッスン';
+    position: absolute;
+    top: 50%; left: -20px;
+    transform: translateY(-50%);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 200px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.02);
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .lessons-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .lessons-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .lessons-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 300;
+    color: #FAF6F0;
+    line-height: 1.4;
+  }
+
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .lesson-card {
+    background: rgba(250,246,240,0.04);
+    border: 1px solid rgba(250,246,240,0.08);
+    padding: 40px 32px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lesson-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--rose);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .lesson-card:hover {
+    background: rgba(250,246,240,0.07);
+    transform: translateY(-4px);
+  }
+  .lesson-card:hover::after { transform: scaleX(1); }
+
+  .lesson-num {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: rgba(201,137,122,0.2);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .lesson-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 16px;
+    color: #FAF6F0;
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+
+  .lesson-subtitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .lesson-desc {
+    font-size: 12px;
+    color: rgba(250,246,240,0.5);
+    line-height: 2;
+    font-weight: 300;
+  }
+
+  /* ABOUT */
+  .about-section {
+    background: var(--cream);
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-sticky {
+    position: sticky;
+    top: 60px;
+  }
+
+  .profile-visual {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(160deg, var(--blush) 0%, var(--deep) 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+  }
+
+  .profile-visual::before {
+    content: 'SUZU';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 80px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.08);
+    letter-spacing: 8px;
+  }
+
+  .profile-pattern {
+    position: absolute;
+    top: 0; right: 0;
+    width: 60%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.02) 20px,
+      rgba(255,255,255,0.02) 21px
+    );
+  }
+
+  .profile-tag {
+    background: var(--rose);
+    color: white;
+    padding: 12px 24px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+    font-weight: 300;
+  }
+
+  .milestones {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .milestone {
+    display: flex;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(107,61,61,0.07);
+    align-items: flex-start;
+    transition: all 0.2s;
+  }
+  .milestone:hover { padding-left: 8px; }
+
+  .milestone-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 32px;
+    text-align: center;
+  }
+
+  .milestone-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #6a5050;
+    font-weight: 300;
+  }
+
+  .milestone-text strong {
+    font-weight: 400;
+    color: var(--deep);
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  /* TRIAL SECTION */
+  .trial-section {
+    background: var(--blush);
+    padding: 100px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .trial-section::before {
+    content: '✿';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 300px;
+    color: rgba(201,137,122,0.06);
+    pointer-events: none;
+  }
+
+  .trial-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .trial-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+
+  .trial-body {
+    font-size: 14px;
+    color: #9a7070;
+    line-height: 2;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .trial-price {
+    display: inline-block;
+    background: white;
+    padding: 32px 60px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 24px rgba(107,61,61,0.08);
+  }
+
+  .price-label { font-size: 11px; letter-spacing: 4px; color: var(--rose); text-transform: uppercase; margin-bottom: 8px; }
+  .price-amount { font-family: 'Noto Serif JP', serif; font-size: 48px; font-weight: 300; color: var(--deep); }
+  .price-unit { font-size: 14px; color: #9a8080; margin-top: 4px; font-weight: 300; }
+
+  footer {
+    background: var(--ink);
+    padding: 40px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-brand {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    color: rgba(250,246,240,0.7);
+    font-weight: 300;
+    letter-spacing: 3px;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: rgba(250,246,240,0.3);
+    letter-spacing: 1px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 32px; min-height: 100vh; }
+    .safe-section { grid-template-columns: 1fr; gap: 40px; padding: 60px 32px; }
+    .about-inner { grid-template-columns: 1fr; gap: 40px; }
+    .about-section { padding: 60px 32px; }
+    .lessons-grid { grid-template-columns: 1fr; }
+    .lessons-section { padding: 60px 32px; }
+    .trial-section { padding: 60px 32px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 32px; }
+    .safe-cards { grid-template-columns: 1fr; }
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* NOTES GALLERY */
+  .notes-outer { background: var(--cream); }
+  .notes-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 60px;
+  }
+  .notes-header { text-align: center; margin-bottom: 48px; }
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .note-thumb {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(107,61,61,0.08);
+  }
+  .note-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: blur(3px) brightness(0.97);
+    transition: filter 0.4s ease, transform 0.4s ease;
+    transform: scale(1.05);
+  }
+  .note-thumb:hover img {
+    filter: blur(1.5px) brightness(1);
+    transform: scale(1.08);
+  }
+  .note-thumb-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(107,61,61,0.55);
+    color: white;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 300;
+  }
+  @media (max-width: 768px) {
+    .notes-grid { grid-template-columns: repeat(2, 1fr); }
+    .notes-section { padding: 60px 32px; }
+  }
+
+  /* REVIEWS */
+  .reviews-outer { background: var(--deep); }
+  .reviews-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 60px;
+  }
+  .reviews-header { text-align: center; margin-bottom: 48px; }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .review-card {
+    background: rgba(250,246,240,0.05);
+    border: 1px solid rgba(250,246,240,0.08);
+    padding: 32px 28px;
+    position: relative;
+  }
+  .review-card.wide { grid-column: span 2; }
+  .review-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .review-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--deep));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 16px;
+    color: white;
+    flex-shrink: 0;
+  }
+  .review-meta { flex: 1; }
+  .review-name {
+    font-size: 13px;
+    color: rgba(250,246,240,0.8);
+    font-weight: 400;
+    margin-bottom: 2px;
+  }
+  .review-date {
+    font-size: 11px;
+    color: rgba(250,246,240,0.3);
+    font-weight: 300;
+  }
+  .review-stars { color: var(--gold); font-size: 12px; }
+  .review-body {
+    font-size: 13px;
+    line-height: 2;
+    color: rgba(250,246,240,0.65);
+    font-weight: 300;
+  }
+  .review-note {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: rgba(250,246,240,0.2);
+    font-weight: 300;
+  }
+  @media (max-width: 768px) {
+    .reviews-grid { grid-template-columns: 1fr; }
+    .review-card.wide { grid-column: span 1; }
+    .reviews-section { padding: 60px 32px; }
+  }
+
+  /* PRICING */
+  .pricing-section {
+    background: var(--blush);
+    padding: 100px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-section::before {
+    content: '✿';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 300px;
+    color: rgba(201,137,122,0.06);
+    pointer-events: none;
+  }
+  .pricing-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .pricing-header { text-align: center; margin-bottom: 56px; }
+  .pricing-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .pricing-subtitle {
+    font-size: 13px;
+    color: #9a7070;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .price-card {
+    background: white;
+    padding: 36px 28px;
+    box-shadow: 0 4px 24px rgba(107,61,61,0.06);
+    position: relative;
+    text-align: center;
+  }
+  .price-card.featured {
+    border-top: 3px solid var(--rose);
+  }
+  .price-card.best {
+    border-top: 3px solid var(--gold);
+  }
+  .pc-tag {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+  .pc-tag.gold { color: var(--gold); }
+  .pc-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 17px;
+    color: var(--deep);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .pc-name-cn {
+    font-size: 11px;
+    color: #b09090;
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+  .pc-price {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .pc-unit {
+    font-size: 12px;
+    color: #b09090;
+    margin-bottom: 20px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .pc-detail {
+    font-size: 12px;
+    color: #7a6060;
+    line-height: 2;
+    font-weight: 300;
+    border-top: 1px solid rgba(107,61,61,0.07);
+    padding-top: 16px;
+    text-align: left;
+  }
+  .pc-bonus {
+    background: var(--mist);
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--sage);
+    margin-top: 14px;
+    text-align: left;
+    line-height: 1.8;
+  }
+  .flow-box {
+    background: white;
+    padding: 32px 40px;
+    box-shadow: 0 4px 24px rgba(107,61,61,0.06);
+    margin-bottom: 40px;
+  }
+  .flow-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    color: var(--deep);
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+  .flow-title-cn {
+    font-size: 11px;
+    color: #b09090;
+    font-weight: 300;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .flow-steps {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .flow-num {
+    background: var(--rose);
+    color: white;
+    font-size: 11px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .flow-text {
+    font-size: 12px;
+    color: #6a5050;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .flow-text strong { display: block; color: var(--deep); font-size: 13px; font-weight: 400; }
+  .flow-arrow {
+    color: var(--rose);
+    font-size: 18px;
+    padding-top: 2px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+  @media (max-width: 768px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .pricing-section { padding: 60px 32px; }
+    .flow-steps { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="kana-tag">✿ SUZU SENSEI · 日本語レッスン</div>
+    <h1 class="hero-title">
+      一緒に、<br>
+      <span>自然な日本語</span>
+      を話しましょう。
+    </h1>
+    <p class="hero-subtitle">
+      一個溫暖、沒有壓力的空間，讓你自在地練習日文。<br>
+      不需要完美，只要勇敢開口就好。
+    </p>
+    <div class="cta-group">
+      <button class="btn-primary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで体験レッスンを申し込む</button>
+      <button class="btn-secondary" onclick="document.querySelector('.lessons-section').scrollIntoView({behavior:'smooth'})">レッスン内容を見る</button>
+    </div>
+    <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">※ LINEビジネスアカウントに繋がります</p>
+  </div>
+  <div class="hero-right">
+    <div class="sakura-bg" id="sakura"></div>
+    <div class="teacher-card">
+      <div class="teacher-avatar">鈴</div>
+      <div class="teacher-name-jp">SUZU 先生</div>
+      <div class="teacher-name-en">Japanese Language Teacher</div>
+      <div class="divider"></div>
+      <p class="teacher-desc">
+        日本語母語者 🌸<br>
+        埼玉・神奈川・東京・タイ・台湾 居住経験<br>
+        英語・数学の教師歴4年 📚<br>
+        東南アジア全国旅行制覇 ✈️
+      </p>
+      <div class="lang-badges">
+        <span class="lang-badge">🇯🇵 日本語</span>
+        <span class="lang-badge">🇬🇧 English</span>
+        <span class="lang-badge">🇹🇭 ภาษาไทย</span>
+        <span class="lang-badge">🇹🇼 中文</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="safe-outer">
+<section class="safe-section scroll-reveal">
+  <div>
+    <div class="section-label">安心の空間</div>
+    <h2 class="section-title">間違えても<br>大丈夫。<br>ここは安全な場所。</h2>
+    <p class="section-body">
+      很多學生學日文最大的障礙，不是文法——而是「怕說錯」。<br><br>
+      在這裡，錯誤是學習的一部分。SUZU老師會用最溫和的方式引導你，讓你在真正放鬆的狀態下，自然地說出日文。<br><br>
+      SUZU老師自己也曾學習英語、中文、泰語——自學了很久，卻在當地完全說不出口、無法和當地人對話，那種挫折感非常真實。<br>
+      正因如此，上課時間就是<strong>輸入的時間</strong>：在打好基礎的同時，學習日本人真正在說的發音和活生生的單字，不再只是背課本。
+    </p>
+    <button class="btn-primary" style="background: var(--deep);" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEでまず体験してみる →</button>
+  </div>
+  <div class="safe-cards">
+    <div class="safe-card">
+      <span class="safe-icon">🌸</span>
+      <div class="safe-title">優しい雰囲気</div>
+      <p class="safe-desc">溫柔不評判的環境，讓你勇敢開口說話</p>
+    </div>
+    <div class="safe-card">
+      <span class="safe-icon">🎯</span>
+      <div class="safe-title">あなただけのカリキュラム</div>
+      <p class="safe-desc">依據你的目標量身訂做學習計劃</p>
+    </div>
+    <div class="safe-card">
+      <span class="safe-icon">💬</span>
+      <div class="safe-title">生きた日本語</div>
+      <p class="safe-desc">學習日本人真正在用的自然表達方式</p>
+    </div>
+    <div class="safe-card">
+      <span class="safe-icon">📝</span>
+      <div class="safe-title">授業後のメモ</div>
+      <p class="safe-desc">每堂課後都會收到整理好的學習筆記</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<section class="lessons-section">
+  <div class="lessons-inner">
+    <div class="lessons-header scroll-reveal">
+      <div class="section-label" style="color: var(--gold);">レッスン内容</div>
+      <h2 class="lessons-title">あなたの「話したい」を、<br>一緒に叶えましょう。</h2>
+    </div>
+    <div class="lessons-grid">
+      <div class="lesson-card scroll-reveal">
+        <div class="lesson-num">01</div>
+        <div class="lesson-subtitle">初心者向け</div>
+        <div class="lesson-title">初級レッスン</div>
+        <p class="lesson-desc">從平假名、片假名開始，用遊戲式教材學習基礎文法，讓入門不再枯燥。</p>
+      </div>
+      <div class="lesson-card scroll-reveal">
+        <div class="lesson-num">02</div>
+        <div class="lesson-subtitle">会話・フリートーク</div>
+        <div class="lesson-title">フリートーク</div>
+        <p class="lesson-desc">每堂課自由選題，練習自然的會話表達。學習日本人真正在說的活生生單字與道地發音。</p>
+      </div>
+      <div class="lesson-card scroll-reveal">
+        <div class="lesson-num">03</div>
+        <div class="lesson-subtitle">文章添削</div>
+        <div class="lesson-title">ライティング</div>
+        <p class="lesson-desc">支援自然日文寫作，不怕犯錯地練習文章，課外時間也持續接觸日文。</p>
+      </div>
+      <div class="lesson-card scroll-reveal">
+        <div class="lesson-num">04</div>
+        <div class="lesson-subtitle">旅行準備</div>
+        <div class="lesson-title">旅行日本語</div>
+        <p class="lesson-desc">讓旅伴都佩服你，帶著自信踏上日本之旅，滿足地體驗日本文化。</p>
+      </div>
+      <div class="lesson-card scroll-reveal">
+        <div class="lesson-num">05</div>
+        <div class="lesson-subtitle">オーダーメイド</div>
+        <div class="lesson-title">カスタムレッスン</div>
+        <p class="lesson-desc">有特定目標？完全按照你的需求設計課程。先聊聊你的夢想吧。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-section">
+  <div class="about-inner scroll-reveal">
+    <div class="about-sticky">
+      <div class="profile-visual">
+        <div class="profile-pattern"></div>
+        <div class="profile-tag">SUZU 先生</div>
+      </div>
+    </div>
+    <div class="milestones">
+      <div class="section-label">先生について</div>
+      <h2 class="section-title" style="margin-bottom: 40px;">旅を愛する<br>日本語の先生</h2>
+      <div class="milestone">
+        <span class="milestone-icon">🌸</span>
+        <div class="milestone-text"><strong>日本語母語者</strong>道地的日本語母語者，埼玉・神奈川・東京・タイ・台湾に居住経験あり<br><small style="color:#b09090;">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">🇹🇼</span>
+        <div class="milestone-text"><strong>台湾にて英語留学 半年</strong>理解語言學習的挑戰與孤獨，更能同理每一位學生<br><small style="color:#b09090;">在台灣留學半年，深知語言學習的挫折與孤獨</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">🇹🇭</span>
+        <div class="milestone-text"><strong>タイでの営業経験 2年</strong>在泰國從事業務工作兩年，深知溝通能力是最重要的武器<br><small style="color:#b09090;">在異文化中生活與工作，讓教學更有溫度</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">👩‍🏫</span>
+        <div class="milestone-text"><strong>英語・数学 教師経験 4年</strong>擁有豐富教學經驗，能針對不同程度的學生靈活調整教學方式<br><small style="color:#b09090;">豐富的授課歷程，讓每位學生都能跟上節奏</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">✈️</span>
+        <div class="milestone-text"><strong>東南アジア全国旅行制覇、ヨーロッパ4ヵ国周遊</strong>最了解旅行現場的真實日語需求<br><small style="color:#b09090;">走遍東南亞、歐洲四國，旅行日語絕對實用</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">🗣️</span>
+        <div class="milestone-text"><strong>TOEIC 800点 / タイ語検定4級取得</strong>作為多語言學習者，用親身學習經驗引導你走最有效的路<br><small style="color:#b09090;">不是只會日語的老師，而是真正懂得「學語言的痛苦」的老師</small></div>
+      </div>
+      <div class="milestone">
+        <span class="milestone-icon">💡</span>
+        <div class="milestone-text"><strong>英語・中国語・タイ語の学習経験あり</strong>曾自學英語、中文、泰語，卻在當地完全無法與人對話——那種挫折感讓SUZU老師深刻理解「自學的極限」<br><small style="color:#b09090;">正因如此，上課時間就是<em>輸入的時間</em>：打好基礎的同時，學習最真實的發音與生活中真正在用的單字</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTES GALLERY -->
+<div class="notes-outer">
+<section class="notes-section scroll-reveal">
+  <div class="notes-header">
+    <div class="section-label">授業記録</div>
+    <h2 class="section-title" style="text-align:center;">こんなノートを<br>取っています。</h2>
+    <p style="font-size:13px; color:#9a8080; font-weight:300; margin-top:12px;">
+      毎回の授業内容を丁寧に記録し、生徒さんと共有しています。<br>
+      <small>每堂課的內容都會詳細記錄，並與學生共享筆記。</small>
+    </p>
+  </div>
+  <div class="notes-grid">
+    <div class="note-thumb">
+      <img src="5gatsu-byo.jpg" alt="授業教材">
+      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+    </div>
+    <div class="note-thumb">
+      <img src="MIX.jpg" alt="授業教材">
+      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+    </div>
+    <div class="note-thumb">
+      <img src="otousan.jpg" alt="授業教材">
+      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+    </div>
+    <div class="note-thumb">
+      <img src="list.png" alt="受講生フォルダ">
+      <div class="note-thumb-label">受講生フォルダ管理<br><small>學生資料夾管理</small></div>
+    </div>
+    <div class="note-thumb" style="grid-column: span 1;">
+      <img src="shin-san.jpg" alt="授業ノート" style="filter: blur(6px) brightness(0.95);">
+      <div class="note-thumb-label">実際の授業ノート（匿名）<br><small>真實學習筆記（已匿名）</small></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews-outer">
+<section class="reviews-section scroll-reveal">
+  <div class="reviews-header">
+    <div class="section-label" style="color: var(--gold);">受講生の声</div>
+    <h2 class="lessons-title">一緒に学んだ<br>生徒さんより。<br><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300;">學生真實心聲</small></h2>
+  </div>
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">P</div>
+        <div class="review-meta">
+          <div class="review-name">P. さん</div>
+          <div class="review-date">2026年3月</div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <p class="review-body">優しい先生ですよ。25分の体験で、楽しかったです。もう一度会いましょう〜</p>
+      <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">E</div>
+        <div class="review-meta">
+          <div class="review-name">E. さん</div>
+          <div class="review-date">2025年8月</div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <p class="review-body">話しやすくて、丁寧なノートもありがたいです。出会えてよかったです。</p>
+      <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">C</div>
+        <div class="review-meta">
+          <div class="review-name">C. さん</div>
+          <div class="review-date">2025年7月</div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <p class="review-body">今日は授業とても楽しかったです。SUZU先生、ありがとうございました！</p>
+      <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
+    </div>
+
+    <div class="review-card wide">
+      <div class="review-top">
+        <div class="review-avatar">S</div>
+        <div class="review-meta">
+          <div class="review-name">S. さん</div>
+          <div class="review-date">2025年</div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <p class="review-body">今日はSUZU先生がClaudeで作った教材を使ってくれて、それが本当にすごかったです！内容は新幹線の切符の買い方で、窓口で使える言葉をたくさん学べました🚄 そしてロールプレイも楽しかったです。私が切符を買う人、SUZU先生が切符売り場の人になって練習できたので、実際の旅行でも使えそうです😊 ちなみに私は指定席を何回も言い間違えてしまいましたが、しっかり覚えられました🤣 旅行で本当に使う日本語を学べるのが嬉しいです！今日の授業は新しいスタイルで新鮮でとても勉強になりました。SUZU先生いつも楽しくて分かりやすい授業をありがとうございます ✨ 次回も楽しみにしています😊</p>
+      <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
+    </div>
+
+  </div>
+</section>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="pricing-inner scroll-reveal">
+    <div class="pricing-header">
+      <div class="section-label">料金プラン</div>
+      <h2 class="pricing-title">まず一歩、<br>一緒に踏み出しましょう。</h2>
+      <p class="pricing-subtitle">
+        不知道自己適不適合學日文？先來体験レッスン感受看看。<br>
+        <small>完全沒有壓力，跟SUZU老師聊聊你的目標就好。</small>
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- 体験 -->
+      <div class="price-card">
+        <div class="pc-tag">体験レッスン</div>
+        <div class="pc-name">体験レッスン</div>
+        <div class="pc-name-cn">體驗課</div>
+        <div class="pc-price">無料</div>
+        <div class="pc-unit">25分 / 1回限り<br><small>25分鐘・僅限一次</small></div>
+        <div class="pc-detail">
+          ✓ 自己紹介・目標ヒアリング<br>
+          <small style="color:#b09090;">自我介紹＋目標確認</small><br>
+          ✓ レッスンスタイルの体験<br>
+          <small style="color:#b09090;">體驗授課方式</small><br>
+          ✓ 完全無料<br>
+          <small style="color:#b09090;">完全免費</small><br>
+          ✓ LINEで簡単日時予約<br>
+          <small style="color:#b09090;">LINE輕鬆預約時間</small>
+        </div>
+      </div>
+
+      <!-- 通常 -->
+      <div class="price-card featured">
+        <div class="pc-tag">通常レッスン</div>
+        <div class="pc-name">通常レッスン</div>
+        <div class="pc-name-cn">一般課程</div>
+        <div class="pc-price">700</div>
+        <div class="pc-unit">TWD or THB / 50分<br><small>台幣 或 泰銖・每堂50分鐘</small></div>
+        <div class="pc-detail">
+          ✓ 10回パッケージから受付<br>
+          <small style="color:#b09090;">最少10堂起購</small><br>
+          ✓ オンライン完全個別対応<br>
+          <small style="color:#b09090;">線上一對一授課</small><br>
+          ✓ 授業後ノート共有<br>
+          <small style="color:#b09090;">每堂課後共享筆記</small><br>
+          ✓ 銀行口座に直接振込<br>
+          <small style="color:#b09090;">直接匯款至銀行帳戶</small>
+        </div>
+      </div>
+
+      <!-- 20回 -->
+      <div class="price-card best">
+        <div class="pc-tag gold">20回パッケージ ✦ おすすめ</div>
+        <div class="pc-name">20回パッケージ</div>
+        <div class="pc-name-cn">20堂套餐・超值推薦</div>
+        <div class="pc-price">14,000</div>
+        <div class="pc-unit">TWD or THB / 20回<br><small>台幣 或 泰銖・共20堂</small></div>
+        <div class="pc-detail">
+          ✓ 通常レッスン全て含む<br>
+          <small style="color:#b09090;">包含所有一般課程內容</small><br>
+          ✓ 銀行口座に直接振込<br>
+          <small style="color:#b09090;">直接匯款至銀行帳戶</small>
+        </div>
+        <div class="pc-bonus">
+          🎁 ボーナス特典 / 額外優惠：<br>
+          無料50分レッスン1回<br>
+          <small>贈送50分鐘免費課程一堂</small><br>
+          または 次回購入時300THBクーポン<br>
+          <small>或 下次購買折300泰銖優惠券</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- フロー -->
+    <div class="flow-box">
+      <div class="flow-title">パッケージ購入後の流れ
+        <span class="flow-title-cn">購買套餐後的流程</span>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-num">1</div>
+          <div class="flow-text"><strong>LINEで申し込む</strong>LINEビジネスアカウントへ<br><small>透過LINE商業帳號報名</small></div>
+        </div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step">
+          <div class="flow-num">2</div>
+          <div class="flow-text"><strong>スケジュール共有</strong>希望日時を調整・確定<br><small>確認上課時間</small></div>
+        </div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step">
+          <div class="flow-num">3</div>
+          <div class="flow-text"><strong>授業スタート</strong>毎回の授業記録を共有<br><small>每堂課後共享學習記錄</small></div>
+        </div>
+        <div class="flow-arrow">›</div>
+        <div class="flow-step">
+          <div class="flow-num">4</div>
+          <div class="flow-text"><strong>継続・成長</strong>Google Driveで記録を管理<br><small>以Google雲端管理學習歷程</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: #06C755;" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">
+        💬 LINEで申し込む ✿
+      </button>
+      <p style="margin-top: 16px; font-size: 12px; color: #b09090; font-weight:300;">
+        ※ LINEビジネスアカウントに繋がります（個人LINEではありません）<br>
+        <small>※ 連結至LINE商業帳號（非個人LINE）</small><br>
+        オンラインレッスン対応 · 完全個別対応 · 随時受付中
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">SUZU 先生 · 日本語レッスン</div>
+  <div class="footer-note">© 2025 SUZU Japanese Lessons · Online</div>
+</footer>
+
+<script>
+  const sakura = document.getElementById('sakura');
+  if (sakura) {
+    const petals = ['🌸', '🌺', '✿', '❀'];
+    for (let i = 0; i < 12; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.textContent = petals[Math.floor(Math.random() * petals.length)];
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      p.style.fontSize = (14 + Math.random() * 14) + 'px';
+      sakura.appendChild(p);
+    }
+  }
+
+  const reveals = document.querySelectorAll('.scroll-reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
