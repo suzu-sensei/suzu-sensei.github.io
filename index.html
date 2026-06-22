@@ -1100,6 +1100,132 @@
     line-height: 1;
   }
   .quiz-float-close:hover { background: var(--rose); }
+
+  /* Avatar image */
+  .profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 12px;
+  }
+
+  /* Language switcher */
+  .lang-switcher {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0;
+    padding: 6px 72px 6px 20px;
+    background: rgba(107,61,61,0.06);
+    border-bottom: 1px solid rgba(107,61,61,0.08);
+  }
+  .lang-sw-btn {
+    background: none;
+    border: 1px solid rgba(107,61,61,0.2);
+    padding: 4px 12px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #9a7070;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-sw-btn:first-child { border-radius: 4px 0 0 4px; }
+  .lang-sw-btn:last-child  { border-radius: 0 4px 4px 0; border-left: none; }
+  .lang-sw-btn.active { background: var(--deep); color: white; border-color: var(--deep); }
+
+  /* Language-specific content */
+  [data-lang="en"] { display: none; }
+  body.lang-en [data-lang="zh"] { display: none; }
+  body.lang-en [data-lang="en"] { display: inline; }
+  body.lang-en small[data-lang="zh"] { display: none; }
+  body.lang-en small[data-lang="en"] { display: inline; }
+
+  /* Contact section */
+  .contact-section {
+    background: var(--cream);
+    padding: 80px 40px;
+  }
+  .contact-inner {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .contact-form {
+    background: white;
+    border: 1px solid var(--blush);
+    border-radius: 12px;
+    padding: 36px 32px;
+    margin-top: 32px;
+  }
+  .form-group {
+    margin-bottom: 22px;
+  }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--deep);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .form-label small {
+    color: #b09090;
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-left: 6px;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--blush);
+    border-radius: 6px;
+    font-family: 'Zen Kaku Gothic New', 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--rose); }
+  .form-textarea { resize: vertical; min-height: 120px; line-height: 1.8; }
+  .form-note {
+    font-size: 11px;
+    color: #b09090;
+    margin-top: 16px;
+    line-height: 2;
+    text-align: center;
+  }
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--rose);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.25s;
+    margin-top: 4px;
+  }
+  .form-submit:hover { background: var(--deep); transform: translateY(-1px); }
+  .form-success {
+    display: none;
+    background: #eaf4ea;
+    border: 1px solid var(--sage);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: #3a6a3a;
+    margin-top: 16px;
+  }
+  @media (max-width: 600px) {
+    .contact-section { padding: 60px 20px; }
+    .contact-form { padding: 24px 20px; }
+  }
 </style>
 </head>
 <body>
@@ -1118,7 +1244,7 @@
   <a class="nav-link" href="#about"   onclick="closeNav()">自己紹介</a>
   <a class="nav-link" href="#reviews" onclick="closeNav()">学生からの声</a>
   <a class="nav-link" href="#pricing" onclick="closeNav()">費用</a>
-  <a class="nav-link" href="#pricing" onclick="closeNav()">お問い合わせ</a>
+  <a class="nav-link" href="#contact" onclick="closeNav()">お問い合わせ</a>
   <a class="nav-quiz-link" href="quiz.html">🌸 クイズで練習！</a>
 </nav>
 
@@ -1150,6 +1276,12 @@ function closeNav() {
 }
 </script>
 
+
+<!-- Language switcher -->
+<div class="lang-switcher">
+  <button class="lang-sw-btn active" id="ls-jp" onclick="setLang('jp')">🇯🇵 JP</button>
+  <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+</div>
 
 <section class="hero">
   <div class="hero-left">
@@ -1275,7 +1407,8 @@ function closeNav() {
   <div class="about-inner scroll-reveal">
     <div class="about-sticky">
       <div class="profile-visual">
-        <div class="profile-pattern"></div>
+        <img src="avatar.jpg" alt="SUZU先生" class="profile-avatar-img" onerror="this.style.display='none';document.querySelector('.profile-pattern').style.display='block'">
+        <div class="profile-pattern" style="display:none"></div>
         <div class="profile-tag">SUZU 先生</div>
       </div>
     </div>
@@ -1528,9 +1661,64 @@ function closeNav() {
   </div>
 </section>
 
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner scroll-reveal">
+    <div style="text-align:center;">
+      <div class="section-label">お問い合わせ</div>
+      <h2 class="section-title">
+        気軽に<br>ご連絡ください。<br>
+        <small style="font-size:14px;color:#9a8080;font-weight:300;" data-lang="zh">歡迎隨時與我聯繫</small>
+        <small style="font-size:14px;color:#9a8080;font-weight:300;display:none" data-lang="en">Feel free to reach out anytime.</small>
+      </h2>
+    </div>
+    <div class="contact-form">
+      <div class="form-group">
+        <label class="form-label">
+          お名前（ニックネーム可）
+          <small data-lang="zh">姓名（暱稱亦可）</small>
+          <small data-lang="en" style="display:none">Name (nickname OK)</small>
+        </label>
+        <input type="text" class="form-input" id="cf-name" placeholder="例: Suzu / すず">
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          返信先メールアドレス
+          <small data-lang="zh">回覆用 Email</small>
+          <small data-lang="en" style="display:none">Reply Email Address</small>
+        </label>
+        <input type="email" class="form-input" id="cf-email" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          お問い合わせ内容
+          <small data-lang="zh">諮詢內容</small>
+          <small data-lang="en" style="display:none">Message / Inquiry</small>
+        </label>
+        <textarea class="form-textarea" id="cf-msg" placeholder="レッスンについての質問・体験レッスンの希望など、なんでもどうぞ。&#10;關於課程的問題、體驗課預約意願等，歡迎告訴我！"></textarea>
+      </div>
+      <button class="form-submit" onclick="submitContact()">
+        送信する ✿ <span data-lang="zh">/ 送出</span><span data-lang="en" style="display:none">/ Send</span>
+      </button>
+      <p class="form-note">
+        ※ <span data-lang="zh">營業日3日以內回覆 · </span><span data-lang="en" style="display:none">Reply within 3 business days · </span>営業日3日以内にご返信します<br>
+        <span data-lang="zh">也可以直接透過 LINE 聯繫 →</span>
+        <span data-lang="en" style="display:none">You can also reach me via LINE →</span>
+        <span data-lang="jp-only">LINEから直接ご連絡もできます →</span>
+        <a href="https://lin.ee/u3ojW9D" target="_blank" style="color:var(--rose);text-decoration:none;"> LINE 💬</a>
+      </p>
+      <div class="form-success" id="cf-success">
+        ✓ <span data-lang="zh">已收到您的訊息！將在3個營業日內回覆。</span>
+        <span data-lang="en" style="display:none">Message received! I'll reply within 3 business days.</span>
+        メッセージを受け付けました。3営業日以内にご返信します。
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="footer-brand">SUZU 先生 · 日本語レッスン</div>
-  <div class="footer-note">© 2025 SUZU Japanese Lessons · Online</div>
+  <div class="footer-note">© 2026 SUZU Japanese Lessons · Online</div>
 </footer>
 
 <script>
@@ -1557,5 +1745,41 @@ function closeNav() {
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
 </script>
+
+<script>
+function setLang(lang) {
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('ls-jp').classList.toggle('active', lang === 'jp');
+  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+  // Toggle all data-lang elements
+  document.querySelectorAll('[data-lang="zh"]').forEach(el => {
+    el.style.display = lang === 'en' ? 'none' : '';
+  });
+  document.querySelectorAll('[data-lang="en"]').forEach(el => {
+    el.style.display = lang === 'en' ? '' : 'none';
+  });
+}
+
+function submitContact() {
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const msg = document.getElementById('cf-msg').value.trim();
+  if (!name || !email || !msg) {
+    alert('すべての項目を入力してください。\n請填寫所有欄位。');
+    return;
+  }
+  // Build mailto link (no server needed)
+  const subject = encodeURIComponent('[SUZU先生へ] お問い合わせ from ' + name);
+  const body = encodeURIComponent(
+    'お名前: ' + name + '\n' +
+    '返信先: ' + email + '\n\n' +
+    '--- お問い合わせ内容 ---\n' +
+    msg
+  );
+  window.location.href = 'mailto:mr.taihualin@gmail.com?subject=' + subject + '&body=' + body;
+  document.getElementById('cf-success').style.display = 'block';
+}
+</script>
+
 </body>
 </html>
