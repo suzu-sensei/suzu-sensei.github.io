@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日本語クイズ | SUZU先生</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FAF6F0;
+      --blush: #F2E0D5;
+      --rose: #C9897A;
+      --deep: #6B3D3D;
+      --ink: #2C1F1F;
+      --sage: #8B9E8A;
+      --gold: #C4A46B;
+      --mist: #E8EEE8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .quiz-header {
+      background: var(--deep);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .back-btn {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+    .back-btn:hover { color: white; }
+    .quiz-header-title {
+      font-family: 'Noto Serif JP', serif;
+      color: white;
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    /* ── Tab bar ── */
+    .tab-bar {
+      display: flex;
+      background: var(--blush);
+      border-bottom: 1px solid rgba(107,61,61,0.12);
+      overflow-x: auto;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1;
+      min-width: 90px;
+      padding: 13px 6px;
+      background: none;
+      border: none;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #9a7070;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      color: var(--deep);
+      border-bottom-color: var(--rose);
+      font-weight: 500;
+    }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; padding: 28px 20px 60px; }
+    .tab-panel.active { display: block; }
+    .game-wrap { max-width: 480px; margin: 0 auto; }
+
+    /* ── Progress & score ── */
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #b09090;
+    }
+    .progress-bar { background: var(--blush); height: 5px; border-radius: 3px; margin-bottom: 24px; }
+    .progress-fill { background: var(--rose); height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+
+    /* ── Prompt ── */
+    .prompt-box { text-align: center; margin-bottom: 28px; }
+    .prompt-main {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--deep);
+      letter-spacing: 4px;
+      line-height: 1.2;
+    }
+    .prompt-sub {
+      margin-top: 6px;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      color: var(--gold);
+    }
+
+    /* ── Answer area ── */
+    .answer-area {
+      min-height: 58px;
+      background: white;
+      border: 2px solid var(--blush);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      transition: border-color 0.3s;
+    }
+    .answer-area.correct-state { border-color: var(--sage); background: #f2f7f2; }
+    .answer-area.wrong-state { border-color: var(--rose); animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    .answer-placeholder { font-size: 12px; color: rgba(107,61,61,0.3); letter-spacing: 2px; }
+
+    .placed-tile {
+      background: var(--deep);
+      color: white;
+      padding: 8px 13px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .placed-tile:hover { background: var(--rose); }
+
+    /* ── Tile bank ── */
+    .tile-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+      min-height: 52px;
+    }
+    .tile {
+      background: var(--blush);
+      color: var(--deep);
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 2px solid transparent;
+      min-width: 46px;
+      text-align: center;
+      user-select: none;
+    }
+    .tile:hover { background: var(--rose); color: white; transform: translateY(-2px); }
+    .tile:active { transform: translateY(0); }
+    .tile.used { opacity: 0.25; pointer-events: none; }
+
+    /* ── Reveal card ── */
+    .reveal-card {
+      display: none;
+      background: white;
+      border: 1px solid var(--blush);
+      border-radius: 10px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s ease;
+    }
+    .reveal-card.show { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal-kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 38px;
+      font-weight: 300;
+      color: var(--deep);
+      margin-bottom: 6px;
+    }
+    .reveal-romaji { font-size: 14px; color: var(--rose); letter-spacing: 2px; margin-bottom: 16px; }
+    .reveal-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .reveal-tag {
+      background: var(--mist);
+      color: var(--sage);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    /* ── Buttons ── */
+    .next-btn {
+      background: var(--rose);
+      color: white;
+      border: none;
+      padding: 13px 36px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.25s;
+    }
+    .next-btn:hover { background: var(--deep); transform: translateY(-1px); }
+
+    .restart-btn {
+      background: var(--deep);
+      color: white;
+      border: none;
+      padding: 13px 36px;
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.25s;
+    }
+    .restart-btn:hover { background: var(--rose); }
+
+    /* ── Complete screen ── */
+    .complete-screen { display: none; text-align: center; padding: 40px 20px; }
+    .complete-screen.show { display: block; }
+    .complete-emoji { font-size: 56px; margin-bottom: 14px; }
+    .complete-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--deep);
+      margin-bottom: 8px;
+    }
+    .complete-score { font-size: 13px; color: #9a8080; margin-bottom: 28px; }
+    .complete-subtitle { font-size: 11px; letter-spacing: 2px; color: var(--gold); margin-bottom: 28px; }
+
+    /* ── て形 game ── */
+    .te-prompt { text-align: center; margin-bottom: 28px; }
+    .te-masu {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 44px;
+      font-weight: 300;
+      color: var(--deep);
+      margin-bottom: 6px;
+    }
+    .te-hint { font-size: 12px; color: #b09090; letter-spacing: 1px; }
+    .te-arrow { font-size: 20px; color: var(--rose); margin: 4px 0; }
+
+    .choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .choice-btn {
+      background: white;
+      border: 2px solid var(--blush);
+      border-radius: 6px;
+      padding: 15px 20px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--deep);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--rose); background: var(--blush); }
+    .choice-btn:disabled { cursor: default; }
+    .choice-btn.correct-choice { background: #eaf4ea; border-color: var(--sage); color: #3a6a3a; }
+    .choice-btn.wrong-choice { background: #fce8e8; border-color: #c97a7a; color: #8a3a3a; }
+
+    .explanation {
+      background: var(--mist);
+      border-radius: 6px;
+      padding: 14px 18px;
+      font-size: 12px;
+      color: #5a7a5a;
+      line-height: 2;
+      display: none;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+    .explanation.show { display: block; }
+
+    .next-wrap { text-align: center; display: none; }
+    .next-wrap.show { display: block; }
+
+    /* ── Intro card ── */
+    .intro-card {
+      background: white;
+      border: 1px solid var(--blush);
+      border-radius: 10px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .intro-icon { font-size: 36px; margin-bottom: 10px; }
+    .intro-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--deep);
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    .intro-desc { font-size: 12px; color: #9a8080; line-height: 2; }
+
+    /* ── Hint label ── */
+    .hint-label {
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #c4a8a8;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="quiz-header">
+  <a href="index.html" class="back-btn">← ホーム</a>
+  <div class="quiz-header-title">🌸 日本語クイズ</div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('t1', this)">漢字クイズ</button>
+  <button class="tab-btn" onclick="switchTab('t2', this)">日付・動詞</button>
+  <button class="tab-btn" onclick="switchTab('t3', this)">て形クイズ</button>
+</div>
+
+<!-- ══════════ TAB 1 ══════════ -->
+<div id="t1" class="tab-panel active">
+  <div class="game-wrap">
+    <div class="intro-card">
+      <div class="intro-icon">🃏</div>
+      <div class="intro-title">アナグラムクイズ</div>
+      <div class="intro-desc">ひらがなを見て、ローマ字のタイルを正しい順に並べよう。<br>答えには漢字・中文・英語も表示されます。</div>
+    </div>
+    <div id="t1-game">
+      <div class="score-row">
+        <span id="t1-score">0 / 0</span>
+        <span id="t1-qnum"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="t1-prog" style="width:0%"></div></div>
+      <div class="prompt-box">
+        <div class="prompt-main" id="t1-prompt"></div>
+        <div class="prompt-sub" id="t1-cat"></div>
+      </div>
+      <div class="hint-label">▼ タイルをタップして並べよう</div>
+      <div class="answer-area" id="t1-ans">
+        <span class="answer-placeholder">ここに答えが並びます</span>
+      </div>
+      <div class="tile-bank" id="t1-bank"></div>
+      <div class="reveal-card" id="t1-reveal">
+        <div class="reveal-kanji" id="t1-kanji"></div>
+        <div class="reveal-romaji" id="t1-romaji"></div>
+        <div class="reveal-tags">
+          <span class="reveal-tag" id="t1-zh"></span>
+          <span class="reveal-tag" id="t1-en"></span>
+        </div>
+        <button class="next-btn" onclick="gNext('t1')">次へ →</button>
+      </div>
+    </div>
+    <div class="complete-screen" id="t1-done">
+      <div class="complete-emoji">🎉</div>
+      <div class="complete-title">クリア！</div>
+      <div class="complete-subtitle">GOOD JOB</div>
+      <div class="complete-score" id="t1-done-score"></div>
+      <button class="restart-btn" onclick="gStart('t1')">もう一度</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TAB 2 ══════════ -->
+<div id="t2" class="tab-panel">
+  <div class="game-wrap">
+    <div class="intro-card">
+      <div class="intro-icon">📅</div>
+      <div class="intro-title">日付・動詞クイズ</div>
+      <div class="intro-desc">日付の読み方（一日〜二十日）と頻出動詞のアナグラム。<br>ローマ字タイルを正しい順に並べよう。</div>
+    </div>
+    <div id="t2-game">
+      <div class="score-row">
+        <span id="t2-score">0 / 0</span>
+        <span id="t2-qnum"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="t2-prog" style="width:0%"></div></div>
+      <div class="prompt-box">
+        <div class="prompt-main" id="t2-prompt"></div>
+        <div class="prompt-sub" id="t2-cat"></div>
+      </div>
+      <div class="hint-label">▼ タイルをタップして並べよう</div>
+      <div class="answer-area" id="t2-ans">
+        <span class="answer-placeholder">ここに答えが並びます</span>
+      </div>
+      <div class="tile-bank" id="t2-bank"></div>
+      <div class="reveal-card" id="t2-reveal">
+        <div class="reveal-kanji" id="t2-kanji"></div>
+        <div class="reveal-romaji" id="t2-romaji"></div>
+        <div class="reveal-tags">
+          <span class="reveal-tag" id="t2-zh"></span>
+          <span class="reveal-tag" id="t2-en"></span>
+        </div>
+        <button class="next-btn" onclick="gNext('t2')">次へ →</button>
+      </div>
+    </div>
+    <div class="complete-screen" id="t2-done">
+      <div class="complete-emoji">🌟</div>
+      <div class="complete-title">クリア！</div>
+      <div class="complete-subtitle">EXCELLENT</div>
+      <div class="complete-score" id="t2-done-score"></div>
+      <button class="restart-btn" onclick="gStart('t2')">もう一度</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TAB 3 ══════════ -->
+<div id="t3" class="tab-panel">
+  <div class="game-wrap">
+    <div class="intro-card">
+      <div class="intro-icon">✏️</div>
+      <div class="intro-title">て形クイズ</div>
+      <div class="intro-desc">動詞のます形からて形を選ぼう。<br>3択で正しいて形を選んでね。</div>
+    </div>
+    <div id="t3-game">
+      <div class="score-row">
+        <span id="t3-score">0 / 0</span>
+        <span id="t3-qnum"></span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="t3-prog" style="width:0%"></div></div>
+      <div class="te-prompt">
+        <div class="te-masu" id="t3-masu"></div>
+        <div class="te-arrow">↓</div>
+        <div class="te-hint">て形は？</div>
+      </div>
+      <div class="choices" id="t3-choices"></div>
+      <div class="explanation" id="t3-exp"></div>
+      <div class="next-wrap" id="t3-next">
+        <button class="next-btn" onclick="t3Next()">次へ →</button>
+      </div>
+    </div>
+    <div class="complete-screen" id="t3-done">
+      <div class="complete-emoji">🌸</div>
+      <div class="complete-title">クリア！</div>
+      <div class="complete-subtitle">PERFECT</div>
+      <div class="complete-score" id="t3-done-score"></div>
+      <button class="restart-btn" onclick="t3Start()">もう一度</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════
+//  DATA
+// ═══════════════════════════════
+
+const BANK1 = [
+  { prompt:'おちゃ',   parts:['o','cha'],            kanji:'お茶',   zh:'🇹🇼 茶',        en:'🇬🇧 tea',           cat:'飲み物' },
+  { prompt:'みず',     parts:['mi','zu'],             kanji:'水',     zh:'🇹🇼 水',        en:'🇬🇧 water',         cat:'飲み物' },
+  { prompt:'ねこ',     parts:['ne','ko'],             kanji:'猫',     zh:'🇹🇼 貓',        en:'🇬🇧 cat',           cat:'動物' },
+  { prompt:'いぬ',     parts:['i','nu'],              kanji:'犬',     zh:'🇹🇼 狗',        en:'🇬🇧 dog',           cat:'動物' },
+  { prompt:'はな',     parts:['ha','na'],             kanji:'花',     zh:'🇹🇼 花',        en:'🇬🇧 flower',        cat:'自然' },
+  { prompt:'やま',     parts:['ya','ma'],             kanji:'山',     zh:'🇹🇼 山',        en:'🇬🇧 mountain',      cat:'自然' },
+  { prompt:'そら',     parts:['so','ra'],             kanji:'空',     zh:'🇹🇼 天空',      en:'🇬🇧 sky',           cat:'自然' },
+  { prompt:'うみ',     parts:['u','mi'],              kanji:'海',     zh:'🇹🇼 海',        en:'🇬🇧 sea',           cat:'自然' },
+  { prompt:'くるま',   parts:['ku','ru','ma'],        kanji:'車',     zh:'🇹🇼 車',        en:'🇬🇧 car',           cat:'乗り物' },
+  { prompt:'でんしゃ', parts:['de','n','sha'],        kanji:'電車',   zh:'🇹🇼 電車',      en:'🇬🇧 train',         cat:'乗り物' },
+  { prompt:'せんせい', parts:['se','n','se','i'],     kanji:'先生',   zh:'🇹🇼 老師',      en:'🇬🇧 teacher',       cat:'人' },
+  { prompt:'ともだち', parts:['to','mo','da','chi'],  kanji:'友達',   zh:'🇹🇼 朋友',      en:'🇬🇧 friend',        cat:'人' },
+  { prompt:'がっこう', parts:['ga','k','ko','u'],     kanji:'学校',   zh:'🇹🇼 學校',      en:'🇬🇧 school',        cat:'場所' },
+  { prompt:'びょういん',parts:['byo','u','i','n'],   kanji:'病院',   zh:'🇹🇼 醫院',      en:'🇬🇧 hospital',      cat:'場所' },
+  { prompt:'おおきい', parts:['o','o','ki','i'],      kanji:'大きい', zh:'🇹🇼 大',        en:'🇬🇧 big',           cat:'形容詞' },
+  { prompt:'ちいさい', parts:['chi','i','sa','i'],    kanji:'小さい', zh:'🇹🇼 小',        en:'🇬🇧 small',         cat:'形容詞' },
+  { prompt:'たかい',   parts:['ta','ka','i'],         kanji:'高い',   zh:'🇹🇼 高・貴',    en:'🇬🇧 tall/expensive', cat:'形容詞' },
+  { prompt:'やすい',   parts:['ya','su','i'],         kanji:'安い',   zh:'🇹🇼 便宜',      en:'🇬🇧 cheap',         cat:'形容詞' },
+  { prompt:'あたらしい',parts:['a','ta','ra','shi','i'],kanji:'新しい',zh:'🇹🇼 新',      en:'🇬🇧 new',           cat:'形容詞' },
+  { prompt:'ふるい',   parts:['fu','ru','i'],         kanji:'古い',   zh:'🇹🇼 舊',        en:'🇬🇧 old',           cat:'形容詞' },
+  { prompt:'たべもの', parts:['ta','be','mo','no'],   kanji:'食べ物', zh:'🇹🇼 食物',      en:'🇬🇧 food',          cat:'食べ物' },
+  { prompt:'のみもの', parts:['no','mi','mo','no'],   kanji:'飲み物', zh:'🇹🇼 飲料',      en:'🇬🇧 drink',         cat:'食べ物' },
+];
+
+const BANK2 = [
+  // Dates
+  { prompt:'一日',  parts:['tsu','i','ta','chi'],     kanji:'一日（ついたち）', zh:'🇹🇼 一號', en:'🇬🇧 1st', cat:'日付' },
+  { prompt:'二日',  parts:['fu','tsu','ka'],           kanji:'二日（ふつか）',   zh:'🇹🇼 二號', en:'🇬🇧 2nd', cat:'日付' },
+  { prompt:'三日',  parts:['mi','k','ka'],             kanji:'三日（みっか）',   zh:'🇹🇼 三號', en:'🇬🇧 3rd', cat:'日付' },
+  { prompt:'四日',  parts:['yo','k','ka'],             kanji:'四日（よっか）',   zh:'🇹🇼 四號', en:'🇬🇧 4th', cat:'日付' },
+  { prompt:'五日',  parts:['i','tsu','ka'],            kanji:'五日（いつか）',   zh:'🇹🇼 五號', en:'🇬🇧 5th', cat:'日付' },
+  { prompt:'六日',  parts:['mu','i','ka'],             kanji:'六日（むいか）',   zh:'🇹🇼 六號', en:'🇬🇧 6th', cat:'日付' },
+  { prompt:'七日',  parts:['na','no','ka'],            kanji:'七日（なのか）',   zh:'🇹🇼 七號', en:'🇬🇧 7th', cat:'日付' },
+  { prompt:'八日',  parts:['yo','u','ka'],             kanji:'八日（ようか）',   zh:'🇹🇼 八號', en:'🇬🇧 8th', cat:'日付' },
+  { prompt:'九日',  parts:['ko','ko','no','ka'],       kanji:'九日（ここのか）', zh:'🇹🇼 九號', en:'🇬🇧 9th', cat:'日付' },
+  { prompt:'十日',  parts:['to','o','ka'],             kanji:'十日（とおか）',   zh:'🇹🇼 十號', en:'🇬🇧 10th',cat:'日付' },
+  { prompt:'十四日',parts:['ju','yo','k','ka'],        kanji:'十四日（じゅうよっか）',zh:'🇹🇼 十四號',en:'🇬🇧 14th',cat:'日付' },
+  { prompt:'二十日',parts:['ha','tsu','ka'],           kanji:'二十日（はつか）', zh:'🇹🇼 二十號',en:'🇬🇧 20th',cat:'日付' },
+  // Common verbs (ます form anagram)
+  { prompt:'たべます', parts:['ta','be','ma','su'],        kanji:'食べます', zh:'🇹🇼 吃',   en:'🇬🇧 to eat',    cat:'動詞' },
+  { prompt:'のみます', parts:['no','mi','ma','su'],        kanji:'飲みます', zh:'🇹🇼 喝',   en:'🇬🇧 to drink',  cat:'動詞' },
+  { prompt:'みます',   parts:['mi','ma','su'],             kanji:'見ます',   zh:'🇹🇼 看',   en:'🇬🇧 to see',    cat:'動詞' },
+  { prompt:'かきます', parts:['ka','ki','ma','su'],        kanji:'書きます', zh:'🇹🇼 寫',   en:'🇬🇧 to write',  cat:'動詞' },
+  { prompt:'よみます', parts:['yo','mi','ma','su'],        kanji:'読みます', zh:'🇹🇼 讀',   en:'🇬🇧 to read',   cat:'動詞' },
+  { prompt:'はなします',parts:['ha','na','shi','ma','su'],kanji:'話します', zh:'🇹🇼 說話', en:'🇬🇧 to speak',  cat:'動詞' },
+  { prompt:'いきます', parts:['i','ki','ma','su'],         kanji:'行きます', zh:'🇹🇼 去',   en:'🇬🇧 to go',     cat:'動詞' },
+  { prompt:'きます',   parts:['ki','ma','su'],             kanji:'来ます',   zh:'🇹🇼 來',   en:'🇬🇧 to come',   cat:'動詞' },
+  { prompt:'すわります',parts:['su','wa','ri','ma','su'],  kanji:'座ります', zh:'🇹🇼 坐',   en:'🇬🇧 to sit',    cat:'動詞' },
+  { prompt:'はたらきます',parts:['ha','ta','ra','ki','ma','su'],kanji:'働きます',zh:'🇹🇼 工作',en:'🇬🇧 to work',cat:'動詞' },
+  // Common adjectives
+  { prompt:'たのしい', parts:['ta','no','shi','i'],        kanji:'楽しい',   zh:'🇹🇼 快樂', en:'🇬🇧 fun/happy',  cat:'形容詞' },
+  { prompt:'むずかしい',parts:['mu','zu','ka','shi','i'],  kanji:'難しい',   zh:'🇹🇼 難',   en:'🇬🇧 difficult',  cat:'形容詞' },
+  { prompt:'おもしろい',parts:['o','mo','shi','ro','i'],   kanji:'面白い',   zh:'🇹🇼 有趣', en:'🇬🇧 interesting', cat:'形容詞' },
+];
+
+const BANK3 = [
+  { masu:'たべます',     te:'たべて',      kanji:'食べます', rule:'食べる（Gr.2）〜ます → 〜て' },
+  { masu:'のみます',     te:'のんで',      kanji:'飲みます', rule:'飲む（Gr.1）む → んで' },
+  { masu:'みます',       te:'みて',        kanji:'見ます',   rule:'見る（Gr.2）〜ます → 〜て' },
+  { masu:'かきます',     te:'かいて',      kanji:'書きます', rule:'書く（Gr.1）く → いて' },
+  { masu:'よみます',     te:'よんで',      kanji:'読みます', rule:'読む（Gr.1）む → んで' },
+  { masu:'ねます',       te:'ねて',        kanji:'寝ます',   rule:'寝る（Gr.2）〜ます → 〜て' },
+  { masu:'おきます',     te:'おきて',      kanji:'起きます', rule:'起きる（Gr.2）〜ます → 〜て' },
+  { masu:'いきます',     te:'いって',      kanji:'行きます', rule:'行く（例外）く → って' },
+  { masu:'きます',       te:'きて',        kanji:'来ます',   rule:'来る（不規則）→ きて' },
+  { masu:'します',       te:'して',        kanji:'します',   rule:'する（不規則）→ して' },
+  { masu:'はなします',   te:'はなして',    kanji:'話します', rule:'話す（Gr.1）す → して' },
+  { masu:'まちます',     te:'まって',      kanji:'待ちます', rule:'待つ（Gr.1）つ → って' },
+  { masu:'かいます',     te:'かって',      kanji:'買います', rule:'買う（Gr.1）う → って' },
+  { masu:'あそびます',   te:'あそんで',    kanji:'遊びます', rule:'遊ぶ（Gr.1）ぶ → んで' },
+  { masu:'はたらきます', te:'はたらいて',  kanji:'働きます', rule:'働く（Gr.1）く → いて' },
+  { masu:'べんきょうします',te:'べんきょうして',kanji:'勉強します',rule:'勉強する（〜する）→ して' },
+  { masu:'かえります',   te:'かえって',    kanji:'帰ります', rule:'帰る（Gr.1）る → って' },
+  { masu:'わかります',   te:'わかって',    kanji:'分かります',rule:'分かる（Gr.1）る → って' },
+];
+
+// ═══════════════════════════════
+//  TAB SWITCH
+// ═══════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════
+//  SHARED ANAGRAM ENGINE
+// ═══════════════════════════════
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+const gState = {
+  t1: { bank: BANK1, words:[], cur:0, correct:0, placed:[] },
+  t2: { bank: BANK2, words:[], cur:0, correct:0, placed:[] },
+};
+
+function gStart(id) {
+  const s = gState[id];
+  s.words   = shuffle(s.bank).slice(0, 10);
+  s.cur     = 0;
+  s.correct = 0;
+  s.placed  = [];
+  document.getElementById(id+'-done').classList.remove('show');
+  document.getElementById(id+'-game').style.display = 'block';
+  gLoad(id);
+}
+
+function gLoad(id) {
+  const s = gState[id];
+  const w = s.words[s.cur];
+  s.placed = [];
+
+  // Prompt
+  document.getElementById(id+'-prompt').textContent = w.prompt;
+  document.getElementById(id+'-cat').textContent    = w.cat;
+  document.getElementById(id+'-reveal').classList.remove('show');
+
+  // Answer area
+  const ans = document.getElementById(id+'-ans');
+  ans.innerHTML = '<span class="answer-placeholder">ここに答えが並びます</span>';
+  ans.className = 'answer-area';
+
+  // Progress
+  const total = s.words.length;
+  document.getElementById(id+'-prog').style.width = (s.cur / total * 100) + '%';
+  document.getElementById(id+'-score').textContent = s.correct + ' / ' + s.cur;
+  document.getElementById(id+'-qnum').textContent = (s.cur+1) + ' / ' + total;
+
+  // Tiles — each tile gets a unique index even if same text
+  const shuffled = shuffle(w.parts.map((v, i) => ({ v, i })));
+  const bank = document.getElementById(id+'-bank');
+  bank.innerHTML = '';
+  shuffled.forEach(({ v, i }) => {
+    const btn = document.createElement('button');
+    btn.className = 'tile';
+    btn.textContent = v;
+    btn.dataset.idx = i;
+    btn.onclick = () => gTap(id, btn, i, v);
+    bank.appendChild(btn);
+  });
+}
+
+function gTap(id, btn, idx, val) {
+  if (btn.classList.contains('used')) return;
+  btn.classList.add('used');
+  const s = gState[id];
+  s.placed.push({ idx, val, btn });
+
+  const ans = document.getElementById(id+'-ans');
+  const ph = ans.querySelector('.answer-placeholder');
+  if (ph) ph.remove();
+
+  const tile = document.createElement('span');
+  tile.className = 'placed-tile';
+  tile.textContent = val;
+  tile.onclick = () => gRemove(id, tile, idx, btn);
+  ans.appendChild(tile);
+
+  const w = s.words[s.cur];
+  if (s.placed.length === w.parts.length) gCheck(id);
+}
+
+function gRemove(id, tile, idx, origBtn) {
+  const s = gState[id];
+  let removed = false;
+  s.placed = s.placed.filter(p => {
+    if (!removed && p.idx === idx) { removed = true; return false; }
+    return true;
+  });
+  tile.remove();
+  origBtn.classList.remove('used');
+
+  const ans = document.getElementById(id+'-ans');
+  if (!ans.querySelector('.placed-tile')) {
+    ans.innerHTML = '<span class="answer-placeholder">ここに答えが並びます</span>';
+  }
+}
+
+function gCheck(id) {
+  const s = gState[id];
+  const w = s.words[s.cur];
+  const ans = document.getElementById(id+'-ans');
+  const user   = s.placed.map(p => p.val).join('');
+  const correct = w.parts.join('');
+
+  if (user === correct) {
+    ans.classList.add('correct-state');
+    s.correct++;
+    document.getElementById(id+'-score').textContent = s.correct + ' / ' + (s.cur+1);
+    // Show reveal
+    document.getElementById(id+'-kanji').textContent  = w.kanji;
+    document.getElementById(id+'-romaji').textContent = w.parts.join('-');
+    document.getElementById(id+'-zh').textContent     = w.zh;
+    document.getElementById(id+'-en').textContent     = w.en;
+    document.getElementById(id+'-reveal').classList.add('show');
+  } else {
+    ans.classList.add('wrong-state');
+    setTimeout(() => {
+      ans.classList.remove('wrong-state');
+      s.placed = [];
+      ans.innerHTML = '<span class="answer-placeholder">ここに答えが並びます</span>';
+      document.querySelectorAll('#'+id+'-bank .tile').forEach(t => t.classList.remove('used'));
+    }, 500);
+  }
+}
+
+function gNext(id) {
+  const s = gState[id];
+  s.cur++;
+  if (s.cur >= s.words.length) {
+    document.getElementById(id+'-game').style.display = 'none';
+    document.getElementById(id+'-prog').style.width = '100%';
+    document.getElementById(id+'-done').classList.add('show');
+    document.getElementById(id+'-done-score').textContent =
+      '正解 ' + s.correct + ' / ' + s.words.length + ' 問';
+  } else {
+    gLoad(id);
+  }
+}
+
+// ═══════════════════════════════
+//  て形 GAME
+// ═══════════════════════════════
+const t3State = { qs:[], cur:0, correct:0 };
+
+function t3Start() {
+  t3State.qs      = shuffle(BANK3).slice(0, 10);
+  t3State.cur     = 0;
+  t3State.correct = 0;
+  document.getElementById('t3-done').classList.remove('show');
+  document.getElementById('t3-game').style.display = 'block';
+  t3Load();
+}
+
+function t3Load() {
+  const q = t3State.qs[t3State.cur];
+  document.getElementById('t3-masu').textContent = q.masu;
+  document.getElementById('t3-exp').className = 'explanation';
+  document.getElementById('t3-next').className = 'next-wrap';
+
+  const total = t3State.qs.length;
+  document.getElementById('t3-prog').style.width = (t3State.cur / total * 100) + '%';
+  document.getElementById('t3-score').textContent = t3State.correct + ' / ' + t3State.cur;
+  document.getElementById('t3-qnum').textContent  = (t3State.cur+1) + ' / ' + total;
+
+  // 3 choices: 1 correct + 2 wrong
+  const wrong = shuffle(BANK3.filter(b => b.te !== q.te)).slice(0, 2).map(b => b.te);
+  const choices = shuffle([q.te, ...wrong]);
+
+  const box = document.getElementById('t3-choices');
+  box.innerHTML = '';
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c;
+    btn.onclick = () => t3Answer(c, q, btn);
+    box.appendChild(btn);
+  });
+}
+
+function t3Answer(choice, q, clicked) {
+  document.querySelectorAll('#t3-choices .choice-btn').forEach(b => {
+    b.disabled = true;
+    if (b.textContent === q.te) b.classList.add('correct-choice');
+  });
+  if (choice === q.te) {
+    t3State.correct++;
+    clicked.classList.add('correct-choice');
+  } else {
+    clicked.classList.add('wrong-choice');
+  }
+  document.getElementById('t3-score').textContent = t3State.correct + ' / ' + (t3State.cur+1);
+  document.getElementById('t3-exp').textContent = '【' + q.kanji + '】' + q.rule;
+  document.getElementById('t3-exp').classList.add('show');
+  document.getElementById('t3-next').classList.add('show');
+}
+
+function t3Next() {
+  t3State.cur++;
+  if (t3State.cur >= t3State.qs.length) {
+    document.getElementById('t3-game').style.display = 'none';
+    document.getElementById('t3-prog').style.width = '100%';
+    document.getElementById('t3-done').classList.add('show');
+    document.getElementById('t3-done-score').textContent =
+      '正解 ' + t3State.correct + ' / ' + t3State.qs.length + ' 問';
+  } else {
+    t3Load();
+  }
+}
+
+// ═══════════════════════════════
+//  INIT
+// ═══════════════════════════════
+gStart('t1');
+gStart('t2');
+t3Start();
+</script>
+</body>
+</html>

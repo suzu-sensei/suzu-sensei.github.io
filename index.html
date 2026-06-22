@@ -949,9 +949,207 @@
     .flow-steps { flex-direction: column; }
     .flow-arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 10px; }
   }
+
+  /* ── Hamburger Nav ── */
+  .hamburger-btn {
+    position: fixed;
+    top: 18px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(107,61,61,0.92);
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .hamburger-btn:hover { background: var(--rose); transform: scale(1.05); }
+  .hamburger-btn span {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger-btn.open span:nth-child(2) { opacity: 0; }
+  .hamburger-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(43,26,26,0.55);
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(2px);
+  }
+  .nav-overlay.open { opacity: 1; pointer-events: all; }
+
+  .nav-panel {
+    position: fixed;
+    top: 0;
+    right: -280px;
+    width: 260px;
+    height: 100vh;
+    background: var(--cream);
+    z-index: 950;
+    transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    padding: 70px 0 40px;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  }
+  .nav-panel.open { right: 0; }
+
+  .nav-panel-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    padding: 0 32px 20px;
+    border-bottom: 1px solid var(--blush);
+    margin-bottom: 16px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 16px 32px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--deep);
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav-link:hover { background: var(--blush); border-left-color: var(--rose); color: var(--rose); }
+
+  .nav-quiz-link {
+    margin: 20px 24px 0;
+    display: block;
+    background: var(--rose);
+    color: white;
+    text-align: center;
+    padding: 14px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .nav-quiz-link:hover { background: var(--deep); }
+
+  /* ── Floating Quiz Popup ── */
+  .quiz-float {
+    position: fixed;
+    bottom: 28px;
+    right: 20px;
+    z-index: 800;
+    animation: float 3s ease-in-out infinite;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .quiz-float.hidden { opacity: 0; pointer-events: none; transform: translateY(20px); }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .quiz-float-card {
+    background: var(--deep);
+    color: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 24px rgba(107,61,61,0.35);
+    text-decoration: none;
+    max-width: 200px;
+    position: relative;
+  }
+  .quiz-float-icon { font-size: 24px; flex-shrink: 0; }
+  .quiz-float-text { flex: 1; }
+  .quiz-float-label { font-size: 9px; letter-spacing: 2px; color: var(--gold); margin-bottom: 2px; }
+  .quiz-float-title { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 300; }
+
+  .quiz-float-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    background: #b07070;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .quiz-float-close:hover { background: var(--rose); }
 </style>
 </head>
 <body>
+
+<!-- Hamburger button -->
+<button class="hamburger-btn" id="ham-btn" aria-label="メニュー" onclick="toggleNav()">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- Overlay -->
+<div class="nav-overlay" id="nav-overlay" onclick="closeNav()"></div>
+
+<!-- Side panel -->
+<nav class="nav-panel" id="nav-panel">
+  <div class="nav-panel-title">MENU</div>
+  <a class="nav-link" href="#about"   onclick="closeNav()">自己紹介</a>
+  <a class="nav-link" href="#reviews" onclick="closeNav()">学生からの声</a>
+  <a class="nav-link" href="#pricing" onclick="closeNav()">費用</a>
+  <a class="nav-link" href="#pricing" onclick="closeNav()">お問い合わせ</a>
+  <a class="nav-quiz-link" href="quiz.html">🌸 クイズで練習！</a>
+</nav>
+
+<!-- Floating quiz popup -->
+<div class="quiz-float" id="quiz-float">
+  <a class="quiz-float-card" href="quiz.html">
+    <span class="quiz-float-icon">🎴</span>
+    <div class="quiz-float-text">
+      <div class="quiz-float-label">PRACTICE</div>
+      <div class="quiz-float-title">クイズで<br>日本語練習！</div>
+    </div>
+  </a>
+  <button class="quiz-float-close" onclick="document.getElementById('quiz-float').classList.add('hidden')" title="閉じる">✕</button>
+</div>
+
+<script>
+function toggleNav() {
+  const btn = document.getElementById('ham-btn');
+  const panel = document.getElementById('nav-panel');
+  const overlay = document.getElementById('nav-overlay');
+  btn.classList.toggle('open');
+  panel.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+function closeNav() {
+  document.getElementById('ham-btn').classList.remove('open');
+  document.getElementById('nav-panel').classList.remove('open');
+  document.getElementById('nav-overlay').classList.remove('open');
+}
+</script>
+
 
 <section class="hero">
   <div class="hero-left">
@@ -1073,7 +1271,7 @@
   </div>
 </section>
 
-<section class="about-section">
+<section class="about-section" id="about">
   <div class="about-inner scroll-reveal">
     <div class="about-sticky">
       <div class="profile-visual">
@@ -1153,7 +1351,7 @@
 </div>
 
 <!-- REVIEWS -->
-<div class="reviews-outer">
+<div class="reviews-outer" id="reviews">
 <section class="reviews-section scroll-reveal">
   <div class="reviews-header">
     <div class="section-label" style="color: var(--gold);">受講生の声</div>
@@ -1218,7 +1416,7 @@
 </div>
 
 <!-- PRICING -->
-<section class="pricing-section">
+<section class="pricing-section" id="pricing">
   <div class="pricing-inner scroll-reveal">
     <div class="pricing-header">
       <div class="section-label">料金プラン</div>
