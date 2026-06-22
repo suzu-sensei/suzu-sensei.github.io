@@ -128,19 +128,19 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 .submit-btn:hover{background:var(--deep);}
 
 /* Hiragana keyboard */
-.hira-display{background:white;border:2px solid var(--blush);border-radius:8px;padding:14px;font-family:'Noto Serif JP',serif;font-size:26px;color:var(--deep);text-align:center;min-height:56px;margin-bottom:12px;letter-spacing:2px;}
-.hira-display.empty{color:rgba(107,61,61,0.25);font-size:13px;letter-spacing:2px;line-height:2.5;}
-.hira-grid{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
-.hira-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;}
-.hira-sep{height:1px;background:var(--blush);margin:4px 0;}
-.hira-key{padding:10px 4px;background:var(--blush);border:none;border-radius:5px;font-family:'Noto Serif JP',serif;font-size:15px;color:var(--deep);cursor:pointer;transition:all 0.15s;text-align:center;}
-.hira-key:hover{background:var(--rose);color:white;}
-.hira-key.empty-key{background:transparent;pointer-events:none;}
-.hira-ctrl-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.hira-back{background:var(--blush);border:none;border-radius:5px;padding:11px;font-size:16px;cursor:pointer;transition:background 0.15s;}
-.hira-back:hover{background:var(--rose);color:white;}
-.hira-submit{background:var(--rose);color:white;border:none;border-radius:5px;padding:11px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;letter-spacing:2px;cursor:pointer;transition:background 0.15s;}
-.hira-submit:hover{background:var(--deep);}
+.hira-display{background:white;border:2px solid var(--blush);border-radius:8px;padding:14px 14px 8px;font-family:'Noto Serif JP',serif;font-size:26px;color:var(--deep);text-align:center;min-height:56px;margin-bottom:8px;letter-spacing:2px;position:relative;}
+.hira-romaji-buf{font-size:11px;color:var(--rose);letter-spacing:2px;min-height:16px;margin-top:4px;}
+/* QWERTY keyboard */
+.qwerty-kb{background:var(--blush);border-radius:10px;padding:8px 6px;margin-bottom:10px;}
+.qwerty-row{display:flex;justify-content:center;gap:4px;margin-bottom:4px;}
+.qk{background:white;border:none;border-radius:5px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;font-weight:500;color:var(--deep);cursor:pointer;transition:all 0.12s;flex:1;max-width:36px;height:40px;text-align:center;line-height:40px;padding:0;}
+.qk:hover,.qk:active{background:var(--rose);color:white;transform:translateY(-1px);}
+.qk.wide{max-width:54px;}
+.qk.wider{max-width:80px;font-size:11px;letter-spacing:1px;}
+.qk.sp{max-width:120px;background:rgba(107,61,61,0.08);}
+.qk.back-key{background:var(--blush);font-size:16px;}
+.qk.send-key{background:var(--rose);color:white;font-size:11px;letter-spacing:1.5px;}
+.qk.send-key:hover{background:var(--deep);}
 
 /* て形 result */
 .te-result{padding:14px 18px;border-radius:8px;text-align:center;display:none;margin-bottom:12px;animation:fadeUp 0.3s ease;}
@@ -292,13 +292,17 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
         <button class="submit-btn" onclick="t3Submit()">→</button>
       </div>
     </div>
-    <!-- Hiragana keyboard -->
+    <!-- QWERTY keyboard -->
     <div id="hira-input-section" style="display:none">
-      <div class="hira-display" id="hira-display"><span style="font-size:12px;letter-spacing:2px;line-height:2.5">ひらがなを入力してね</span></div>
-      <div class="hira-grid" id="hira-grid"></div>
-      <div class="hira-ctrl-row">
-        <button class="hira-back" onclick="hiraBack()">⌫</button>
-        <button class="hira-submit" onclick="t3Submit()">送信 →</button>
+      <div class="hira-display" id="hira-display">
+        <span id="hira-display-text" style="font-size:12px;letter-spacing:2px;opacity:0.35">ひらがなを入力してね</span>
+        <div class="hira-romaji-buf" id="hira-romaji-buf"></div>
+      </div>
+      <div class="qwerty-kb" id="qwerty-kb">
+        <div class="qwerty-row" id="qwerty-r1"></div>
+        <div class="qwerty-row" id="qwerty-r2"></div>
+        <div class="qwerty-row" id="qwerty-r3"></div>
+        <div class="qwerty-row" id="qwerty-r4"></div>
       </div>
     </div>
     <div class="te-result" id="t3-result">
@@ -341,6 +345,23 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
       </div>
     </div>
     <div class="rule-group">
+      <div class="rule-group-title" style="color:#c4a46b">⚠️ グループ２ 要注意！i-masu でもグループ２の動詞（例外8個）</div>
+      <div class="rule-rows">
+        <div class="rule-row"><span class="rule-from">起きます</span><span class="rule-arrow">→</span><span class="rule-to">起きて</span><span class="rule-example">おきます→おきて</span></div>
+        <div class="rule-row"><span class="rule-from">着ます</span><span class="rule-arrow">→</span><span class="rule-to">着て</span><span class="rule-example">きます→きて</span></div>
+        <div class="rule-row"><span class="rule-from">見ます</span><span class="rule-arrow">→</span><span class="rule-to">見て</span><span class="rule-example">みます→みて</span></div>
+        <div class="rule-row"><span class="rule-from">います</span><span class="rule-arrow">→</span><span class="rule-to">いて</span><span class="rule-example">います→いて</span></div>
+        <div class="rule-row"><span class="rule-from">借ります</span><span class="rule-arrow">→</span><span class="rule-to">借りて</span><span class="rule-example">かります→かりて</span></div>
+        <div class="rule-row"><span class="rule-from">降ります</span><span class="rule-arrow">→</span><span class="rule-to">降りて</span><span class="rule-example">おります→おりて</span></div>
+        <div class="rule-row"><span class="rule-from">閉めます</span><span class="rule-arrow">→</span><span class="rule-to">閉めて</span><span class="rule-example">しめます→しめて</span></div>
+        <div class="rule-row"><span class="rule-from">浴びます</span><span class="rule-arrow">→</span><span class="rule-to">浴びて</span><span class="rule-example">あびます→あびて</span></div>
+      </div>
+      <p style="font-size:11px;color:#b09090;padding:10px 16px;line-height:1.8">
+        ※ i-masu (き・み・り・い・び) でも<strong>グループ２</strong>の動詞がある。<br>
+        見分け方：辞書形が「〜いる・〜える」→ グループ２
+      </p>
+    </div>
+    <div class="rule-group">
       <div class="rule-group-title">グループ３（不規則動詞）</div>
       <div class="rule-rows">
         <div class="rule-row"><span class="rule-from">します</span><span class="rule-arrow">→</span><span class="rule-to">して</span><span class="rule-example">べんきょうします→して</span></div>
@@ -353,7 +374,14 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 <script>
 // ── Sound ──────────────────────────────────────────
 let _actx;
-function getACtx(){if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();return _actx;}
+function getACtx(){
+  if(!_actx) _actx=new(window.AudioContext||window.webkitAudioContext)();
+  if(_actx.state==='suspended') _actx.resume();
+  return _actx;
+}
+// Unlock audio on first touch (iOS Safari requirement)
+document.addEventListener('touchstart',function(){getACtx();},{once:true,passive:true});
+document.addEventListener('click',function(){getACtx();},{once:true});
 function playSound(type){
   try{
     const ctx=getACtx(),osc=ctx.createOscillator(),g=ctx.createGain();
@@ -624,55 +652,135 @@ function buildReview(id,history){
 let t3InputMode='device',t3HiraText='';
 const t3State={words:[],cur:0,correct:0,wrongCount:0,totalWrong:0,history:[],lastInput:''};
 
-const HIRA_ROWS=[
-  ['あ','い','う','え','お'],
-  ['か','き','く','け','こ'],
-  ['さ','し','す','せ','そ'],
-  ['た','ち','つ','て','と'],
-  ['な','に','ぬ','ね','の'],
-  ['は','ひ','ふ','へ','ほ'],
-  ['ま','み','む','め','も'],
-  ['や','','ゆ','','よ'],
-  ['ら','り','る','れ','ろ'],
-  ['わ','','を','','ん'],
-  null, // separator
-  ['が','ぎ','ぐ','げ','ご'],
-  ['ざ','じ','ず','ぜ','ぞ'],
-  ['だ','ぢ','づ','で','ど'],
-  ['ば','び','ぶ','べ','ぼ'],
-  ['ぱ','ぴ','ぷ','ぺ','ぽ'],
-  null, // separator
-  ['っ','ゃ','ゅ','ょ','ー'],
-];
+// ── Romaji → Hiragana converter ─────────────────────────────
+const RM={
+  'a':'あ','i':'い','u':'う','e':'え','o':'お',
+  'ka':'か','ki':'き','ku':'く','ke':'け','ko':'こ',
+  'kya':'きゃ','kyu':'きゅ','kyo':'きょ',
+  'ga':'が','gi':'ぎ','gu':'ぐ','ge':'げ','go':'ご',
+  'gya':'ぎゃ','gyu':'ぎゅ','gyo':'ぎょ',
+  'sa':'さ','si':'し','su':'す','se':'せ','so':'そ',
+  'shi':'し','sha':'しゃ','shu':'しゅ','sho':'しょ',
+  'za':'ざ','zi':'じ','zu':'ず','ze':'ぜ','zo':'ぞ',
+  'ji':'じ','ja':'じゃ','ju':'じゅ','jo':'じょ',
+  'ta':'た','ti':'ち','tu':'つ','te':'て','to':'と',
+  'chi':'ち','cha':'ちゃ','chu':'ちゅ','cho':'ちょ',
+  'tsu':'つ',
+  'da':'だ','di':'ぢ','du':'づ','de':'で','do':'ど',
+  'na':'な','ni':'に','nu':'ぬ','ne':'ね','no':'の',
+  'nya':'にゃ','nyu':'にゅ','nyo':'にょ',
+  'nn':'ん',
+  'ha':'は','hi':'ひ','hu':'ふ','fu':'ふ','he':'へ','ho':'ほ',
+  'hya':'ひゃ','hyu':'ひゅ','hyo':'ひょ',
+  'ba':'ば','bi':'び','bu':'ぶ','be':'べ','bo':'ぼ',
+  'bya':'びゃ','byu':'びゅ','byo':'びょ',
+  'pa':'ぱ','pi':'ぴ','pu':'ぷ','pe':'ぺ','po':'ぽ',
+  'pya':'ぴゃ','pyu':'ぴゅ','pyo':'ぴょ',
+  'ma':'ま','mi':'み','mu':'む','me':'め','mo':'も',
+  'mya':'みゃ','myu':'みゅ','myo':'みょ',
+  'ya':'や','yu':'ゆ','yo':'よ',
+  'ra':'ら','ri':'り','ru':'る','re':'れ','ro':'ろ',
+  'rya':'りゃ','ryu':'りゅ','ryo':'りょ',
+  'wa':'わ','wo':'を','wi':'ゐ',
+  '-':'ー','xtsu':'っ','xtu':'っ',
+};
+const VOWELS='aiueo';
+let qRomBuf='';  // romaji buffer
+let qHiraTxt=''; // committed hiragana
+
+function qProcess(forceFlush){
+  let buf=qRomBuf;
+  let out='';
+  while(buf.length>0){
+    // double consonant → っ
+    if(buf.length>=2&&buf[0]===buf[1]&&!VOWELS.includes(buf[0])&&buf[0]!=='n'){
+      out+='っ';buf=buf.slice(1);continue;
+    }
+    // 'n' handling
+    if(buf[0]==='n'){
+      if(buf.length>=2){
+        const nxt=buf[1];
+        if(nxt==='n'){out+='ん';buf=buf.slice(2);continue;}
+        if(!VOWELS.includes(nxt)&&nxt!=='y'){out+='ん';buf=buf.slice(1);continue;}
+        // n+vowel or n+y: could be 'na','nu'... try lookup
+      }else if(forceFlush){out+='ん';buf=buf.slice(1);continue;}
+      // else wait for more input
+    }
+    // longest match first
+    let matched=false;
+    for(let len=Math.min(4,buf.length);len>=1;len--){
+      const c=buf.slice(0,len);
+      if(RM[c]){out+=RM[c];buf=buf.slice(len);matched=true;break;}
+    }
+    if(!matched){
+      // could buffer eventually match?
+      let couldMatch=Object.keys(RM).some(k=>k.startsWith(buf));
+      if(couldMatch&&!forceFlush) break;
+      else{buf=buf.slice(1);}// discard unmatchable
+    }
+  }
+  qHiraTxt+=out;
+  qRomBuf=buf;
+  updateHiraDisplay();
+}
+
+function updateHiraDisplay(){
+  const dt=document.getElementById('hira-display-text');
+  const rb=document.getElementById('hira-romaji-buf');
+  if(qHiraTxt||qRomBuf){
+    dt.textContent=qHiraTxt;
+    dt.style.fontSize='26px';dt.style.opacity='1';
+    rb.textContent=qRomBuf?'['+qRomBuf+']':'';
+  }else{
+    dt.textContent='ひらがなを入力してね';
+    dt.style.fontSize='12px';dt.style.opacity='0.35';
+    rb.textContent='';
+  }
+}
+
+function qKey(ch){
+  if(ch==='BACK'){
+    if(qRomBuf.length>0){qRomBuf=qRomBuf.slice(0,-1);}
+    else{qHiraTxt=[...qHiraTxt].slice(0,-1).join('');}
+    updateHiraDisplay();
+  }else if(ch==='SEND'){
+    qProcess(true);t3Submit();
+  }else if(ch==='ん'){
+    qProcess(true);qHiraTxt+='ん';updateHiraDisplay();
+  }else if(ch==='ー'){
+    qProcess(true);qHiraTxt+='ー';updateHiraDisplay();
+  }else{
+    qRomBuf+=ch;qProcess(false);
+  }
+}
 
 function buildHiraGrid(){
-  const grid=document.getElementById('hira-grid');
-  grid.innerHTML='';
-  HIRA_ROWS.forEach(row=>{
-    if(row===null){const sep=document.createElement('div');sep.className='hira-sep';grid.appendChild(sep);return;}
-    const rowEl=document.createElement('div');rowEl.className='hira-row';
-    row.forEach(ch=>{
+  const QROWS=[
+    ['Q','W','E','R','T','Y','U','I','O','P'],
+    ['A','S','D','F','G','H','J','K','L'],
+    ['Z','X','C','V','B','N','M'],
+    ['BACK','ん','ー','SEND'],
+  ];
+  const labels={'BACK':'⌫','SEND':'送信 →','ん':'ん','ー':'ー'};
+  const ids=['qwerty-r1','qwerty-r2','qwerty-r3','qwerty-r4'];
+  QROWS.forEach((row,ri)=>{
+    const rowEl=document.getElementById(ids[ri]);
+    rowEl.innerHTML='';
+    row.forEach(k=>{
       const btn=document.createElement('button');
-      if(!ch){btn.className='hira-key empty-key';btn.textContent='';}
-      else{btn.className='hira-key';btn.textContent=ch;btn.onclick=()=>hiraInput(ch);}
+      btn.textContent=labels[k]||k;
+      let cls='qk';
+      if(k==='BACK')cls+=' back-key';
+      else if(k==='SEND')cls+=' send-key wider';
+      else if(k==='ん'||k==='ー')cls+=' wide';
+      btn.className=cls;
+      btn.onclick=()=>qKey(k.toLowerCase()==='back'?'BACK':k==='SEND'?'SEND':k.toLowerCase()==='ん'?'ん':k==='ー'?'ー':k.toLowerCase());
       rowEl.appendChild(btn);
     });
-    grid.appendChild(rowEl);
   });
 }
 
-function hiraInput(ch){
-  t3HiraText+=ch;
-  const d=document.getElementById('hira-display');
-  d.innerHTML=t3HiraText||'<span style="font-size:12px;letter-spacing:2px;line-height:2.5">ひらがなを入力してね</span>';
-  d.className='hira-display';
-}
-
-function hiraBack(){
-  t3HiraText=[...t3HiraText].slice(0,-1).join('');
-  const d=document.getElementById('hira-display');
-  d.innerHTML=t3HiraText||'<span style="font-size:12px;letter-spacing:2px;line-height:2.5">ひらがなを入力してね</span>';
-}
+function hiraBack(){qKey('BACK');}
 
 function setInputMode(mode){
   t3InputMode=mode;
@@ -709,16 +817,16 @@ function t3Load(){
 
   // Reset inputs
   document.getElementById('device-input').value='';
-  t3HiraText='';
-  const d=document.getElementById('hira-display');
-  d.innerHTML='<span style="font-size:12px;letter-spacing:2px;line-height:2.5">ひらがなを入力してね</span>';
+  qRomBuf='';qHiraTxt='';updateHiraDisplay();
 }
 
 function t3Submit(){
   const q=t3State.words[t3State.cur];
+  // Flush any pending romaji buffer
+  if(t3InputMode==='hira'){qProcess(true);}
   const userRaw=t3InputMode==='device'
     ?document.getElementById('device-input').value.trim()
-    :t3HiraText.trim();
+    :qHiraTxt.trim();
   // normalize: remove spaces
   const user=userRaw.replace(/\s/g,'');
   t3State.lastInput=user;
@@ -737,7 +845,7 @@ function t3Submit(){
     document.getElementById('t3-next').className='next-wrap show';
     // disable input
     document.getElementById('device-input').disabled=true;
-    document.querySelectorAll('#hira-grid .hira-key').forEach(b=>b.disabled=true);
+    document.querySelectorAll('#qwerty-kb button').forEach(b=>b.disabled=true);
   } else {
     playSound('wrong');
     t3State.wrongCount++;t3State.totalWrong++;
@@ -750,9 +858,7 @@ function t3Submit(){
     setTimeout(()=>{res.className='te-result';},900);
     // Clear input
     document.getElementById('device-input').value='';
-    t3HiraText='';
-    const d=document.getElementById('hira-display');
-    d.innerHTML='<span style="font-size:12px;letter-spacing:2px;line-height:2.5">ひらがなを入力してね</span>';
+    qRomBuf='';qHiraTxt='';updateHiraDisplay();
 
     if(t3State.wrongCount>=3){
       t3State.history.push({q:q.masu,user:'(3回ミス)',correct:q.te,wrongs:3,passed:false});
@@ -779,7 +885,7 @@ function t3Next(){
     document.getElementById('t3-done').classList.add('show');
   } else {
     document.getElementById('device-input').disabled=false;
-    document.querySelectorAll('#hira-grid .hira-key').forEach(b=>b.disabled=false);
+    document.querySelectorAll('#qwerty-kb button').forEach(b=>b.disabled=false);
     t3Load();
   }
 }

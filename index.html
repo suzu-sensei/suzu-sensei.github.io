@@ -478,7 +478,8 @@
     overflow: hidden;
     display: flex;
     align-items: flex-end;
-    padding: 40px;
+    padding: 0;
+    border-radius: 12px;
   }
 
   .profile-visual::before {
@@ -510,12 +511,17 @@
   .profile-tag {
     background: var(--rose);
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px;
     font-family: 'Noto Serif JP', serif;
-    font-size: 16px;
-    position: relative;
-    z-index: 1;
+    font-size: 14px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
     font-weight: 300;
+    text-align: center;
+    letter-spacing: 2px;
   }
 
   .milestones {
@@ -1107,7 +1113,7 @@
     height: 100%;
     object-fit: cover;
     object-position: center top;
-    border-radius: 12px;
+    display: block;
   }
 
   /* Language switcher */
@@ -1292,8 +1298,8 @@ function closeNav() {
       を話しましょう。
     </h1>
     <p class="hero-subtitle">
-      一個溫暖、沒有壓力的空間，讓你自在地練習日文。<br>
-      不需要完美，只要勇敢開口就好。
+      <span data-lang="zh">一個溫暖、沒有壓力的空間，讓你自在地練習日文。<br>不需要完美，只要勇敢開口就好。</span>
+      <span data-lang="en" style="display:none">A warm, pressure-free space where you can practise Japanese at your own pace.<br>No need to be perfect — just be brave enough to speak.</span>
     </p>
     <div class="cta-group">
       <button class="btn-primary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで体験レッスンを申し込む</button>
@@ -1304,7 +1310,9 @@ function closeNav() {
   <div class="hero-right">
     <div class="sakura-bg" id="sakura"></div>
     <div class="teacher-card">
-      <div class="teacher-avatar">鈴</div>
+      <div class="teacher-avatar" style="overflow:hidden;padding:0;">
+        <img src="avatar.jpg" alt="SUZU先生" style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:50%;display:block;" onerror="this.remove();this.parentNode.innerHTML+='<span style=&quot;font-family:Noto Serif JP,serif;font-size:28px;color:white;font-weight:300;&quot;>鈴</span>'">
+      </div>
       <div class="teacher-name-jp">SUZU 先生</div>
       <div class="teacher-name-en">Japanese Language Teacher</div>
       <div class="divider"></div>
@@ -1341,22 +1349,22 @@ function closeNav() {
     <div class="safe-card">
       <span class="safe-icon">🌸</span>
       <div class="safe-title">優しい雰囲気</div>
-      <p class="safe-desc">溫柔不評判的環境，讓你勇敢開口說話</p>
+      <p class="safe-desc"><span data-lang="zh">溫柔不評判的環境，讓你勇敢開口說話</span><span data-lang="en" style="display:none">A kind, non-judgmental environment that lets you speak up with confidence</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">🎯</span>
       <div class="safe-title">あなただけのカリキュラム</div>
-      <p class="safe-desc">依據你的目標量身訂做學習計劃</p>
+      <p class="safe-desc"><span data-lang="zh">依據你的目標量身訂做學習計劃</span><span data-lang="en" style="display:none">A learning plan tailored entirely to your goals</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">💬</span>
       <div class="safe-title">生きた日本語</div>
-      <p class="safe-desc">學習日本人真正在用的自然表達方式</p>
+      <p class="safe-desc"><span data-lang="zh">學習日本人真正在用的自然表達方式</span><span data-lang="en" style="display:none">Learn the natural expressions Japanese people actually use</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">📝</span>
       <div class="safe-title">授業後のメモ</div>
-      <p class="safe-desc">每堂課後都會收到整理好的學習筆記</p>
+      <p class="safe-desc"><span data-lang="zh">每堂課後都會收到整理好的學習筆記</span><span data-lang="en" style="display:none">Receive neat, organized study notes after every lesson</span></p>
     </div>
   </div>
 </section>
@@ -1373,31 +1381,31 @@ function closeNav() {
         <div class="lesson-num">01</div>
         <div class="lesson-subtitle">初心者向け</div>
         <div class="lesson-title">初級レッスン</div>
-        <p class="lesson-desc">從平假名、片假名開始，用遊戲式教材學習基礎文法，讓入門不再枯燥。</p>
+        <p class="lesson-desc"><span data-lang="zh">從平假名、片假名開始，用遊戲式教材學習基礎文法，讓入門不再枯燥。</span><span data-lang="en" style="display:none">Start from hiragana and katakana, learning basic grammar through game-based materials — beginner-friendly and never boring.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">02</div>
         <div class="lesson-subtitle">会話・フリートーク</div>
         <div class="lesson-title">フリートーク</div>
-        <p class="lesson-desc">每堂課自由選題，練習自然的會話表達。學習日本人真正在說的活生生單字與道地發音。</p>
+        <p class="lesson-desc"><span data-lang="zh">每堂課自由選題，練習自然的會話表達。學習日本人真正在說的活生生單字與道地發音。</span><span data-lang="en" style="display:none">Choose any topic you like each lesson and practise natural conversation. Learn the real vocabulary and authentic pronunciation that Japanese people use.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">03</div>
         <div class="lesson-subtitle">文章添削</div>
         <div class="lesson-title">ライティング</div>
-        <p class="lesson-desc">支援自然日文寫作，不怕犯錯地練習文章，課外時間也持續接觸日文。</p>
+        <p class="lesson-desc"><span data-lang="zh">支援自然日文寫作，不怕犯錯地練習文章，課外時間也持續接觸日文。</span><span data-lang="en" style="display:none">Support for natural Japanese writing — practise compositions without fear of errors and keep engaging with Japanese even outside class.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">04</div>
         <div class="lesson-subtitle">旅行準備</div>
         <div class="lesson-title">旅行日本語</div>
-        <p class="lesson-desc">讓旅伴都佩服你，帶著自信踏上日本之旅，滿足地體驗日本文化。</p>
+        <p class="lesson-desc"><span data-lang="zh">讓旅伴都佩服你，帶著自信踏上日本之旅，滿足地體驗日本文化。</span><span data-lang="en" style="display:none">Impress your travel companions, set off for Japan with confidence, and truly experience Japanese culture to the fullest.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">05</div>
         <div class="lesson-subtitle">オーダーメイド</div>
         <div class="lesson-title">カスタムレッスン</div>
-        <p class="lesson-desc">有特定目標？完全按照你的需求設計課程。先聊聊你的夢想吧。</p>
+        <p class="lesson-desc"><span data-lang="zh">有特定目標？完全按照你的需求設計課程。先聊聊你的夢想吧。</span><span data-lang="en" style="display:none">Have a specific goal? The course is designed entirely around your needs. Let's chat about your dreams first.</span></p>
       </div>
     </div>
   </div>
@@ -1528,6 +1536,20 @@ function closeNav() {
         <div class="review-stars">★★★★★</div>
       </div>
       <p class="review-body">今日は授業とても楽しかったです。SUZU先生、ありがとうございました！</p>
+      <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
+    </div>
+
+
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">A</div>
+        <div class="review-meta">
+          <div class="review-name">匿名</div>
+          <div class="review-date">2025年1月</div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+      <p class="review-body">授業が終わってから送ってくださるノートが本当に有用で役に立ちます。🙏<br><br>いつもお世話になっています。私に必要な会話を授業時間に知らせてくれます。私は嬉しいです ♪♪</p>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1751,12 +1773,15 @@ function setLang(lang) {
   document.body.classList.toggle('lang-en', lang === 'en');
   document.getElementById('ls-jp').classList.toggle('active', lang === 'jp');
   document.getElementById('ls-en').classList.toggle('active', lang === 'en');
-  // Toggle all data-lang elements
   document.querySelectorAll('[data-lang="zh"]').forEach(el => {
     el.style.display = lang === 'en' ? 'none' : '';
   });
   document.querySelectorAll('[data-lang="en"]').forEach(el => {
-    el.style.display = lang === 'en' ? '' : 'none';
+    el.style.display = lang === 'en' ? 'inline' : 'none';
+  });
+  // Block-level EN elements (paragraphs etc.)
+  document.querySelectorAll('p [data-lang="en"], .safe-desc [data-lang="en"], .lesson-desc [data-lang="en"]').forEach(el => {
+    el.style.display = lang === 'en' ? 'inline' : 'none';
   });
 }
 
