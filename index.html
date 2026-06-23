@@ -514,14 +514,10 @@
     padding: 10px 20px;
     font-family: 'Noto Serif JP', serif;
     font-size: 14px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
     font-weight: 300;
     text-align: center;
     letter-spacing: 2px;
+    border-radius: 0 0 8px 8px;
   }
 
   .milestones {
@@ -682,10 +678,16 @@
     gap: 16px;
   }
   .note-thumb {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(107,61,61,0.08);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .note-thumb-img-wrap {
     aspect-ratio: 3/4;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(107,61,61,0.08);
   }
   .note-thumb img {
     width: 100%; height: 100%;
@@ -699,15 +701,14 @@
     transform: scale(1.08);
   }
   .note-thumb-label {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(107,61,61,0.55);
-    color: white;
-    font-size: 11px;
+    background: var(--deep);
+    color: rgba(255,255,255,0.85);
+    font-size: 10px;
     letter-spacing: 1px;
-    padding: 10px 14px;
+    padding: 8px 10px;
     text-align: center;
     font-weight: 300;
+    line-height: 1.7;
   }
   @media (max-width: 768px) {
     .notes-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1417,39 +1418,39 @@ function closeNav() {
       <div class="profile-visual">
         <img src="avatar.jpg" alt="SUZU先生" class="profile-avatar-img" onerror="this.style.display='none';document.querySelector('.profile-pattern').style.display='block'">
         <div class="profile-pattern" style="display:none"></div>
-        <div class="profile-tag">SUZU 先生</div>
       </div>
+      <div class="profile-tag">SUZU 先生</div>
     </div>
     <div class="milestones">
       <div class="section-label">先生について</div>
       <h2 class="section-title" style="margin-bottom: 40px;">旅を愛する<br>日本語の先生</h2>
       <div class="milestone">
         <span class="milestone-icon">🌸</span>
-        <div class="milestone-text"><strong>日本語母語者</strong>埼玉・神奈川・東京・タイ・台湾での居住経験を持つ正真正銘の日本語母語者<br><small style="color:#b09090;">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small></div>
+        <div class="milestone-text"><strong>日本語母語者</strong>埼玉・神奈川・東京・タイ・台湾での居住経験を持つ正真正銘の日本語母語者<br><small style="color:#b09090;" data-lang="zh">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small><small style="color:#b09090;display:none;" data-lang="en">Native Japanese speaker – lived in Saitama, Kanagawa, Tokyo, Thailand & Taiwan</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🇹🇼</span>
-        <div class="milestone-text"><strong>台湾にて英語留学 半年</strong>語学学習の孤独と挫折を身をもって知るからこそ、生徒一人ひとりに深く寄り添える<br><small style="color:#b09090;">在台灣留學半年，深知語言學習的挫折與孤獨</small></div>
+        <div class="milestone-text"><strong>台湾にて英語留学 半年</strong>語学学習の孤独と挫折を身をもって知るからこそ、生徒一人ひとりに深く寄り添える<br><small style="color:#b09090;" data-lang="zh">在台灣留學半年，深知語言學習的挫折與孤獨</small><small style="color:#b09090;display:none;" data-lang="en">6 months studying English in Taiwan – understands the loneliness & frustration of language learning firsthand</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🇹🇭</span>
-        <div class="milestone-text"><strong>タイでの営業経験 2年</strong>異文化の中で生活・仕事をし、コミュニケーション力こそ最も重要だと実感<br><small style="color:#b09090;">在異文化中生活與工作，讓教學更有溫度</small></div>
+        <div class="milestone-text"><strong>タイでの営業経験 2年</strong>異文化の中で生活・仕事をし、コミュニケーション力こそ最も重要だと実感<br><small style="color:#b09090;" data-lang="zh">在異文化中生活與工作，讓教學更有溫度</small><small style="color:#b09090;display:none;" data-lang="en">2 years in sales in Thailand – living across cultures proved that communication is everything</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">👩‍🏫</span>
-        <div class="milestone-text"><strong>英語・数学 教師経験 4年</strong>豊富な指導経験から、どんなレベルの生徒にも柔軟に対応できる<br><small style="color:#b09090;">豐富的授課歷程，讓每位學生都能跟上節奏</small></div>
+        <div class="milestone-text"><strong>英語・数学 教師経験 4年</strong>豊富な指導経験から、どんなレベルの生徒にも柔軟に対応できる<br><small style="color:#b09090;" data-lang="zh">豐富的授課歷程，讓每位學生都能跟上節奏</small><small style="color:#b09090;display:none;" data-lang="en">4 years teaching English & Math – flexible and experienced with students at every level</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">✈️</span>
-        <div class="milestone-text"><strong>東南アジアの熱風を感じ、欧州4カ国の歴史を深く見つめる旅</strong>旅の現場で使える生きた日本語を、実体験から教えられる<br><small style="color:#b09090;">感受東南亞的熱情，深度探訪歐洲四國歷史</small></div>
+        <div class="milestone-text"><strong>東南アジアの熱風を感じ、欧州4カ国の歴史を深く見つめる旅</strong>旅の現場で使える生きた日本語を、実体験から教えられる<br><small style="color:#b09090;" data-lang="zh">感受東南亞的熱情，深度探訪歐洲四國歷史</small><small style="color:#b09090;display:none;" data-lang="en">Travelled Southeast Asia & 4 European countries – teaches real, living Japanese from lived experience</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🗣️</span>
-        <div class="milestone-text"><strong>TOEIC 800点 / タイ語検定4級取得</strong>多言語学習者として、最も効果的な学び方を自身の経験から導ける<br><small style="color:#b09090;">不是只會日語的老師，而是真正懂得「學語言的痛苦」的老師</small></div>
+        <div class="milestone-text"><strong>TOEIC 800点 / タイ語検定4級取得</strong>多言語学習者として、最も効果的な学び方を自身の経験から導ける<br><small style="color:#b09090;" data-lang="zh">不是只會日語的老師，而是真正懂得「學語言的痛苦」的老師</small><small style="color:#b09090;display:none;" data-lang="en">TOEIC 800 / Thai Level 4 – a multi-language learner who knows the most effective ways to study</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">💡</span>
-        <div class="milestone-text"><strong>英語・中国語・タイ語の学習経験あり</strong>独学で英語・中国語・タイ語を学んだが現地では全く通じず挫折——その経験が今の教え方の原点<br><small style="color:#b09090;">正因如此，上課時間就是<em>輸入的時間</em>：打好基礎的同時，學習最真實的發音與生活中真正在用的單字</small></div>
+        <div class="milestone-text"><strong>英語・中国語・タイ語の学習経験あり</strong>独学で英語・中国語・タイ語を学んだが現地では全く通じず挫折——その経験が今の教え方の原点<br><small style="color:#b09090;" data-lang="zh">正因如此，上課時間就是<em>輸入的時間</em>：打好基礎的同時，學習最真實的發音與生活中真正在用的單字</small><small style="color:#b09090;display:none;" data-lang="en">Self-studied English, Mandarin & Thai – and failed in the field. That failure became the foundation of her teaching approach</small></div>
       </div>
     </div>
   </div>
@@ -1463,29 +1464,29 @@ function closeNav() {
     <h2 class="section-title" style="text-align:center;">こんなノートを<br>取っています。</h2>
     <p style="font-size:13px; color:#9a8080; font-weight:300; margin-top:12px;">
       毎回の授業内容を丁寧に記録し、生徒さんと共有しています。<br>
-      <small>每堂課的內容都會詳細記錄，並與學生共享筆記。</small>
+      <small data-lang="zh">每堂課的內容都會詳細記錄，並與學生共享筆記。</small><small data-lang="en" style="display:none">Every lesson is carefully documented and shared with each student.</small>
     </p>
   </div>
   <div class="notes-grid">
     <div class="note-thumb">
-      <img src="5gatsu-byo.jpg" alt="授業教材">
-      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+      <div class="note-thumb-img-wrap"><img src="5gatsu-byo.jpg" alt="授業教材"></div>
+      <div class="note-thumb-label">授業教材・参考書<br><small data-lang="zh">課堂教材・教科書參考</small><small data-lang="en" style="display:none">Teaching Materials</small></div>
     </div>
     <div class="note-thumb">
-      <img src="MIX.jpg" alt="授業教材">
-      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+      <div class="note-thumb-img-wrap"><img src="MIX.jpg" alt="授業教材"></div>
+      <div class="note-thumb-label">授業教材・参考書<br><small data-lang="zh">課堂教材・教科書參考</small><small data-lang="en" style="display:none">Teaching Materials</small></div>
     </div>
     <div class="note-thumb">
-      <img src="otousan.jpg" alt="授業教材">
-      <div class="note-thumb-label">授業教材・参考書<br><small>課堂教材・教科書參考</small></div>
+      <div class="note-thumb-img-wrap"><img src="otousan.jpg" alt="授業教材"></div>
+      <div class="note-thumb-label">授業教材・参考書<br><small data-lang="zh">課堂教材・教科書參考</small><small data-lang="en" style="display:none">Teaching Materials</small></div>
     </div>
     <div class="note-thumb">
-      <img src="list.png" alt="受講生フォルダ">
-      <div class="note-thumb-label">受講生フォルダ管理<br><small>學生資料夾管理</small></div>
+      <div class="note-thumb-img-wrap"><img src="list.png" alt="受講生フォルダ"></div>
+      <div class="note-thumb-label">受講生フォルダ管理<br><small data-lang="zh">學生資料夾管理</small><small data-lang="en" style="display:none">Student File Management</small></div>
     </div>
     <div class="note-thumb" style="grid-column: span 1;">
-      <img src="shin-san.jpg" alt="授業ノート" style="filter: blur(6px) brightness(0.95);">
-      <div class="note-thumb-label">実際の授業ノート（匿名）<br><small>真實學習筆記（已匿名）</small></div>
+      <div class="note-thumb-img-wrap"><img src="shin-san.jpg" alt="授業ノート" style="filter: blur(6px) brightness(0.95);"></div>
+      <div class="note-thumb-label">実際の授業ノート（匿名）<br><small data-lang="zh">真實學習筆記（已匿名）</small><small data-lang="en" style="display:none">Real Lesson Notes (anonymised)</small></div>
     </div>
   </div>
 </section>
@@ -1496,7 +1497,7 @@ function closeNav() {
 <section class="reviews-section scroll-reveal">
   <div class="reviews-header">
     <div class="section-label" style="color: var(--gold);">受講生の声</div>
-    <h2 class="lessons-title">一緒に学んだ<br>生徒さんより。<br><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300;">學生真實心聲</small></h2>
+    <h2 class="lessons-title">一緒に学んだ<br>生徒さんより。<br><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300;" data-lang="zh">學生真實心聲</small><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300; display:none;" data-lang="en">Words from Students</small></h2>
   </div>
   <div class="reviews-grid">
 
@@ -1801,7 +1802,7 @@ function submitContact() {
     '--- お問い合わせ内容 ---\n' +
     msg
   );
-  window.location.href = 'mailto:mr.taihualin@gmail.com?subject=' + subject + '&body=' + body;
+  window.location.href = 'mailto:xyochimu14@gmail.com?subject=' + subject + '&body=' + body;
   document.getElementById('cf-success').style.display = 'block';
 }
 </script>
