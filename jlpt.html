@@ -7,16 +7,16 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --sumi:#3D1C5E;--sumi-mid:#4A2470;
-  --washi:#FFF0F8;--washi-dark:#F8E0F0;
+  --sumi:#3D1C5E;--sumi-mid:#7E64A4;
+  --washi:#FFFCF7;--washi-dark:#F5EDE2;
   --torii:#C0392B;--torii-light:#E8604C;
   --n4:#2D6A4F;--n4-l:#52B788;
   --n3:#B5640A;--n3-l:#F4A261;
   --n2:#7B1D1D;--n2-l:#E63946;
   --n1:#1A237E;--n1-l:#90CAF9;
   --ink:#1C1C1E;--ink-mid:#48484A;--muted:#9980AA;
-  --app-bg:#F5E6FA;
-  --hdr:#6B2FA0;
+  --app-bg:#FAF7F2;
+  --hdr:#8E74B2;
 }
 body{background:var(--app-bg);min-height:100dvh;font-family:'Helvetica Neue','Hiragino Sans','Yu Gothic UI',Arial,sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center;}
 header{width:100%;background:var(--hdr);padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.15);position:sticky;top:0;z-index:50;}
@@ -27,7 +27,7 @@ header{width:100%;background:var(--hdr);padding:12px 16px 10px;display:flex;alig
 .lang-btn{border:none;border-radius:16px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.6);transition:all .2s;}
 .lang-btn.active{background:#fff;color:var(--hdr);}
 .tabs{width:100%;display:flex;background:var(--sumi-mid);border-bottom:1px solid rgba(255,255,255,.1);}
-.tab{flex:1;padding:10px 2px;font-size:11px;font-weight:800;color:rgba(255,255,255,.4);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;text-align:center;}
+.tab{flex:1;padding:10px 2px;font-size:11px;font-weight:800;color:rgba(255,255,255,.65);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;text-align:center;}
 .tab.n4.active{color:var(--n4-l);border-bottom-color:var(--n4-l);}
 .tab.n3.active{color:var(--n3-l);border-bottom-color:var(--n3-l);}
 .tab.n2.active{color:var(--n2-l);border-bottom-color:var(--n2-l);}
@@ -76,7 +76,7 @@ main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 .tip-box{font-size:11px;color:var(--ink-mid);background:rgba(176,111,216,.07);border-radius:9px;padding:8px 11px;margin-top:8px;line-height:1.5;border-left:2px solid #B06FD8;}
 
 /* 長音・促音ガイドボックス */
-.phonics-box{background:linear-gradient(135deg,#E8D5F8,#F5E6FA);border-radius:16px;padding:14px 16px;margin-bottom:13px;border:1.5px solid rgba(176,111,216,.3);}
+.phonics-box{background:linear-gradient(135deg,#F3EDF9,#FAF7F2);border-radius:16px;padding:14px 16px;margin-bottom:13px;border:1.5px solid rgba(176,111,216,.3);}
 .phonics-title{font-size:11px;font-weight:900;letter-spacing:1px;color:#6B2FA0;text-transform:uppercase;margin-bottom:10px;}
 .phonics-rule{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;}
 .phonics-rule:last-child{margin-bottom:0;}
@@ -87,12 +87,12 @@ main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 
 /* NAV */
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--hdr);border-top:1px solid rgba(255,255,255,.15);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100;}
-nav button{flex:1;background:none;border:none;color:rgba(255,255,255,.4);font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;padding:4px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;}
+nav button{flex:1;background:none;border:none;color:rgba(255,255,255,.65);font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;padding:4px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;}
 nav button.active{color:#FFD6F0;}
 nav button .icon{font-size:18px;}
 
 /* QUIZ */
-.quiz-progress-bar{width:100%;height:6px;background:rgba(255,255,255,.3);border-radius:3px;margin-bottom:12px;overflow:hidden;}
+.quiz-progress-bar{width:100%;height:6px;background:rgba(126,100,164,.15);border-radius:3px;margin-bottom:12px;overflow:hidden;}
 .quiz-progress-fill{height:100%;background:linear-gradient(90deg,#B06FD8,#FFD6F0);border-radius:3px;transition:width .4s;}
 .quiz-score{color:#3D1C5E;text-align:center;font-size:13px;font-weight:700;margin-bottom:10px;background:rgba(255,255,255,.6);border-radius:12px;padding:6px 12px;}
 .quiz-card{background:var(--washi);border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(106,47,160,.2);margin-bottom:14px;}
@@ -118,7 +118,7 @@ nav button .icon{font-size:18px;}
 .next-btn{display:block;width:100%;background:linear-gradient(135deg,#B06FD8,#6B2FA0);color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(106,47,160,.35);}
 
 /* RESULT */
-.result-wrap{background:linear-gradient(135deg,#F5E6FA,#EDD5F5);border-radius:24px;padding:24px 20px;text-align:center;}
+.result-wrap{background:linear-gradient(135deg,#FBF8F3,#F2ECF6);border-radius:24px;padding:24px 20px;text-align:center;}
 .result-emoji{font-size:56px;margin-bottom:8px;}
 .result-title{font-size:22px;font-weight:900;color:#3D1C5E;margin-bottom:4px;}
 .result-score-big{font-size:48px;font-weight:900;color:#6B2FA0;margin:10px 0;}
@@ -520,11 +520,11 @@ const W=[
  ex_en:'Officially I agreed, but actually it\'s a no.',ex_zh:'表面上同意了，但其實是NO。',
  tip_en:'Used when official stance differs from real feelings.',tip_zh:'用於官方立場和真實感受不同的情況。'},
 
-{kanji:'忖度',kana:'そんたく',romaji:'sontaku',pos:'noun/verb',level:'N2',cat:'Communication',
- en:'reading/anticipating others\' intentions',zh:'揣摩 / 迎合上意',
- ex_jp:'上司に忖度してばかりいると疲れるよね。',fitb_key:'忖度',
- ex_en:'It\'s exhausting always trying to read your boss\'s wishes.',ex_zh:'老是揣摩上司的意思，真的很累。',
- tip_en:'Became famous in political scandals. Now widely used.',tip_zh:'因政治醜聞而廣為人知。現在廣泛使用。'},
+{kanji:'愛想',kana:'あいそ',romaji:'aiso',pos:'noun',level:'N2',cat:'Character',
+ en:'amiability / friendliness',zh:'親切態度 / 待人和氣',
+ ex_jp:'あの店員さん、愛想がよくて感じがいいね。',fitb_key:'愛想',
+ ex_en:'That clerk is so friendly and pleasant.',ex_zh:'那位店員待人和氣，感覺真好。',
+ tip_en:'愛想笑い = polite/forced smile. 愛想がない = unfriendly.',tip_zh:'愛想笑い＝應酬的笑容。愛想がない＝冷淡。'},
 
 {kanji:'配慮',kana:'はいりょ',romaji:'hairyo',pos:'noun/verb',level:'N2',cat:'Manners',
  en:'consideration / thoughtfulness',zh:'體諒 / 考量',
@@ -623,11 +623,11 @@ const W=[
  ex_en:'After much hesitation, he declined.',ex_zh:'他猶豫了許久，最終拒絕了。',
  tip_en:'Literary word for hesitating before a decision.',tip_zh:'書面語，表示做決定前的猶豫。'},
 
-{kanji:'忸怩',kana:'じくじ',romaji:'jikuji',pos:'na-adj',level:'N1',cat:'Emotion',
- en:'mortification / deep shame',zh:'慚愧 / 羞恥難當',
- ex_jp:'自分の行動に忸怩たる思いがある。',fitb_key:'忸怩',
- ex_en:'I feel deeply ashamed of my own actions.',ex_zh:'對自己的行為感到深深慚愧。',
- tip_en:'Always appears as 忸怩たる. Formal written language.',tip_zh:'常與たる連用。正式書面語。'},
+{kanji:'醍醐味',kana:'だいごみ',romaji:'daigomi',pos:'noun',level:'N1',cat:'Daily',
+ en:'the real pleasure / true charm',zh:'精髓 / 最大樂趣',
+ ex_jp:'旅の醍醐味は、予定外の出会いにある。',fitb_key:'醍醐味',
+ ex_en:'The real joy of travel lies in unexpected encounters.',ex_zh:'旅行的醍醐味，就在於計畫之外的相遇。',
+ tip_en:'Originally a Buddhist term for the finest flavor.',tip_zh:'原是佛教用語，指最上等的美味。'},
 
 {kanji:'諦観',kana:'ていかん',romaji:'teikan',pos:'noun',level:'N1',cat:'Emotion',
  en:'resignation / detached acceptance',zh:'看透 / 超然接受',
