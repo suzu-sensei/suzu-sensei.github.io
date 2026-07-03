@@ -7,21 +7,21 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
-  --sumi:#3D1C5E;--sumi-mid:#7E64A4;
+  --sumi:#3B2424;--sumi-mid:#8A5148;
   --washi:#FFFCF7;--washi-dark:#F5EDE2;
   --torii:#C0392B;--torii-light:#E8604C;
   --n4:#2D6A4F;--n4-l:#52B788;
   --n3:#B5640A;--n3-l:#F4A261;
   --n2:#7B1D1D;--n2-l:#E63946;
   --n1:#1A237E;--n1-l:#90CAF9;
-  --ink:#1C1C1E;--ink-mid:#48484A;--muted:#9980AA;
-  --app-bg:#FAF7F2;
-  --hdr:#8E74B2;
+  --ink:#1C1C1E;--ink-mid:#48484A;--muted:#A28B7E;
+  --app-bg:#FAF6F0;
+  --hdr:#6B3D3D;
 }
 body{background:var(--app-bg);min-height:100dvh;font-family:'Helvetica Neue','Hiragino Sans','Yu Gothic UI',Arial,sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center;}
 header{width:100%;background:var(--hdr);padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.15);position:sticky;top:0;z-index:50;}
 .h-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;}
-.h-title em{color:#FFD6F0;font-style:normal;}
+.h-title em{color:#F2CFA5;font-style:normal;}
 .h-sub{font-size:10px;color:rgba(255,255,255,.65);margin-top:1px;}
 .lang-pill{display:flex;background:rgba(255,255,255,.15);border-radius:20px;padding:3px;gap:2px;}
 .lang-btn{border:none;border-radius:16px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.6);transition:all .2s;}
@@ -32,13 +32,13 @@ header{width:100%;background:var(--hdr);padding:12px 16px 10px;display:flex;alig
 .tab.n3.active{color:var(--n3-l);border-bottom-color:var(--n3-l);}
 .tab.n2.active{color:var(--n2-l);border-bottom-color:var(--n2-l);}
 .tab.n1.active{color:var(--n1-l);border-bottom-color:var(--n1-l);}
-.tab.all.active{color:#FFD6F0;border-bottom-color:#FFD6F0;}
+.tab.all.active{color:#F2CFA5;border-bottom-color:#F2CFA5;}
 .prog-wrap{width:100%;height:3px;background:rgba(0,0,0,.08);}
-.prog-fill{height:100%;background:linear-gradient(90deg,#B06FD8,#E8604C);transition:width .4s;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#C9897A,#E8604C);transition:width .4s;}
 main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 
 /* CARD */
-.card{background:var(--washi);border-radius:20px;margin-bottom:13px;box-shadow:0 4px 24px rgba(106,47,160,.18),inset 0 1px 0 rgba(255,255,255,.8);overflow:hidden;cursor:pointer;transition:transform .15s;user-select:none;}
+.card{background:var(--washi);border-radius:20px;margin-bottom:13px;box-shadow:0 4px 24px rgba(107,61,61,.18),inset 0 1px 0 rgba(255,255,255,.8);overflow:hidden;cursor:pointer;transition:transform .15s;user-select:none;}
 .card:active{transform:scale(.98);}
 .lvl-stripe{height:5px;width:100%;}
 .lvl-stripe.n4{background:linear-gradient(90deg,var(--n4),var(--n4-l));}
@@ -51,7 +51,7 @@ main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 .lvl-badge.n3{background:var(--n3);color:var(--n3-l);}
 .lvl-badge.n2{background:var(--n2);color:#ffb3b3;}
 .lvl-badge.n1{background:var(--n1);color:var(--n1-l);}
-.cat-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(106,47,160,.1);color:#6B2FA0;margin-left:5px;margin-bottom:10px;}
+.cat-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(107,61,61,.1);color:#6B3D3D;margin-left:5px;margin-bottom:10px;}
 .kanji-only{font-size:54px;font-weight:800;color:var(--sumi);font-family:'Hiragino Mincho ProN','Yu Mincho',Georgia,serif;line-height:1.2;margin-bottom:4px;}
 .ruby-wrap{display:inline-block;text-align:center;margin-bottom:4px;}
 .ruby-wrap ruby{font-size:52px;font-weight:800;color:var(--sumi);font-family:'Hiragino Mincho ProN','Yu Mincho',Georgia,serif;line-height:1.3;}
@@ -60,7 +60,7 @@ main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 .pos-tag{font-size:10px;background:rgba(192,57,43,.1);color:var(--torii);border-radius:8px;padding:2px 8px;font-weight:700;display:inline-block;margin-bottom:8px;}
 .audio-btn{display:inline-flex;align-items:center;gap:5px;background:var(--hdr);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;margin-top:3px;transition:background .15s;}
 .audio-btn.playing{background:var(--torii);}
-.card-divider{height:1px;background:rgba(106,47,160,.1);margin:0 18px;}
+.card-divider{height:1px;background:rgba(107,61,61,.1);margin:0 18px;}
 .card-bottom{padding:12px 18px 16px;}
 .tap-hint{font-size:12px;color:var(--muted);text-align:center;font-style:italic;padding:4px 0;}
 .meaning-block{margin-bottom:8px;}
@@ -69,44 +69,44 @@ main{width:100%;max-width:480px;padding:12px 13px 100px;flex:1;}
 .meaning-text.zh{font-family:'PingFang TC','Noto Sans TC',sans-serif;}
 .fitb-wrap{margin-top:10px;}
 .fitb-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
-.fitb-sent{font-size:15px;font-weight:600;color:var(--sumi);line-height:1.9;background:var(--washi-dark);border-radius:12px;padding:10px 13px;border-left:3px solid #B06FD8;}
-.blank{display:inline-block;background:#3D1C5E;color:#3D1C5E;border-radius:4px;padding:1px 5px;min-width:2em;text-align:center;cursor:pointer;transition:all .3s;vertical-align:middle;font-size:15px;font-weight:800;line-height:1.4;white-space:nowrap;}
-.blank.shown{background:rgba(176,111,216,.15);color:#6B2FA0;}
+.fitb-sent{font-size:15px;font-weight:600;color:var(--sumi);line-height:1.9;background:var(--washi-dark);border-radius:12px;padding:10px 13px;border-left:3px solid #C9897A;}
+.blank{display:inline-block;background:#3B2424;color:#3B2424;border-radius:4px;padding:1px 5px;min-width:2em;text-align:center;cursor:pointer;transition:all .3s;vertical-align:middle;font-size:15px;font-weight:800;line-height:1.4;white-space:nowrap;}
+.blank.shown{background:rgba(201,137,122,.15);color:#6B3D3D;}
 .fitb-trans{font-size:12px;color:var(--ink-mid);margin-top:6px;padding:0 2px;line-height:1.5;}
-.tip-box{font-size:11px;color:var(--ink-mid);background:rgba(176,111,216,.07);border-radius:9px;padding:8px 11px;margin-top:8px;line-height:1.5;border-left:2px solid #B06FD8;}
+.tip-box{font-size:11px;color:var(--ink-mid);background:rgba(201,137,122,.07);border-radius:9px;padding:8px 11px;margin-top:8px;line-height:1.5;border-left:2px solid #C9897A;}
 
 /* 長音・促音ガイドボックス */
-.phonics-box{background:linear-gradient(135deg,#F3EDF9,#FAF7F2);border-radius:16px;padding:14px 16px;margin-bottom:13px;border:1.5px solid rgba(176,111,216,.3);}
-.phonics-title{font-size:11px;font-weight:900;letter-spacing:1px;color:#6B2FA0;text-transform:uppercase;margin-bottom:10px;}
+.phonics-box{background:linear-gradient(135deg,#F7F0E9,#FAF6F0);border-radius:16px;padding:14px 16px;margin-bottom:13px;border:1.5px solid rgba(201,137,122,.3);}
+.phonics-title{font-size:11px;font-weight:900;letter-spacing:1px;color:#6B3D3D;text-transform:uppercase;margin-bottom:10px;}
 .phonics-rule{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;}
 .phonics-rule:last-child{margin-bottom:0;}
-.phonics-rule-title{font-size:12px;font-weight:800;color:#3D1C5E;margin-bottom:4px;}
+.phonics-rule-title{font-size:12px;font-weight:800;color:#3B2424;margin-bottom:4px;}
 .phonics-rule-body{font-size:11px;color:#48484A;line-height:1.6;}
-.phonics-ex{display:inline-block;background:rgba(176,111,216,.12);border-radius:6px;padding:1px 7px;margin:2px 2px;font-size:12px;font-weight:700;color:#6B2FA0;}
+.phonics-ex{display:inline-block;background:rgba(201,137,122,.12);border-radius:6px;padding:1px 7px;margin:2px 2px;font-size:12px;font-weight:700;color:#6B3D3D;}
 .phonics-wrong{display:inline-block;background:rgba(192,57,43,.1);border-radius:6px;padding:1px 7px;margin:2px 2px;font-size:12px;font-weight:700;color:#C0392B;text-decoration:line-through;}
 
 /* NAV */
 nav{position:fixed;bottom:0;left:0;right:0;background:var(--hdr);border-top:1px solid rgba(255,255,255,.15);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100;}
 nav button{flex:1;background:none;border:none;color:rgba(255,255,255,.65);font-size:9px;font-weight:700;letter-spacing:.3px;cursor:pointer;padding:4px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;}
-nav button.active{color:#FFD6F0;}
+nav button.active{color:#F2CFA5;}
 nav button .icon{font-size:18px;}
 
 /* QUIZ */
-.quiz-progress-bar{width:100%;height:6px;background:rgba(126,100,164,.15);border-radius:3px;margin-bottom:12px;overflow:hidden;}
-.quiz-progress-fill{height:100%;background:linear-gradient(90deg,#B06FD8,#FFD6F0);border-radius:3px;transition:width .4s;}
-.quiz-score{color:#3D1C5E;text-align:center;font-size:13px;font-weight:700;margin-bottom:10px;background:rgba(255,255,255,.6);border-radius:12px;padding:6px 12px;}
-.quiz-card{background:var(--washi);border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(106,47,160,.2);margin-bottom:14px;}
+.quiz-progress-bar{width:100%;height:6px;background:rgba(107,61,61,.15);border-radius:3px;margin-bottom:12px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,#C9897A,#F2CFA5);border-radius:3px;transition:width .4s;}
+.quiz-score{color:#3B2424;text-align:center;font-size:13px;font-weight:700;margin-bottom:10px;background:rgba(255,255,255,.6);border-radius:12px;padding:6px 12px;}
+.quiz-card{background:var(--washi);border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(107,61,61,.2);margin-bottom:14px;}
 .quiz-card-body{padding:20px 18px 22px;text-align:center;}
 .quiz-kanji{font-size:58px;font-weight:800;color:var(--sumi);font-family:'Hiragino Mincho ProN','Yu Mincho',Georgia,serif;line-height:1.15;margin:8px 0 4px;}
 .quiz-meaning{font-size:14px;color:var(--ink-mid);margin-bottom:4px;font-weight:600;}
 .quiz-pos{font-size:10px;background:rgba(192,57,43,.1);color:var(--torii);border-radius:8px;padding:2px 8px;font-weight:700;display:inline-block;margin-bottom:14px;}
 .answer-slots{display:flex;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
-.slot{width:40px;height:44px;border-radius:10px;border:2px solid rgba(176,111,216,.3);background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--sumi);cursor:pointer;transition:all .2s;}
-.slot.filled{background:rgba(176,111,216,.15);border-color:#B06FD8;color:#6B2FA0;}
+.slot{width:40px;height:44px;border-radius:10px;border:2px solid rgba(201,137,122,.3);background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--sumi);cursor:pointer;transition:all .2s;}
+.slot.filled{background:rgba(201,137,122,.15);border-color:#C9897A;color:#6B3D3D;}
 .slot.correct-anim{background:var(--n4);border-color:var(--n4);color:#fff;transform:scale(1.08);}
 .slot.wrong-anim{background:var(--torii);border-color:var(--torii);color:#fff;}
 .kana-pool{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;}
-.kana-tile{width:44px;height:44px;border-radius:10px;background:var(--hdr);color:#fff;border:none;font-size:19px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.kana-tile{width:44px;height:44px;border-radius:10px;background:#C9897A;color:#fff;border:2px solid #2C1F1F;font-size:19px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .kana-tile:active{transform:scale(.93);}
 .kana-tile.used{opacity:.2;pointer-events:none;}
 .kana-tile.hint-glow{box-shadow:0 0 0 3px var(--n3-l);}
@@ -114,71 +114,71 @@ nav button .icon{font-size:18px;}
 .quiz-feedback.ok{color:#2D6A4F;}
 .quiz-feedback.ng{color:var(--torii);}
 .quiz-hint-row{display:flex;justify-content:center;gap:10px;margin-top:12px;}
-.quiz-hint-btn{background:rgba(106,47,160,.1);border:none;border-radius:12px;padding:8px 16px;font-size:11px;font-weight:700;color:#6B2FA0;cursor:pointer;}
-.next-btn{display:block;width:100%;background:linear-gradient(135deg,#B06FD8,#6B2FA0);color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(106,47,160,.35);}
+.quiz-hint-btn{background:rgba(107,61,61,.1);border:none;border-radius:12px;padding:8px 16px;font-size:11px;font-weight:700;color:#6B3D3D;cursor:pointer;}
+.next-btn{display:block;width:100%;background:linear-gradient(135deg,#C9897A,#6B3D3D);color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(107,61,61,.35);}
 
 /* RESULT */
-.result-wrap{background:linear-gradient(135deg,#FBF8F3,#F2ECF6);border-radius:24px;padding:24px 20px;text-align:center;}
+.result-wrap{background:linear-gradient(135deg,#FBF7F2,#F5EAE2);border-radius:24px;padding:24px 20px;text-align:center;}
 .result-emoji{font-size:56px;margin-bottom:8px;}
-.result-title{font-size:22px;font-weight:900;color:#3D1C5E;margin-bottom:4px;}
-.result-score-big{font-size:48px;font-weight:900;color:#6B2FA0;margin:10px 0;}
-.result-score-label{font-size:13px;color:#9980AA;margin-bottom:16px;}
-.result-cheer{font-size:15px;font-weight:700;color:#3D1C5E;background:rgba(255,255,255,.7);border-radius:14px;padding:12px 16px;margin-bottom:16px;line-height:1.5;}
+.result-title{font-size:22px;font-weight:900;color:#3B2424;margin-bottom:4px;}
+.result-score-big{font-size:48px;font-weight:900;color:#6B3D3D;margin:10px 0;}
+.result-score-label{font-size:13px;color:#A28B7E;margin-bottom:16px;}
+.result-cheer{font-size:15px;font-weight:700;color:#3B2424;background:rgba(255,255,255,.7);border-radius:14px;padding:12px 16px;margin-bottom:16px;line-height:1.5;}
 .result-section{text-align:left;margin-bottom:14px;}
-.result-section-title{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#9980AA;margin-bottom:8px;}
-.result-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:7px;box-shadow:0 2px 8px rgba(106,47,160,.1);}
-.result-item-kanji{font-size:22px;font-weight:800;font-family:'Hiragino Mincho ProN','Yu Mincho',serif;color:#3D1C5E;min-width:44px;text-align:center;}
+.result-section-title{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#A28B7E;margin-bottom:8px;}
+.result-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:7px;box-shadow:0 2px 8px rgba(107,61,61,.1);}
+.result-item-kanji{font-size:22px;font-weight:800;font-family:'Hiragino Mincho ProN','Yu Mincho',serif;color:#3B2424;min-width:44px;text-align:center;}
 .result-item-info{flex:1;}
-.result-item-kana{font-size:13px;color:#6B2FA0;font-weight:700;}
+.result-item-kana{font-size:13px;color:#6B3D3D;font-weight:700;}
 .result-item-en{font-size:12px;color:#48484A;}
 .result-item-icon{font-size:20px;}
-.result-retry-btn{display:block;width:100%;background:linear-gradient(135deg,#B06FD8,#6B2FA0);color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px;box-shadow:0 4px 16px rgba(106,47,160,.35);}
+.result-retry-btn{display:block;width:100%;background:linear-gradient(135deg,#C9897A,#6B3D3D);color:#fff;border:none;border-radius:16px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;margin-top:8px;box-shadow:0 4px 16px rgba(107,61,61,.35);}
 
 /* LIST */
-.list-row{display:flex;align-items:center;gap:10px;padding:12px 13px;border-bottom:1px solid rgba(106,47,160,.08);cursor:pointer;background:#fff;}
+.list-row{display:flex;align-items:center;gap:10px;padding:12px 13px;border-bottom:1px solid rgba(107,61,61,.08);cursor:pointer;background:#fff;}
 .list-row:first-child{border-radius:16px 16px 0 0;}
 .list-row:last-child{border-bottom:none;border-radius:0 0 16px 16px;}
-.list-kanji{font-size:28px;font-weight:800;font-family:'Hiragino Mincho ProN','Yu Mincho',serif;color:#3D1C5E;min-width:48px;text-align:center;line-height:1.2;}
+.list-kanji{font-size:28px;font-weight:800;font-family:'Hiragino Mincho ProN','Yu Mincho',serif;color:#3B2424;min-width:48px;text-align:center;line-height:1.2;}
 .list-info{flex:1;min-width:0;}
-.list-reading{color:#9980AA;font-size:11px;}
+.list-reading{color:#A28B7E;font-size:11px;}
 .list-meaning-en{color:#1C1C1E;font-size:13px;font-weight:700;}
 .list-meaning-zh{color:#48484A;font-size:12px;font-family:'PingFang TC','Noto Sans TC',sans-serif;}
-.list-detail{display:none;font-size:11px;color:#6B2FA0;margin-top:4px;line-height:1.45;}
+.list-detail{display:none;font-size:11px;color:#6B3D3D;margin-top:4px;line-height:1.45;}
 .list-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
 .list-lvl{font-size:9px;font-weight:900;padding:2px 7px;border-radius:10px;}
 .list-lvl.n4{background:var(--n4);color:var(--n4-l);}
 .list-lvl.n3{background:var(--n3);color:var(--n3-l);}
 .list-lvl.n2{background:var(--n2);color:#ffb3b3;}
 .list-lvl.n1{background:var(--n1);color:var(--n1-l);}
-.list-audio-sm{background:rgba(106,47,160,.12);border:none;border-radius:50%;width:30px;height:30px;color:#6B2FA0;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.list-audio-sm{background:rgba(107,61,61,.12);border:none;border-radius:50%;width:30px;height:30px;color:#6B3D3D;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .counter-badge{color:rgba(255,255,255,.75);font-size:12px;font-weight:700;}
 
 /* ── GAMIFICATION / NEW GAMES ── */
-.gam-badge{display:flex;gap:10px;align-items:center;color:#FFD6F0;font-size:11px;font-weight:800;}
-.choice-btn{display:block;width:100%;background:#fff;border:2px solid rgba(176,111,216,.25);border-radius:14px;padding:12px 14px;font-size:14px;font-weight:700;color:var(--sumi);cursor:pointer;margin-bottom:9px;text-align:left;transition:all .15s;line-height:1.5;}
+.gam-badge{display:flex;gap:10px;align-items:center;color:#F2CFA5;font-size:11px;font-weight:800;}
+.choice-btn{display:block;width:100%;background:#fff;border:2px solid #2C1F1F;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:700;color:var(--sumi);cursor:pointer;margin-bottom:9px;text-align:left;transition:all .15s;line-height:1.5;}
 .choice-btn:active{transform:scale(.98);}
 .choice-btn.ok{background:var(--n4);border-color:var(--n4);color:#fff;}
 .choice-btn.ng{background:var(--torii);border-color:var(--torii);color:#fff;}
 .choice-btn.dim{opacity:.5;pointer-events:none;}
-.ff-explain{background:#fff;border-radius:14px;padding:12px 14px;margin-top:12px;text-align:left;font-size:13px;line-height:1.75;box-shadow:0 2px 10px rgba(106,47,160,.12);}
+.ff-explain{background:#fff;border-radius:14px;padding:12px 14px;margin-top:12px;text-align:left;font-size:13px;line-height:1.75;box-shadow:0 2px 10px rgba(107,61,61,.12);}
 .vs-scorebar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.75);border-radius:14px;padding:9px 14px;margin-bottom:10px;font-size:13px;font-weight:800;color:var(--sumi);text-align:center;}
 .vs-timer{font-size:14px;font-weight:900;color:var(--torii);text-align:center;margin-bottom:8px;}
-.league-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:9px 12px;margin-bottom:6px;box-shadow:0 1px 6px rgba(106,47,160,.08);font-size:13px;}
-.league-row.me{border:2px solid #B06FD8;background:linear-gradient(135deg,#F7ECFC,#fff);}
-.league-rank{width:28px;text-align:center;font-weight:900;color:#6B2FA0;font-size:14px;}
+.league-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:9px 12px;margin-bottom:6px;box-shadow:0 1px 6px rgba(107,61,61,.08);font-size:13px;}
+.league-row.me{border:2px solid #C9897A;background:linear-gradient(135deg,#F7ECFC,#fff);}
+.league-rank{width:28px;text-align:center;font-weight:900;color:#6B3D3D;font-size:14px;}
 .league-name{flex:1;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.league-pts{font-weight:900;color:#6B2FA0;}
+.league-pts{font-weight:900;color:#6B3D3D;}
 .zone-label{font-size:10px;font-weight:900;letter-spacing:1px;text-align:center;margin:8px 0 6px;}
 .medal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
-.medal{background:#fff;border-radius:12px;padding:9px 4px 7px;text-align:center;box-shadow:0 1px 6px rgba(106,47,160,.08);}
+.medal{background:#fff;border-radius:12px;padding:9px 4px 7px;text-align:center;box-shadow:0 1px 6px rgba(107,61,61,.08);}
 .medal-e{font-size:26px;line-height:1.2;}
 .medal-n{font-size:9px;font-weight:700;color:var(--ink-mid);margin-top:2px;}
 .medal-d{font-size:8px;color:var(--muted);}
 .medal.locked{filter:grayscale(1);opacity:.45;}
-.medal-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#3D1C5E;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.3);animation:mt .3s;max-width:90%;}
+.medal-toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#3B2424;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;box-shadow:0 6px 24px rgba(0,0,0,.3);animation:mt .3s;max-width:90%;}
 @keyframes mt{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%)}}
-.sec-title{font-size:12px;font-weight:900;letter-spacing:1px;color:#6B2FA0;margin:18px 0 8px;text-transform:uppercase;}
-.big-start-btn{display:block;width:100%;background:linear-gradient(135deg,#B06FD8,#6B2FA0);color:#fff;border:none;border-radius:16px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(106,47,160,.35);}
+.sec-title{font-size:12px;font-weight:900;letter-spacing:1px;color:#6B3D3D;margin:18px 0 8px;text-transform:uppercase;}
+.big-start-btn{display:block;width:100%;background:linear-gradient(135deg,#C9897A,#6B3D3D);color:#fff;border:none;border-radius:16px;padding:15px;font-size:16px;font-weight:800;cursor:pointer;margin-top:14px;box-shadow:0 4px 16px rgba(107,61,61,.35);}
 
 </style>
 </head>
@@ -199,6 +199,12 @@ nav button .icon{font-size:18px;}
     <div class="gam-badge"><span>🔥 <span id="streak-d">0</span>日</span><span>⭐ <span id="pts-d">0</span>pt</span></div>
   </div>
 </header>
+<div style="width:100%;display:flex;background:#F2E0D5;border-bottom:1px solid rgba(107,61,61,.12);">
+  <a href="quiz.html#t1" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">漢字クイズ</a>
+  <a href="quiz.html#t2" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">日付・動詞</a>
+  <a href="quiz.html#t3" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">て形クイズ</a>
+  <span style="flex:1;padding:8px 2px 11px;font-size:11px;text-align:center;color:#6B3D3D;font-weight:700;border-bottom:3px solid #C9897A;white-space:nowrap;">📖 JLPT単語</span>
+</div>
 <div class="tabs">
   <button class="tab all active" onclick="setLevel('all',this)">ALL</button>
   <button class="tab n4" onclick="setLevel('N4',this)">N4★</button>
@@ -810,7 +816,7 @@ function phonicsGuideHtml(){
 function renderCards(){
   const words=filtered();
   updateCounter(words);
-  let html='<div style="color:#9980AA;font-size:11px;text-align:center;padding:5px 0 10px;">カードをタップ → 意味表示　／　＿＿ タップ → 答え</div>';
+  let html='<div style="color:#A28B7E;font-size:11px;text-align:center;padding:5px 0 10px;">カードをタップ → 意味表示　／　＿＿ タップ → 答え</div>';
   // N4フィルター時に発音ガイドを先頭に追加
   if(curLevel==='N4') html+=phonicsGuideHtml();
 
@@ -870,7 +876,7 @@ function splitKana(s){
 
 function startNewSession(){
   const words=filtered();
-  if(words.length<2){document.getElementById('main').innerHTML='<div style="color:#3D1C5E;text-align:center;padding:40px;font-size:14px;background:rgba(255,255,255,.6);border-radius:16px;margin:20px;">単語が少なすぎます。</div>';return;}
+  if(words.length<2){document.getElementById('main').innerHTML='<div style="color:#3B2424;text-align:center;padding:40px;font-size:14px;background:rgba(255,255,255,.6);border-radius:16px;margin:20px;">単語が少なすぎます。</div>';return;}
   quizSession=[];quizQueue=shuffle(words).slice(0,Math.min(10,words.length));qState=null;
   loadNextQuestion();
 }
@@ -993,7 +999,7 @@ function showResult(){
 // ════════════════════════════════════════════════
 function renderList(){
   const words=filtered();
-  let html='<div style="border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(106,47,160,.12);">';
+  let html='<div style="border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(107,61,61,.12);">';
   words.forEach((w,i)=>{
     const lid='la'+i;
     html+='<div class="list-row" onclick="this.querySelector(\'.list-detail\').style.display=this.querySelector(\'.list-detail\').style.display===\'block\'?\'none\':\'block\'">'
@@ -1001,7 +1007,7 @@ function renderList(){
       +'<div class="list-info"><div class="list-meaning-en">'+w.en+'</div>'
       +(curLang!=='en'?'<div class="list-meaning-zh">'+w.zh+'</div>':'')
       +'<div class="list-reading">'+w.kana+' · '+w.romaji+'</div>'
-      +'<div class="list-detail"><div style="color:#6B2FA0;font-size:11px;margin-top:3px;">'+w.ex_jp+'</div>'
+      +'<div class="list-detail"><div style="color:#6B3D3D;font-size:11px;margin-top:3px;">'+w.ex_jp+'</div>'
       +(curLang!=='zh'?'<div style="color:#8B6A00;font-size:11px;">'+w.ex_en+'</div>':'')
       +(curLang!=='en'?'<div style="color:#2D6A7F;font-size:11px;font-family:PingFang TC,sans-serif;">'+w.ex_zh+'</div>':'')
       +'</div></div>'
@@ -1150,10 +1156,10 @@ function renderLeague(){
   let h='<div class="result-wrap" style="padding:18px 16px;margin-bottom:14px;">'
     +'<div class="result-emoji" style="font-size:40px;">'+ln[1]+'</div>'
     +'<div class="result-title" style="font-size:18px;">'+ln[0]+'リーグ</div>'
-    +'<div style="font-size:11px;color:#9980AA;">週間ランキング ｜ リセットまであと'+dleft+'日 ｜ クイズでポイントを稼ごう！</div></div>';
+    +'<div style="font-size:11px;color:#A28B7E;">週間ランキング ｜ リセットまであと'+dleft+'日 ｜ クイズでポイントを稼ごう！</div></div>';
   rows.forEach((r,i)=>{
     if(i===0)h+='<div class="zone-label" style="color:#2D6A4F;">⬆ 昇格ゾーン（TOP 5）</div>';
-    if(i===5)h+='<div class="zone-label" style="color:#9980AA;">── キープゾーン ──</div>';
+    if(i===5)h+='<div class="zone-label" style="color:#A28B7E;">── キープゾーン ──</div>';
     if(i===12)h+='<div class="zone-label" style="color:#C0392B;">⬇ 降格ゾーン</div>';
     const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     h+='<div class="league-row'+(r.me?' me':'')+'"><div class="league-rank">'+rk+'</div>'
@@ -1164,8 +1170,8 @@ function renderLeague(){
   const st=getStreak();const g=gload();
   h+='<div class="sec-title">🔥 連続学習記録</div>'
     +'<div class="result-wrap" style="padding:16px;">'
-    +'<div style="font-size:34px;font-weight:900;color:#6B2FA0;">🔥 '+st+'日連続</div>'
-    +'<div style="font-size:11px;color:#9980AA;margin-top:4px;">毎日どれかのクイズをやると記録が続くよ。続けるほどグルメメダルGET！</div></div>';
+    +'<div style="font-size:34px;font-weight:900;color:#6B3D3D;">🔥 '+st+'日連続</div>'
+    +'<div style="font-size:11px;color:#A28B7E;margin-top:4px;">毎日どれかのクイズをやると記録が続くよ。続けるほどグルメメダルGET！</div></div>';
   h+='<div class="sec-title">🎖️ グルメメダル（'+g.earned.length+'/20）</div><div class="medal-grid">';
   MEDALS.forEach((m,i)=>{
     const got=g.earned.indexOf(i)!==-1;
@@ -1186,7 +1192,7 @@ function renderChoiceIntro(mode){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+t.e+'</div><div class="result-title">'+t.t+'</div>'
     +'<div class="result-cheer">'+t.d+'</div>'
-    +'<div style="font-size:12px;color:#9980AA;">全10問 ｜ 1問正解＝10pt（リーグに加算）</div>'
+    +'<div style="font-size:12px;color:#A28B7E;">全10問 ｜ 1問正解＝10pt（リーグに加算）</div>'
     +'<button class="big-start-btn" onclick="startChoiceQuiz(\''+mode+'\')">挑戦する！</button></div>';
 }
 function startChoiceQuiz(mode){
@@ -1228,9 +1234,9 @@ function renderChoiceQ(){
   document.getElementById('main').innerHTML=
     '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div>'
     +'<div class="quiz-score">問題 '+(c.i+1)+' / '+c.qs.length+' ｜ ✅ '+c.correct+'問正解</div>'
-    +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#B06FD8,#E8604C);"></div>'
+    +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#C9897A,#E8604C);"></div>'
     +'<div class="quiz-card-body">'
-    +'<div style="font-size:11px;font-weight:800;color:#9980AA;letter-spacing:1px;margin-bottom:4px;">'+(c.mode==='trap'?'🪤 日本語での意味は？':'🍔 このカタカナ語の意味は？')+'</div>'
+    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">'+(c.mode==='trap'?'🪤 日本語での意味は？':'🍔 このカタカナ語の意味は？')+'</div>'
     +'<div class="quiz-kanji" style="font-size:'+fs+';">'+word+'</div>'
     +'<div style="margin-top:10px;">'+ch+'</div>'+ex+'</div></div>';
 }
@@ -1255,7 +1261,7 @@ function showChoiceResult(){
     +'<div class="result-score-label">獲得ポイント +'+(c.correct*10)+'pt（リーグに加算）</div>'
     +'<div class="result-cheer">'+ch.msg+'</div>'
     +'<button class="result-retry-btn" onclick="startChoiceQuiz(\''+c.mode+'\')">🔄 もう一度挑戦！</button>'
-    +'<button class="result-retry-btn" style="background:#fff;color:#6B2FA0;margin-top:8px;box-shadow:none;border:2px solid #B06FD8;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
+    +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
 }
 
 // ════════════════════════════════════════════════
@@ -1271,7 +1277,7 @@ function renderVersusIntro(){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">⚔️</div><div class="result-title">タイムアタック対戦</div>'
     +'<div class="result-cheer">🌸 <b>さくらさん</b>と同じ10問で真剣勝負！<br>得点＝正解×スピード（1問最大120pt）。<br>速く、正確に！</div>'
-    +'<div style="font-size:12px;color:#9980AA;margin-bottom:4px;">さくらさん：日本語ガチ勢のライバル🌸 かなり強いよ…</div>'
+    +'<div style="font-size:12px;color:#A28B7E;margin-bottom:4px;">さくらさん：日本語ガチ勢のライバル🌸 かなり強いよ…</div>'
     +'<button class="big-start-btn" onclick="startVersus()">対戦スタート！</button></div>';
 }
 function startVersus(){
@@ -1318,7 +1324,7 @@ function renderVersus(){
       +'<div class="vs-scorebar" style="margin-top:12px;"><span>🧑‍🎓 あなた<br><b style="font-size:22px;">'+v.my+'pt</b><br>'+v.myC+'/10問</span><span style="font-size:20px;">VS</span><span>🌸 さくら<br><b style="font-size:22px;">'+v.bot+'pt</b><br>'+v.botC+'/10問</span></div>'
       +'<div class="result-score-label" style="margin-top:10px;">リーグポイント +'+(Math.round(v.my/10)+(win?50:10))+'pt 獲得</div>'
       +'<button class="result-retry-btn" onclick="startVersus()">⚔️ 再戦する！</button>'
-      +'<button class="result-retry-btn" style="background:#fff;color:#6B2FA0;margin-top:8px;box-shadow:none;border:2px solid #B06FD8;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
+      +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
     return;
   }
   const q=v.qs[v.i];const item=q.item;
@@ -1340,11 +1346,11 @@ function renderVersus(){
   document.getElementById('main').innerHTML=
     '<div class="vs-scorebar"><span>🧑‍🎓 '+v.my+'pt</span><span>Q'+(v.i+1)+'/10</span><span>🌸 '+v.bot+'pt</span></div>'
     +(v.phase==='q'?mid:'')
-    +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#E8604C,#B06FD8);"></div>'
+    +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#E8604C,#C9897A);"></div>'
     +'<div class="quiz-card-body">'
-    +'<div style="font-size:11px;font-weight:800;color:#9980AA;letter-spacing:1px;margin-bottom:4px;">意味はどれ？</div>'
+    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">意味はどれ？</div>'
     +'<div class="quiz-kanji" style="font-size:'+fs+';">'+item.d+'</div>'
-    +(v.phase==='r'&&item.s?'<div style="font-size:13px;color:#6B2FA0;font-weight:700;margin-bottom:8px;">読み：'+item.s+'</div>':'')
+    +(v.phase==='r'&&item.s?'<div style="font-size:13px;color:#6B3D3D;font-weight:700;margin-bottom:8px;">読み：'+item.s+'</div>':'')
     +'<div style="margin-top:10px;">'+ch+'</div>'
     +(v.phase==='r'?mid:'')+'</div></div>';
 }
