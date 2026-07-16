@@ -78,12 +78,36 @@
     <div class="card">
       <h2>上課時間</h2>
       <div class="row"><span class="label">固定時間</span><span class="value" id="s-schedule">—</span></div>
-      <p class="note">＊ 目前為固定的每週上課時間。如需調整或請假，請直接透過 LINE 聯絡老師，不會透過這個頁面申請。</p>
+      <p class="note">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</p>
     </div>
 
     <div class="card">
       <h2>接下來的上課日</h2>
       <div id="s-upcoming"><p class="note" style="margin-top:0;">—</p></div>
+    </div>
+
+    <div class="card">
+      <h2>請假・改期申請</h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</p>
+      <div class="form-field">
+        <label>想調整的上課日</label>
+        <select id="r-date"></select>
+      </div>
+      <div class="form-field">
+        <label>希望的替代時間（選填）</label>
+        <input type="text" id="r-alt" placeholder="例：改成7/20（日）14:00">
+      </div>
+      <div class="form-field">
+        <label>原因（選填）</label>
+        <input type="text" id="r-reason" placeholder="例：臨時有事">
+      </div>
+      <button class="btn-main" id="r-submit" onclick="submitRequest()">送出申請</button>
+      <div class="note" id="r-status"></div>
+
+      <table style="margin-top:16px;">
+        <thead><tr><th>申請日期</th><th>想調整的上課日</th><th>狀態</th></tr></thead>
+        <tbody id="s-requests"><tr><td colspan="3" class="center">尚無申請</td></tr></tbody>
+      </table>
     </div>
 
     <div class="card">
@@ -166,15 +190,44 @@ async function refresh(){
 
   const upcomingEl = document.getElementById('s-upcoming');
   const remaining = student.remaining_lessons || 0;
+  let upcomingList = [];
   if (student.weekly_day === null || student.weekly_day === undefined || !student.weekly_time) {
     upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">尚未設定固定時間。</p>';
   } else if (remaining <= 0) {
     upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
   } else {
-    const dates = Classroom.upcomingDates(student.weekly_day, student.weekly_time, Math.min(remaining, 10));
-    upcomingEl.innerHTML = dates.map((d, i) => `
+    upcomingList = Classroom.upcomingDates(student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    upcomingEl.innerHTML = upcomingList.map((d, i) => `
       <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${student.weekly_time}</span></div>
     `).join('');
+  }
+
+  const dateSelect = document.getElementById('r-date');
+  if (upcomingList.length === 0){
+    dateSelect.innerHTML = '<option value="">尚無可選擇的上課日</option>';
+    dateSelect.disabled = true;
+  } else {
+    dateSelect.disabled = false;
+    dateSelect.innerHTML = upcomingList.map(d => {
+      const iso = d.toISOString().slice(0, 10);
+      const label = d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + student.weekly_time;
+      return `<option value="${iso}">${label}</option>`;
+    }).join('');
+  }
+
+  const { data: requests } = await Classroom.client
+    .from('classroom_change_requests').select('*').eq('student_email', email)
+    .order('submitted_at', { ascending: false });
+  const reqBody = document.getElementById('s-requests');
+  if (!requests || requests.length === 0){
+    reqBody.innerHTML = '<tr><td colspan="3" class="center">尚無申請</td></tr>';
+  } else {
+    reqBody.innerHTML = requests.map(r => `
+      <tr>
+        <td>${new Date(r.submitted_at).toLocaleDateString('zh-TW')}</td>
+        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('zh-TW') : '-'}</td>
+        <td><span class="status ${r.status}">${r.status === 'pending' ? '審核中' : r.status === 'approved' ? '已同意' : '已退回'}</span></td>
+      </tr>`).join('');
   }
 
   const { data: payments } = await Classroom.client
@@ -195,6 +248,38 @@ async function refresh(){
   }
 
   show('view-student');
+}
+
+async function submitRequest(){
+  const session = await Classroom.session();
+  if (!session) return;
+  const email = session.user.email;
+  const dateEl = document.getElementById('r-date');
+  const requested_date = dateEl.value;
+  const preferred_alternative = document.getElementById('r-alt').value.trim() || null;
+  const reason = document.getElementById('r-reason').value.trim() || null;
+  const statusEl = document.getElementById('r-status');
+  const btn = document.getElementById('r-submit');
+
+  if (!requested_date){ statusEl.textContent = '請選擇想調整的上課日。'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '送出中...';
+  try {
+    const { error } = await Classroom.client.from('classroom_change_requests').insert({
+      student_email: email, requested_date, preferred_alternative, reason, status: 'pending'
+    });
+    if (error) throw error;
+    statusEl.textContent = '已送出，老師確認後會通知你。';
+    document.getElementById('r-alt').value = '';
+    document.getElementById('r-reason').value = '';
+    refresh();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 async function submitPayment(){
