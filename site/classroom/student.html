@@ -82,6 +82,11 @@
     </div>
 
     <div class="card">
+      <h2>接下來的上課日</h2>
+      <div id="s-upcoming"><p class="note" style="margin-top:0;">—</p></div>
+    </div>
+
+    <div class="card">
       <h2>剩餘堂數</h2>
       <div class="big-num" id="s-remaining">—</div>
       <div class="big-num-label">堂</div>
@@ -158,6 +163,19 @@ async function refresh(){
       ? `每${WEEKDAYS[student.weekly_day]} ${student.weekly_time}`
       : '尚未設定（請聯絡老師）';
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
+
+  const upcomingEl = document.getElementById('s-upcoming');
+  const remaining = student.remaining_lessons || 0;
+  if (student.weekly_day === null || student.weekly_day === undefined || !student.weekly_time) {
+    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">尚未設定固定時間。</p>';
+  } else if (remaining <= 0) {
+    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
+  } else {
+    const dates = Classroom.upcomingDates(student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    upcomingEl.innerHTML = dates.map((d, i) => `
+      <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${student.weekly_time}</span></div>
+    `).join('');
+  }
 
   const { data: payments } = await Classroom.client
     .from('classroom_payments').select('*').eq('student_email', email)

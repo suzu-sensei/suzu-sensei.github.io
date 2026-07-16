@@ -67,6 +67,25 @@
     async logout() {
       await sb.auth.signOut();
       if (this._onChange) this._onChange();
+    },
+
+    // 毎週の曜日・時間から、次回以降の授業日時をcount件計算する。
+    // weeklyDay: 0=日 1=月 ... 6=土, weeklyTime: 'HH:MM'
+    upcomingDates(weeklyDay, weeklyTime, count) {
+      if (weeklyDay === null || weeklyDay === undefined || !weeklyTime) return [];
+      const parts = weeklyTime.split(':').map(Number);
+      const h = parts[0] || 0, m = parts[1] || 0;
+      let d = new Date();
+      d.setHours(h, m, 0, 0);
+      let diff = (weeklyDay - d.getDay() + 7) % 7;
+      if (diff === 0 && d.getTime() <= Date.now()) diff = 7;
+      d.setDate(d.getDate() + diff);
+      const results = [];
+      for (let i = 0; i < count; i++) {
+        results.push(new Date(d));
+        d = new Date(d.getTime() + 7 * 24 * 60 * 60 * 1000);
+      }
+      return results;
     }
   };
 

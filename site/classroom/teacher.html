@@ -80,8 +80,16 @@ a.link{color:var(--rose);}
         <button class="btn" onclick="addStudent()">＋ 学生を追加</button>
       </div>
       <table class="table" id="studentTable">
-        <thead><tr><th>名前/ニックネーム</th><th>メール</th><th>曜日・時間</th><th>残り回数</th><th>状態</th><th>操作</th></tr></thead>
-        <tbody id="studentBody"><tr><td colspan="6" class="loading">読み込み中...</td></tr></tbody>
+        <thead><tr><th>名前/ニックネーム</th><th>メール</th><th>曜日・時間</th><th>残り回数</th><th>次回授業</th><th>状態</th><th>操作</th></tr></thead>
+        <tbody id="studentBody"><tr><td colspan="7" class="loading">読み込み中...</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">支払い履歴（全件）</div>
+      <table class="table" id="historyTable">
+        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>提出日</th><th>状態</th></tr></thead>
+        <tbody id="historyBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
       </table>
     </div>
 
@@ -111,17 +119,24 @@ async function refresh(){
   const isTeacher = await Classroom.isTeacher();
   if (!isTeacher){ show('view-denied'); return; }
 
-  await Promise.all([loadStudents(), loadPending()]);
+  await Promise.all([loadStudents(), loadPending(), loadHistory()]);
   show('view-teacher');
+}
+
+function nextSessionLabel(s){
+  if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time || !(s.remaining_lessons > 0)) return '—';
+  const d = Classroom.upcomingDates(s.weekly_day, s.weekly_time, 1)[0];
+  if (!d) return '—';
+  return d.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + s.weekly_time;
 }
 
 async function loadStudents(){
   const { data: students, error } = await Classroom.client
     .from('classroom_students').select('*').order('created_at', { ascending: false });
   const tbody = document.getElementById('studentBody');
-  if (error){ tbody.innerHTML = `<tr><td colspan="6" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (error){ tbody.innerHTML = `<tr><td colspan="7" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
   if (!students || students.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" class="center">学生がまだ登録されていません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="center">学生がまだ登録されていません</td></tr>';
     return;
   }
   tbody.innerHTML = students.map(s => `
@@ -130,12 +145,47 @@ async function loadStudents(){
       <td>${s.email}</td>
       <td>${(s.weekly_day !== null && s.weekly_day !== undefined && s.weekly_time) ? `毎週${WEEKDAYS[s.weekly_day]} ${s.weekly_time}` : '未設定'}</td>
       <td>${s.remaining_lessons ?? 0}</td>
+      <td>${nextSessionLabel(s)}</td>
       <td>${s.status || 'active'}</td>
       <td>
         <button class="btn small" onclick="editStudent('${s.id}')">編集</button>
+        <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
       </td>
     </tr>`).join('');
   window._students = students;
+}
+
+function showUpcoming(id){
+  const s = (window._students || []).find(x => x.id === id);
+  if (!s) return;
+  if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time){
+    alert('曜日・時間が未設定です。');
+    return;
+  }
+  const count = Math.min(s.remaining_lessons || 0, 10);
+  if (count <= 0){ alert('残り回数がありません。'); return; }
+  const dates = Classroom.upcomingDates(s.weekly_day, s.weekly_time, count);
+  const label = dates.map((d, i) => `${i + 1}. ` + d.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + s.weekly_time).join('\n');
+  alert((s.nickname || s.name || s.email) + ' さんの今後の予定:\n\n' + label);
+}
+
+async function loadHistory(){
+  const { data: payments, error } = await Classroom.client
+    .from('classroom_payments').select('*').order('submitted_at', { ascending: false }).limit(100);
+  const tbody = document.getElementById('historyBody');
+  if (error){ tbody.innerHTML = `<tr><td colspan="5" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (!payments || payments.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" class="center">記録がありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = payments.map(p => `
+    <tr>
+      <td>${p.student_email}</td>
+      <td>${p.currency} ${p.amount ?? '-'}</td>
+      <td>${p.lessons_purchased ?? '-'}</td>
+      <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
+      <td><span class="status ${p.status}">${p.status === 'pending' ? '審査中' : p.status === 'approved' ? '承認済み' : '却下'}</span></td>
+    </tr>`).join('');
 }
 
 async function loadPending(){
