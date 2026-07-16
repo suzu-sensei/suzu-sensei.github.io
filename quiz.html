@@ -933,7 +933,7 @@ async function openRanking(){
     return;
   }
   body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">読み込み中…</p>';
-  const rows=await SuzuAuth.leaderboard(50);const myNick=SuzuAuth.nickname();
+  const rows=await SuzuAuth.leaderboardWithBots(50);const myNick=SuzuAuth.nickname();
   if(!rows.length){body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';return;}
   let h='';
   rows.forEach((r,i)=>{const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);const me=r.nickname===myNick;

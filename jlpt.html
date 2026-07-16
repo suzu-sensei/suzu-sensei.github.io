@@ -223,7 +223,7 @@ nav button .icon{font-size:18px;}
   <button onclick="setView('trap')" id="nav-trap"><span class="icon">🪤</span>罠漢字</button>
   <button onclick="setView('kata')" id="nav-kata"><span class="icon">🍔</span>カタカナ</button>
   <button onclick="setView('versus')" id="nav-versus"><span class="icon">⚔️</span>対戦</button>
-  <button onclick="setView('league')" id="nav-league"><span class="icon">🏆</span>リーグ</button>
+  <button onclick="setView('league')" id="nav-league"><span class="icon">🏆</span>ランキング</button>
   <button onclick="setView('list')" id="nav-list"><span class="icon">📋</span>LIST</button>
 </nav>
 
@@ -1165,12 +1165,11 @@ function botWeekPts(b){
 }
 function leagueName(){const t=totalPts();if(t<300)return['ブロンズ','🥉'];if(t<800)return['シルバー','🥈'];if(t<1600)return['ゴールド','🥇'];if(t<3000)return['サファイア','💎'];if(t<5000)return['ルビー','❤️‍🔥'];return['ダイヤモンド','👑'];}
 function renderLeague(){
-  const ln=leagueName();
   const loggedIn=window.SuzuAuth&&SuzuAuth.isLoggedIn();
   let h='<div class="result-wrap" style="padding:18px 16px;margin-bottom:14px;">'
-    +'<div class="result-emoji" style="font-size:40px;">'+ln[1]+'</div>'
-    +'<div class="result-title" style="font-size:18px;">'+ln[0]+'リーグ</div>'
-    +'<div style="font-size:11px;color:#A28B7E;">みんなのポイントランキング ｜ クイズでポイントを稼ごう！</div></div>';
+    +'<div class="result-emoji" style="font-size:40px;">🏆</div>'
+    +'<div class="result-title" style="font-size:18px;">みんなのランキング</div>'
+    +'<div style="font-size:11px;color:#A28B7E;">クイズでポイントを稼ごう！</div></div>';
   if(!loggedIn){
     h+='<div class="result-wrap" style="padding:20px 16px;text-align:center;">'
       +'<div style="font-size:13px;color:#6B3D3D;margin-bottom:12px;">ログインするとランキングに参加できます🏆</div>'
@@ -1196,13 +1195,11 @@ function renderLeague(){
 }
 async function fillLeagueRows(){
   const el=document.getElementById('league-rows');if(!el)return;
-  const rows=await SuzuAuth.leaderboard(50);
+  const rows=await SuzuAuth.leaderboardWithBots(50);
   const myNick=SuzuAuth.nickname();
   if(!rows.length){el.innerHTML='<p style="text-align:center;color:#A28B7E;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';return;}
   let h='';
   rows.forEach((r,i)=>{
-    if(i===0)h+='<div class="zone-label" style="color:#2D6A4F;">⬆ 昇格ゾーン（TOP 5）</div>';
-    if(i===5)h+='<div class="zone-label" style="color:#A28B7E;">── キープゾーン ──</div>';
     const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     const me=r.nickname===myNick;
     h+='<div class="league-row'+(me?' me':'')+'"><div class="league-rank">'+rk+'</div>'
@@ -1224,7 +1221,7 @@ function renderChoiceIntro(mode){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+t.e+'</div><div class="result-title">'+t.t+'</div>'
     +'<div class="result-cheer">'+t.d+'</div>'
-    +'<div style="font-size:12px;color:#A28B7E;">全10問 ｜ 1問正解＝10pt（リーグに加算）</div>'
+    +'<div style="font-size:12px;color:#A28B7E;">全10問 ｜ 1問正解＝10pt（ランキングに加算）</div>'
     +'<button class="big-start-btn" onclick="startChoiceQuiz(\''+mode+'\')">挑戦する！</button></div>';
 }
 function startChoiceQuiz(mode){
@@ -1290,7 +1287,7 @@ function showChoiceResult(){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+ch.emoji+'</div><div class="result-title">'+ch.title+'</div>'
     +'<div class="result-score-big">'+c.correct+' / '+total+'</div>'
-    +'<div class="result-score-label">獲得ポイント +'+(c.correct*10)+'pt（リーグに加算）</div>'
+    +'<div class="result-score-label">獲得ポイント +'+(c.correct*10)+'pt（ランキングに加算）</div>'
     +'<div class="result-cheer">'+ch.msg+'</div>'
     +'<button class="result-retry-btn" onclick="startChoiceQuiz(\''+c.mode+'\')">🔄 もう一度挑戦！</button>'
     +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
@@ -1354,7 +1351,7 @@ function renderVersus(){
       +'<div class="result-emoji">'+(win?'🏆':draw?'🤝':'😢')+'</div>'
       +'<div class="result-title">'+(win?'勝利！さくらさんに勝った！':draw?'引き分け！':'惜敗…さくらさん強い！')+'</div>'
       +'<div class="vs-scorebar" style="margin-top:12px;"><span>🧑‍🎓 あなた<br><b style="font-size:22px;">'+v.my+'pt</b><br>'+v.myC+'/10問</span><span style="font-size:20px;">VS</span><span>🌸 さくら<br><b style="font-size:22px;">'+v.bot+'pt</b><br>'+v.botC+'/10問</span></div>'
-      +'<div class="result-score-label" style="margin-top:10px;">リーグポイント +'+(Math.round(v.my/10)+(win?50:10))+'pt 獲得</div>'
+      +'<div class="result-score-label" style="margin-top:10px;">ポイント +'+(Math.round(v.my/10)+(win?50:10))+'pt 獲得</div>'
       +'<button class="result-retry-btn" onclick="startVersus()">⚔️ 再戦する！</button>'
       +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
     return;

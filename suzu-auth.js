@@ -103,6 +103,25 @@
         if (!res.ok) return [];
         return await res.json();
       } catch (e) { console.error('leaderboard error', e); return []; }
+    },
+
+    // ── 偽のCPU5人（毎日少しずつポイントが増える）──
+    _bots() {
+      const start = new Date('2026-07-16T00:00:00');
+      const days = Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000));
+      return [
+        { nickname: 'ゆき',   base: 20, rate: 12 },
+        { nickname: 'けんた', base: 10, rate: 18 },
+        { nickname: 'あおい', base: 35, rate: 9 },
+        { nickname: 'まさや', base: 5,  rate: 22 },
+        { nickname: 'りな',   base: 28, rate: 14 }
+      ].map(b => ({ nickname: b.nickname, total_points: b.base + b.rate * days, sessions: 0, bot: true }));
+    },
+    // 本物の学生＋CPUを合算して順位付け
+    async leaderboardWithBots(limit) {
+      const real = await this.leaderboard(limit || 50);
+      const all = real.concat(this._bots()).sort((a, b) => b.total_points - a.total_points);
+      return all.slice(0, limit || 50);
     }
   };
 
