@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>日本語 JLPT Cards</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="suzu-auth.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -197,6 +199,7 @@ nav button .icon{font-size:18px;}
     </div>
     <div class="counter-badge" id="card-counter">— words</div>
     <div class="gam-badge"><span>🔥 <span id="streak-d">0</span>日</span><span>⭐ <span id="pts-d">0</span>pt</span></div>
+    <div id="suzu-login-wrap"></div>
   </div>
 </header>
 <div style="width:100%;display:flex;background:#F2E0D5;border-bottom:1px solid rgba(107,61,61,.12);">
@@ -1109,7 +1112,21 @@ function gload(){try{return JSON.parse(localStorage.getItem(GKEY))||{days:{},ear
 function gsave(g){try{localStorage.setItem(GKEY,JSON.stringify(g));}catch(e){}}
 function dkey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function isoWeek(d){d=new Date(d.getTime());d.setHours(0,0,0,0);d.setDate(d.getDate()+3-((d.getDay()+6)%7));const w1=new Date(d.getFullYear(),0,4);return d.getFullYear()+'-W'+String(1+Math.round(((d-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0');}
-function addPoints(n){const g=gload();const k=dkey();g.days[k]=(g.days[k]||0)+n;gsave(g);checkMedals();updateGamBadges();}
+function addPoints(n){const g=gload();const k=dkey();g.days[k]=(g.days[k]||0)+n;gsave(g);checkMedals();updateGamBadges();
+  // ログイン中なら Supabase にもポイントを送る（ランキング用）
+  if(window.SuzuAuth&&SuzuAuth.isLoggedIn()){SuzuAuth.saveScore({points:n,source:'jlpt',level:curLevel});}
+}
+// ── ヘッダーのログイン表示 ──
+function renderLoginHeader(){
+  const el=document.getElementById('suzu-login-wrap');if(!el||!window.SuzuAuth)return;
+  if(SuzuAuth.isLoggedIn()){
+    el.innerHTML='<span style="font-size:10px;color:rgba(255,255,255,.75);">👤 '+escapeHtmlJ(SuzuAuth.nickname())+' <button onclick="SuzuAuth.logout();location.reload();" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:2px 6px;font-size:9px;cursor:pointer;margin-left:3px;">ログアウト</button></span>';
+  }else{
+    el.innerHTML='<button onclick="jlptLogin()" style="background:#fff;color:#6B3D3D;border:none;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔑 ログインして記録</button>';
+  }
+}
+function jlptLogin(){ if(window.SuzuAuth) SuzuAuth.prompt(()=>{ renderLoginHeader(); if(curView==='league') renderLeague(); }); }
+function escapeHtmlJ(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function getStreak(){const g=gload();let s=0;const d=new Date();if(!g.days[dkey(d)])d.setDate(d.getDate()-1);while(g.days[dkey(d)]){s++;d.setDate(d.getDate()-1);}return s;}
 function weekPts(){const g=gload();const wk=isoWeek(new Date());let t=0;for(const k in g.days){if(isoWeek(new Date(k+'T12:00:00'))===wk)t+=g.days[k];}return t;}
 function totalPts(){const g=gload();let t=0;for(const k in g.days)t+=g.days[k];return t;}
@@ -1149,24 +1166,19 @@ function botWeekPts(b){
 function leagueName(){const t=totalPts();if(t<300)return['ブロンズ','🥉'];if(t<800)return['シルバー','🥈'];if(t<1600)return['ゴールド','🥇'];if(t<3000)return['サファイア','💎'];if(t<5000)return['ルビー','❤️‍🔥'];return['ダイヤモンド','👑'];}
 function renderLeague(){
   const ln=leagueName();
-  const rows=BOTS.map(b=>({name:b.n,a:b.a,pts:botWeekPts(b),me:0}))
-    .concat([{name:'LIN',a:'🧑‍🎓',pts:weekPts(),me:1}])
-    .sort((a,b)=>b.pts-a.pts);
-  const now=new Date();const dleft=((8-now.getDay())%7)||7;
+  const loggedIn=window.SuzuAuth&&SuzuAuth.isLoggedIn();
   let h='<div class="result-wrap" style="padding:18px 16px;margin-bottom:14px;">'
     +'<div class="result-emoji" style="font-size:40px;">'+ln[1]+'</div>'
     +'<div class="result-title" style="font-size:18px;">'+ln[0]+'リーグ</div>'
-    +'<div style="font-size:11px;color:#A28B7E;">週間ランキング ｜ リセットまであと'+dleft+'日 ｜ クイズでポイントを稼ごう！</div></div>';
-  rows.forEach((r,i)=>{
-    if(i===0)h+='<div class="zone-label" style="color:#2D6A4F;">⬆ 昇格ゾーン（TOP 5）</div>';
-    if(i===5)h+='<div class="zone-label" style="color:#A28B7E;">── キープゾーン ──</div>';
-    if(i===12)h+='<div class="zone-label" style="color:#C0392B;">⬇ 降格ゾーン</div>';
-    const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    h+='<div class="league-row'+(r.me?' me':'')+'"><div class="league-rank">'+rk+'</div>'
-      +'<div style="font-size:18px;">'+r.a+'</div>'
-      +'<div class="league-name">'+r.name+(r.me?'（あなた）':'')+'</div>'
-      +'<div class="league-pts">'+r.pts+' pt</div></div>';
-  });
+    +'<div style="font-size:11px;color:#A28B7E;">みんなのポイントランキング ｜ クイズでポイントを稼ごう！</div></div>';
+  if(!loggedIn){
+    h+='<div class="result-wrap" style="padding:20px 16px;text-align:center;">'
+      +'<div style="font-size:13px;color:#6B3D3D;margin-bottom:12px;">ログインするとランキングに参加できます🏆</div>'
+      +'<div id="league-login-btn" style="display:flex;justify-content:center;"></div></div>';
+  }else{
+    h+='<div id="league-rows"><p style="text-align:center;color:#A28B7E;padding:20px;">読み込み中…</p></div>'
+      +'<button class="quiz-hint-btn" style="width:100%;margin-top:8px;" onclick="if(SuzuAuth.changeNickname())renderLeague();">✏️ ニックネームを変える</button>';
+  }
   const st=getStreak();const g=gload();
   h+='<div class="sec-title">🔥 連続学習記録</div>'
     +'<div class="result-wrap" style="padding:16px;">'
@@ -1179,6 +1191,26 @@ function renderLeague(){
   });
   h+='</div>';
   document.getElementById('main').innerHTML=h;
+  if(loggedIn){ fillLeagueRows(); }
+  else if(window.SuzuAuth){ SuzuAuth.initButton('league-login-btn',()=>{ renderLoginHeader(); renderLeague(); }); }
+}
+async function fillLeagueRows(){
+  const el=document.getElementById('league-rows');if(!el)return;
+  const rows=await SuzuAuth.leaderboard(50);
+  const myNick=SuzuAuth.nickname();
+  if(!rows.length){el.innerHTML='<p style="text-align:center;color:#A28B7E;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';return;}
+  let h='';
+  rows.forEach((r,i)=>{
+    if(i===0)h+='<div class="zone-label" style="color:#2D6A4F;">⬆ 昇格ゾーン（TOP 5）</div>';
+    if(i===5)h+='<div class="zone-label" style="color:#A28B7E;">── キープゾーン ──</div>';
+    const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const me=r.nickname===myNick;
+    h+='<div class="league-row'+(me?' me':'')+'"><div class="league-rank">'+rk+'</div>'
+      +'<div style="font-size:18px;">🧑‍🎓</div>'
+      +'<div class="league-name">'+escapeHtmlJ(r.nickname)+(me?'（あなた）':'')+'</div>'
+      +'<div class="league-pts">'+r.total_points+' pt</div></div>';
+  });
+  el.innerHTML=h;
 }
 
 // ════════════════════════════════════════════════
@@ -1358,6 +1390,7 @@ function renderVersus(){
 initSpeech();
 renderCards();
 updateGamBadges();
+renderLoginHeader();
 </script>
 </body>
 </html>

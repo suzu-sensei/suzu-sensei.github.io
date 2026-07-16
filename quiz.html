@@ -6,6 +6,7 @@
 <title>日本語クイズ | SUZU先生</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="suzu-auth.js"></script>
 <style>
 :root{--cream:#FAF6F0;--blush:#F2E0D5;--rose:#C9897A;--deep:#6B3D3D;--ink:#2C1F1F;--sage:#8B9E8A;--gold:#C4A46B;--mist:#E8EEE8;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -76,88 +77,25 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 </div>
 
 <script>
-// ▼▼▼ ここに Google Cloud Console で作った Client ID を貼るだけ ▼▼▼
-const GOOGLE_CLIENT_ID = '176773735482-5uj0i09c5hchb9l87grglq0bmlrqe5sj.apps.googleusercontent.com';
-// ▲▲▲ 例: 1234567890-abcxyz.apps.googleusercontent.com ▲▲▲
-
-const SUPABASE_URL = 'https://ploropobmgwlpphtkndo.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_UiW9NELmp2_nVbp2PRHrhA_WYCYrTDl';
-
-class SupabaseClient {
-  constructor(url, key) {
-    this.url = url;
-    this.key = key;
-  }
-  // 学生は「書き込み専用」。読み取り処理は一切持たない。
-  async saveScore(email, name, level, score, total) {
-    const res = await fetch(`${this.url}/rest/v1/quiz_scores`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': this.key,
-        'Authorization': `Bearer ${this.key}`,
-        'Prefer': 'return=minimal'   // 保存後に読み返さない（読み取り権限が無くても動く）
-      },
-      body: JSON.stringify({
-        student_email: email,
-        student_name: name,
-        level,
-        score,
-        total_questions: total,
-        completed_at: new Date().toISOString()
-      })
-    });
-    if (!res.ok) throw new Error('スコア保存に失敗しました (' + res.status + ')');
-    return true;
-  }
-}
-
-const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
-
-window.onload = function() {
-  // Client ID がまだ未設定なら、壊れたボタンの代わりに案内を表示
-  if (GOOGLE_CLIENT_ID.startsWith('PASTE_')) {
-    document.getElementById('google-signin-btn').innerHTML =
-      '<div style="background:rgba(255,255,255,0.9);color:#8a3a3a;padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.6;max-width:320px;">⚠️ Google Client ID が未設定です。<br>quiz.html の GOOGLE_CLIENT_ID に貼り付けてください。</div>';
-    return;
-  }
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleCredentialResponse
-  });
-  google.accounts.id.renderButton(
-    document.getElementById('google-signin-btn'),
-    { theme: 'outline', size: 'large', text: 'signin_with' }
-  );
+// ログイン・スコア保存・ランキングは共通ファイル suzu-auth.js に集約
+window.onload = function () {
+  if (SuzuAuth.isLoggedIn()) { showGameScreen(); return; }
+  SuzuAuth.initButton('google-signin-btn', () => showGameScreen());
 };
-
-async function handleCredentialResponse(response) {
-  const decoded = parseJwt(response.credential);
-  // ログイン時はSupabaseに問い合わせない（読み取り不要）。名前とメールだけ保持。
-  sessionStorage.setItem('userEmail', decoded.email);
-  sessionStorage.setItem('userName', decoded.name);
-  showGameScreen();
-}
-
-function parseJwt(token) {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-  return JSON.parse(jsonPayload);
-}
 
 function showGameScreen() {
   document.getElementById('loginScreen').classList.remove('show');
   document.getElementById('gameContainer').style.display = 'block';
-  const userName = sessionStorage.getItem('userName');
-  document.getElementById('userDisplay').textContent = userName;
+  const u = SuzuAuth.user();
+  document.getElementById('userDisplay').textContent = SuzuAuth.nickname() || (u && u.name) || '';
   loadQuizLevels();
 }
 
 function logout() {
-  sessionStorage.clear();
+  SuzuAuth.logout();
   document.getElementById('gameContainer').style.display = 'none';
   document.getElementById('loginScreen').classList.add('show');
+  location.reload();
 }
 
 const quizLevels = {
@@ -187,7 +125,44 @@ function loadQuizLevels() {
     tabBar.appendChild(btn);
   });
 
+  // 🏆 ランキングタブ
+  const rankBtn = document.createElement('button');
+  rankBtn.className = 'tab-btn';
+  rankBtn.textContent = '🏆 ランキング';
+  rankBtn.onclick = () => renderRanking(rankBtn);
+  tabBar.appendChild(rankBtn);
+
   selectLevel('N1');
+}
+
+async function renderRanking(activeBtn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === activeBtn));
+  const tabContent = document.getElementById('tabContent');
+  tabContent.innerHTML = '<div class="tab-panel active"><div class="game-wrap"><p style="text-align:center;color:#9a8080;padding:30px;">読み込み中…</p></div></div>';
+  const rows = await SuzuAuth.leaderboard(50);
+  const myNick = SuzuAuth.nickname();
+  let html = '<div class="tab-panel active"><div class="game-wrap">'
+    + '<div class="prompt-box"><div class="prompt-sub" style="font-size:13px;color:var(--gold);">🏆 みんなのポイントランキング</div></div>';
+  if (!rows.length) {
+    html += '<p style="text-align:center;color:#9a8080;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';
+  } else {
+    rows.forEach((r, i) => {
+      const rk = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+      const me = r.nickname === myNick;
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:8px;border-radius:10px;'
+        + (me ? 'background:var(--blush);border:1px solid var(--rose);' : 'background:white;border:1px solid #eee;') + '">'
+        + '<div style="width:34px;text-align:center;font-weight:700;color:var(--deep);">' + rk + '</div>'
+        + '<div style="flex:1;font-weight:' + (me ? '700' : '400') + ';">' + escapeHtml(r.nickname) + (me ? '（あなた）' : '') + '</div>'
+        + '<div style="color:var(--rose);font-weight:700;">' + r.total_points + ' pt</div></div>';
+    });
+  }
+  html += '<button class="next-btn" style="margin-top:14px;" onclick="SuzuAuth.changeNickname()&&renderRanking(document.querySelector(\'.tab-btn:last-child\'))">✏️ ニックネームを変える</button>';
+  html += '</div></div>';
+  tabContent.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 function selectLevel(level) {
@@ -238,10 +213,9 @@ function selectLevel(level) {
   };
 
   window.showComplete = async (level, score, total) => {
-    const email = sessionStorage.getItem('userEmail');
-    const name = sessionStorage.getItem('userName');
+    const points = score * 10;
     try {
-      await supabase.saveScore(email, name, level, score, total);
+      await SuzuAuth.saveScore({ level, score, total, points, source: 'quiz' });
     } catch (e) {
       console.error('スコア保存エラー:', e);
     }
@@ -250,7 +224,7 @@ function selectLevel(level) {
       <div class="complete-screen show">
         <div class="complete-emoji">🎉</div>
         <div class="complete-title">完了！</div>
-        <div class="complete-score">${score} / ${total} 正解</div>
+        <div class="complete-score">${score} / ${total} 正解 ｜ +${points}pt</div>
         <button class="back-home-btn" onclick="location.href='/'">HOME へ戻る</button>
       </div>
     `;
