@@ -88,27 +88,27 @@ class SupabaseClient {
     this.url = url;
     this.key = key;
   }
-  async request(method, path, data = null) {
-    const options = {
-      method,
+  // 学生は「書き込み専用」。読み取り処理は一切持たない。
+  async saveScore(email, name, level, score, total) {
+    const res = await fetch(`${this.url}/rest/v1/quiz_scores`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': this.key,
-        'Authorization': `Bearer ${this.key}`
-      }
-    };
-    if (data) options.body = JSON.stringify(data);
-    const res = await fetch(`${this.url}/rest/v1${path}`, options);
-    return res.json();
-  }
-  async getUser(email) {
-    return this.request('GET', `/users?email=eq.${email}`);
-  }
-  async createUser(email, name) {
-    return this.request('POST', '/users', { email, name });
-  }
-  async saveScore(userId, level, score, total) {
-    return this.request('POST', '/quiz_scores', { user_id: userId, level, score, total_questions: total, completed_at: new Date().toISOString() });
+        'Authorization': `Bearer ${this.key}`,
+        'Prefer': 'return=minimal'   // 保存後に読み返さない（読み取り権限が無くても動く）
+      },
+      body: JSON.stringify({
+        student_email: email,
+        student_name: name,
+        level,
+        score,
+        total_questions: total,
+        completed_at: new Date().toISOString()
+      })
+    });
+    if (!res.ok) throw new Error('スコア保存に失敗しました (' + res.status + ')');
+    return true;
   }
 }
 
@@ -132,24 +132,10 @@ window.onload = function() {
 };
 
 async function handleCredentialResponse(response) {
-  const token = response.credential;
-  const decoded = parseJwt(token);
-  const email = decoded.email;
-  const name = decoded.name;
-
-  let users = await supabase.getUser(email);
-  let userId;
-  if (users.length === 0) {
-    const result = await supabase.createUser(email, name);
-    userId = result[0].id;
-  } else {
-    userId = users[0].id;
-  }
-
-  sessionStorage.setItem('userId', userId);
-  sessionStorage.setItem('userEmail', email);
-  sessionStorage.setItem('userName', name);
-
+  const decoded = parseJwt(response.credential);
+  // ログイン時はSupabaseに問い合わせない（読み取り不要）。名前とメールだけ保持。
+  sessionStorage.setItem('userEmail', decoded.email);
+  sessionStorage.setItem('userName', decoded.name);
   showGameScreen();
 }
 
@@ -252,8 +238,13 @@ function selectLevel(level) {
   };
 
   window.showComplete = async (level, score, total) => {
-    const userId = sessionStorage.getItem('userId');
-    await supabase.saveScore(userId, level, score, total);
+    const email = sessionStorage.getItem('userEmail');
+    const name = sessionStorage.getItem('userName');
+    try {
+      await supabase.saveScore(email, name, level, score, total);
+    } catch (e) {
+      console.error('スコア保存エラー:', e);
+    }
 
     gameWrap.innerHTML = `
       <div class="complete-screen show">
