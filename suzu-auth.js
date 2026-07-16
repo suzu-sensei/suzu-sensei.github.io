@@ -110,11 +110,11 @@
       const start = new Date('2026-07-16T00:00:00');
       const days = Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000));
       return [
-        { nickname: 'ゆき',   base: 20, rate: 12 },
-        { nickname: 'けんた', base: 10, rate: 18 },
-        { nickname: 'あおい', base: 35, rate: 9 },
-        { nickname: 'まさや', base: 5,  rate: 22 },
-        { nickname: 'りな',   base: 28, rate: 14 }
+        { nickname: '雅婷',   base: 20, rate: 12 },
+        { nickname: '冠宇',   base: 10, rate: 18 },
+        { nickname: '佳穎',   base: 35, rate: 9 },
+        { nickname: '宗翰',   base: 5,  rate: 22 },
+        { nickname: '怡君',   base: 28, rate: 14 }
       ].map(b => ({ nickname: b.nickname, total_points: b.base + b.rate * days, sessions: 0, bot: true }));
     },
     // 本物の学生＋CPUを合算して順位付け
