@@ -5,915 +5,268 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>日本語クイズ | SUZU先生</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{--cream:#FAF6F0;--blush:#F2E0D5;--rose:#C9897A;--deep:#6B3D3D;--ink:#2C1F1F;--sage:#8B9E8A;--gold:#C4A46B;--mist:#E8EEE8;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
 
-/* Header */
-.quiz-header{background:var(--deep);padding:12px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;}
-.back-btn{color:rgba(255,255,255,0.6);text-decoration:none;font-size:12px;letter-spacing:1.5px;white-space:nowrap;}
+.quiz-header{background:var(--deep);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.header-left{display:flex;align-items:center;gap:14px;}
+.back-btn{color:rgba(255,255,255,0.6);text-decoration:none;font-size:12px;letter-spacing:1.5px;}
 .back-btn:hover{color:white;}
 .quiz-header-title{font-family:'Noto Serif JP',serif;color:white;font-size:15px;font-weight:300;letter-spacing:2px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.user-info{color:rgba(255,255,255,0.7);font-size:11px;letter-spacing:1px;}
+.logout-btn{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);padding:6px 12px;border-radius:4px;font-size:10px;cursor:pointer;}
+.logout-btn:hover{background:var(--rose);}
 
-/* Tab bar */
+.login-screen{display:none;min-height:100vh;background:linear-gradient(135deg,var(--deep),var(--rose));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;}
+.login-screen.show{display:flex;}
+.login-title{font-family:'Noto Serif JP',serif;font-size:28px;color:white;margin-bottom:12px;letter-spacing:2px;}
+.login-desc{color:rgba(255,255,255,0.8);font-size:14px;margin-bottom:40px;max-width:360px;}
+#google-signin-btn{margin:0 auto;}
+
 .tab-bar{display:flex;background:var(--blush);border-bottom:1px solid rgba(107,61,61,0.1);overflow-x:auto;}
-.tab-bar::-webkit-scrollbar{display:none;}
-.tab-btn{flex:1;min-width:80px;padding:12px 4px;background:none;border:none;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;letter-spacing:1px;color:#2C1F1F;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;white-space:nowrap;}
+.tab-btn{flex:1;min-width:80px;padding:12px 4px;background:none;border:none;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;letter-spacing:1px;color:#2C1F1F;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;}
 .tab-btn.active{color:var(--deep);border-bottom-color:var(--rose);font-weight:500;}
 
-/* Panel */
 .tab-panel{display:none;padding:24px 18px 80px;}
 .tab-panel.active{display:block;}
 .game-wrap{max-width:460px;margin:0 auto;}
 
-/* Filter bar (Tab 2) */
-.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.filter-btn{padding:7px 16px;border:2px solid var(--blush);border-radius:20px;background:white;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;letter-spacing:1px;color:#9a7070;cursor:pointer;transition:all 0.2s;}
-.filter-btn.active{background:var(--deep);border-color:var(--deep);color:white;}
-
-/* Intro card */
-.intro-card{background:white;border:1px solid var(--blush);border-radius:10px;padding:24px 20px;text-align:center;margin-bottom:22px;}
-.intro-icon{font-size:34px;margin-bottom:8px;}
-.intro-title{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:300;color:var(--deep);margin-bottom:8px;letter-spacing:2px;}
-.intro-desc{font-size:12px;color:#9a8080;line-height:2;}
-
-/* Progress */
-.score-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:11px;letter-spacing:1px;color:#b09090;}
-.progress-bar{background:var(--blush);height:4px;border-radius:2px;margin-bottom:22px;}
-.progress-fill{background:var(--rose);height:100%;border-radius:2px;transition:width 0.5s ease;}
-
-/* Prompt */
 .prompt-box{text-align:center;margin-bottom:24px;}
 .prompt-main{font-family:'Zen Kaku Gothic New',sans-serif;font-size:48px;font-weight:300;color:var(--deep);letter-spacing:4px;line-height:1.2;}
 .prompt-sub{margin-top:5px;font-size:11px;letter-spacing:2.5px;color:var(--gold);}
 
-/* Answer area */
-.answer-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
-.answer-area{flex:1;min-height:54px;background:white;border:2px solid var(--blush);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;padding:10px 12px;transition:border-color 0.3s;}
-.answer-area.correct-state{border-color:var(--sage);background:#f2f7f2;}
-.answer-area.wrong-state{border-color:var(--rose);animation:shake 0.4s ease;}
-.answer-placeholder{font-size:11px;color:rgba(107,61,61,0.3);letter-spacing:2px;}
-.wrong-badge{background:var(--rose);color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;opacity:0;transition:opacity 0.3s;}
-.wrong-badge.show{opacity:1;}
-
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
-
-.placed-tile{background:var(--deep);color:white;padding:7px 11px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.15s;user-select:none;}
-.placed-tile:hover{background:var(--rose);}
-
-/* Tile bank */
-.hint-label{text-align:center;font-size:10px;letter-spacing:2px;color:#c4a8a8;margin-bottom:6px;}
-.tile-bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;min-height:50px;}
-.tile{background:var(--blush);color:var(--deep);padding:10px 14px;border-radius:7px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;border:2px solid #2C1F1F;min-width:42px;text-align:center;user-select:none;}
-.tile:hover{background:var(--rose);color:white;transform:translateY(-2px);}
-.tile.used{opacity:0.2;pointer-events:none;}
-
-/* Reveal card */
-.reveal-card{display:none;background:white;border:1px solid var(--blush);border-radius:10px;padding:24px;text-align:center;margin-bottom:14px;animation:fadeUp 0.4s ease;}
-.reveal-card.show{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.reveal-kanji{font-family:'Zen Kaku Gothic New',sans-serif;font-size:36px;font-weight:300;color:var(--deep);margin-bottom:5px;}
-.reveal-romaji{font-size:13px;color:var(--rose);letter-spacing:2px;margin-bottom:14px;}
-.reveal-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
-.reveal-tag{background:var(--mist);color:var(--sage);padding:5px 12px;border-radius:4px;font-size:12px;}
-
-/* Buttons */
-.next-btn{background:var(--rose);color:white;border:none;padding:12px 32px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all 0.25s;}
+.next-btn{background:var(--rose);color:white;border:none;padding:12px 32px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all 0.25s;width:100%;margin-bottom:10px;}
 .next-btn:hover{background:var(--deep);transform:translateY(-1px);}
-.restart-btn{background:var(--deep);color:white;border:none;padding:12px 32px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all 0.25s;}
-.restart-btn:hover{background:var(--rose);}
 
-/* Strike notice */
-.strike-notice{background:#fce8e8;border:1px solid #c97a7a;border-radius:8px;padding:14px;text-align:center;font-size:13px;color:#8a3a3a;display:none;margin-bottom:14px;}
-.strike-notice.show{display:block;animation:fadeUp 0.3s ease;}
-
-/* Complete screen */
 .complete-screen{display:none;text-align:center;padding:32px 16px;}
 .complete-screen.show{display:block;}
 .complete-emoji{font-size:52px;margin-bottom:12px;}
 .complete-title{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:300;color:var(--deep);margin-bottom:6px;}
-.complete-score{font-size:14px;color:#9a8080;margin-bottom:6px;}
-.complete-wrongs{font-size:12px;color:#c49090;margin-bottom:24px;}
-
-/* Review table */
-.review-title{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:300;color:var(--deep);letter-spacing:2px;margin-bottom:12px;text-align:left;}
-.review-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:24px;text-align:left;}
-.review-table th{background:var(--deep);color:white;padding:8px 10px;letter-spacing:1px;font-weight:400;}
-.review-table td{padding:8px 10px;border-bottom:1px solid var(--blush);line-height:1.6;}
-.review-table tr:nth-child(even) td{background:white;}
-.review-table .wrong-row td{background:#fff0f0;}
-.review-table .ok-row td{background:#f0fff4;}
-.ans-correct{color:var(--sage);font-weight:500;}
-.ans-wrong{color:var(--rose);}
-
-/* て形 input */
-.input-mode-toggle{display:flex;gap:8px;margin-bottom:18px;justify-content:center;}
-.mode-btn{padding:8px 18px;border:2px solid var(--blush);border-radius:20px;background:white;font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;letter-spacing:1px;color:#9a7070;cursor:pointer;transition:all 0.2s;}
-.mode-btn.active{background:var(--deep);border-color:var(--deep);color:white;}
-
-.te-prompt{text-align:center;margin-bottom:22px;}
-.te-masu{font-family:'Zen Kaku Gothic New',sans-serif;font-size:44px;font-weight:300;color:var(--deep);}
-.te-arrow{font-size:18px;color:var(--rose);margin:4px 0;}
-.te-hint{font-size:11px;letter-spacing:2px;color:#b09090;}
-.te-header-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:18px;}
-.info-btn{background:none;border:2px solid var(--gold);color:var(--gold);width:26px;height:26px;border-radius:50%;font-size:12px;cursor:pointer;font-weight:500;transition:all 0.2s;flex-shrink:0;}
-.info-btn:hover{background:var(--gold);color:white;}
-
-/* Device input */
-.device-input-wrap{display:flex;gap:8px;margin-bottom:16px;}
-.device-input{flex:1;padding:14px 16px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:22px;border:2px solid var(--blush);border-radius:8px;background:white;color:var(--deep);outline:none;text-align:center;}
-.device-input:focus{border-color:var(--rose);}
-.submit-btn{background:var(--rose);color:white;border:none;padding:14px 20px;border-radius:8px;font-size:18px;cursor:pointer;transition:background 0.2s;}
-.submit-btn:hover{background:var(--deep);}
-
-/* Hiragana keyboard */
-.hira-display{background:white;border:2px solid var(--blush);border-radius:8px;padding:14px 14px 8px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:26px;color:var(--deep);text-align:center;min-height:56px;margin-bottom:8px;letter-spacing:2px;position:relative;}
-.hira-romaji-buf{font-size:11px;color:var(--rose);letter-spacing:2px;min-height:16px;margin-top:4px;}
-/* QWERTY keyboard */
-.qwerty-kb{background:var(--blush);border-radius:10px;padding:8px 6px;margin-bottom:10px;}
-.qwerty-row{display:flex;justify-content:center;gap:4px;margin-bottom:4px;}
-.qk{background:white;border:none;border-radius:5px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;font-weight:500;color:var(--deep);cursor:pointer;transition:all 0.12s;flex:1;max-width:36px;height:40px;text-align:center;line-height:40px;padding:0;}
-.qk:hover,.qk:active{background:var(--rose);color:white;transform:translateY(-1px);}
-.qk.wide{max-width:54px;}
-.qk.wider{max-width:80px;font-size:11px;letter-spacing:1px;}
-.qk.sp{max-width:120px;background:rgba(107,61,61,0.08);}
-.qk.back-key{background:var(--blush);font-size:16px;}
-.qk.send-key{background:var(--rose);color:white;font-size:11px;letter-spacing:1.5px;}
-.qk.send-key:hover{background:var(--deep);}
-
-/* て形 result */
-.te-result{padding:14px 18px;border-radius:8px;text-align:center;display:none;margin-bottom:12px;animation:fadeUp 0.3s ease;}
-.te-result.show{display:block;}
-.te-result.correct{background:#eaf4ea;color:#3a6a3a;}
-.te-result.wrong{background:#fce8e8;color:#8a3a3a;}
-.te-result-main{font-family:'Zen Kaku Gothic New',sans-serif;font-size:28px;margin-bottom:4px;}
-.te-result-rule{font-size:12px;letter-spacing:1px;opacity:0.8;}
-
-.te-wrong-row{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:14px;}
-.te-wrong-badge{background:var(--rose);color:white;border-radius:12px;padding:4px 12px;font-size:11px;display:none;}
-.te-wrong-badge.show{display:inline-block;}
-
-.next-wrap{text-align:center;display:none;}
-.next-wrap.show{display:block;}
-
-/* Rules popup */
-.rules-overlay{position:fixed;inset:0;background:rgba(43,26,26,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
-.rules-overlay.show{display:flex;animation:fadeIn 0.2s ease;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.rules-panel{background:var(--cream);width:100%;max-width:480px;border-radius:16px 16px 0 0;padding:28px 24px 40px;max-height:80vh;overflow-y:auto;}
-.rules-panel-title{font-family:'Zen Kaku Gothic New',sans-serif;font-size:16px;font-weight:300;color:var(--deep);letter-spacing:2px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
-.rules-close{background:none;border:none;font-size:20px;color:#9a8080;cursor:pointer;}
-.rule-group{margin-bottom:20px;}
-.rule-group-title{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;}
-.rule-rows{background:white;border-radius:8px;overflow:hidden;}
-.rule-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--blush);font-size:14px;}
-.rule-row:last-child{border-bottom:none;}
-.rule-from{color:#9a7070;letter-spacing:1px;}
-.rule-arrow{color:var(--rose);}
-.rule-to{font-family:'Zen Kaku Gothic New',sans-serif;font-size:16px;color:var(--deep);font-weight:500;}
-.rule-example{font-size:11px;color:#b09090;text-align:right;}
+.complete-score{font-size:14px;color:#9a8080;margin-bottom:24px;}
+.back-home-btn{background:var(--deep);color:white;border:none;padding:12px 40px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer;border-radius:4px;}
 </style>
 </head>
 <body>
 
-<header class="quiz-header">
-  <a href="index.html" class="back-btn">← ホーム</a>
-  <div class="quiz-header-title">🌸 日本語クイズ</div>
-</header>
-
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('t1',this)">漢字クイズ</button>
-  <button class="tab-btn" onclick="switchTab('t2',this)">日付・動詞</button>
-  <button class="tab-btn" onclick="switchTab('t3',this)">て形クイズ</button>
-  <a class="tab-btn" href="jlpt.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:3px;">📖 JLPT単語<span style="background:#C9897A;color:#fff;border-radius:8px;font-size:8px;padding:1px 5px;">NEW</span></a>
+<!-- ログイン画面 -->
+<div class="login-screen show" id="loginScreen">
+  <div class="login-title">JLPT 単語カード</div>
+  <div class="login-desc">Gmailでログインして、学習を続けましょう</div>
+  <div id="google-signin-btn"></div>
 </div>
 
-<!-- ══ TAB 1 ══ -->
-<div id="t1" class="tab-panel active">
-<div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">🃏</div><div class="intro-title">アナグラムクイズ</div><div class="intro-desc">ひらがなを見て、ローマ字タイルを正しい順に並べよう。<br>3回不正解で最初から！</div></div>
-  <div id="t1-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
-  <div id="t1-game">
-    <div class="score-row"><span id="t1-score">0 / 0</span><span id="t1-qnum"></span></div>
-    <div class="progress-bar"><div class="progress-fill" id="t1-prog" style="width:0%"></div></div>
-    <div class="prompt-box"><div class="prompt-main" id="t1-prompt"></div><div class="prompt-sub" id="t1-cat"></div></div>
-    <div class="hint-label">▼ タイルをタップして並べよう</div>
-    <div class="answer-row">
-      <div class="answer-area" id="t1-ans"><span class="answer-placeholder">ここに答えが並びます</span></div>
-      <div class="wrong-badge" id="t1-wbadge">0</div>
+<!-- ゲーム画面 -->
+<div id="gameContainer" style="display:none;">
+  <header class="quiz-header">
+    <div class="header-left">
+      <a href="/" class="back-btn">← HOME</a>
+      <div class="quiz-header-title">📖 JLPT 単語</div>
     </div>
-    <div class="tile-bank" id="t1-bank"></div>
-    <div class="reveal-card" id="t1-reveal">
-      <div class="reveal-kanji" id="t1-kanji"></div>
-      <div class="reveal-romaji" id="t1-romaji"></div>
-      <div class="reveal-tags"><span class="reveal-tag" id="t1-zh"></span><span class="reveal-tag" id="t1-en"></span></div>
-      <button class="next-btn" onclick="gNext('t1')">次へ →</button>
+    <div class="header-right">
+      <div class="user-info" id="userDisplay"></div>
+      <button class="logout-btn" onclick="logout()">ログアウト</button>
     </div>
-  </div>
-  <div class="complete-screen" id="t1-done">
-    <div class="complete-emoji">🎉</div>
-    <div class="complete-title">クリア！</div>
-    <div id="t1-done-score" class="complete-score"></div>
-    <div id="t1-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t1-review"><thead><tr><th>#</th><th>問題</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="gStart('t1')">もう一度</button>
-  </div>
-</div>
-</div>
-
-<!-- ══ TAB 2 ══ -->
-<div id="t2" class="tab-panel">
-<div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">📅</div><div class="intro-title">日付・動詞クイズ</div><div class="intro-desc">カテゴリを選んでアナグラムに挑戦！</div></div>
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="setT2Filter('all',this)">すべて</button>
-    <button class="filter-btn" onclick="setT2Filter('date',this)">📅 日付</button>
-    <button class="filter-btn" onclick="setT2Filter('verb',this)">🎯 動詞</button>
-    <button class="filter-btn" onclick="setT2Filter('adj',this)">🌿 形容詞</button>
-  </div>
-  <div id="t2-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
-  <div id="t2-game">
-    <div class="score-row"><span id="t2-score">0 / 0</span><span id="t2-qnum"></span></div>
-    <div class="progress-bar"><div class="progress-fill" id="t2-prog" style="width:0%"></div></div>
-    <div class="prompt-box"><div class="prompt-main" id="t2-prompt"></div><div class="prompt-sub" id="t2-cat"></div></div>
-    <div class="hint-label">▼ タイルをタップして並べよう</div>
-    <div class="answer-row">
-      <div class="answer-area" id="t2-ans"><span class="answer-placeholder">ここに答えが並びます</span></div>
-      <div class="wrong-badge" id="t2-wbadge">0</div>
-    </div>
-    <div class="tile-bank" id="t2-bank"></div>
-    <div class="reveal-card" id="t2-reveal">
-      <div class="reveal-kanji" id="t2-kanji"></div>
-      <div class="reveal-romaji" id="t2-romaji"></div>
-      <div class="reveal-tags"><span class="reveal-tag" id="t2-zh"></span><span class="reveal-tag" id="t2-en"></span></div>
-      <button class="next-btn" onclick="gNext('t2')">次へ →</button>
-    </div>
-  </div>
-  <div class="complete-screen" id="t2-done">
-    <div class="complete-emoji">🌟</div>
-    <div class="complete-title">クリア！</div>
-    <div id="t2-done-score" class="complete-score"></div>
-    <div id="t2-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t2-review"><thead><tr><th>#</th><th>問題</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="gStart('t2')">もう一度</button>
-  </div>
-</div>
-</div>
-
-<!-- ══ TAB 3 ══ -->
-<div id="t3" class="tab-panel">
-<div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">✏️</div><div class="intro-title">て形クイズ</div><div class="intro-desc">ます形からて形を入力しよう。<br>入力方法を選んでね。3回ミスで最初から！</div></div>
-  <div class="input-mode-toggle">
-    <button class="mode-btn active" id="mode-device" onclick="setInputMode('device')">📱 デバイス入力</button>
-    <button class="mode-btn" id="mode-hira" onclick="setInputMode('hira')">🈶 ひらがなキーボード</button>
-  </div>
-  <div id="t3-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
-  <div id="t3-game">
-    <div class="score-row"><span id="t3-score">0 / 0</span><span id="t3-qnum"></span></div>
-    <div class="progress-bar"><div class="progress-fill" id="t3-prog" style="width:0%"></div></div>
-    <div class="te-header-row">
-      <div class="te-prompt" style="flex:1">
-        <div class="te-masu" id="t3-masu"></div>
-        <div class="te-arrow">↓</div>
-        <div class="te-hint" id="t3-group-hint"></div>
-      </div>
-      <button class="info-btn" onclick="showRules()" title="て形のルール">ⓘ</button>
-    </div>
-    <div class="te-wrong-row">
-      <span id="t3-wbadge" class="te-wrong-badge">ミス 0回</span>
-    </div>
-    <!-- Device input -->
-    <div id="device-input-section">
-      <div class="device-input-wrap">
-        <input type="text" class="device-input" id="device-input" placeholder="て形を入力" onkeydown="if(event.key==='Enter')t3Submit()">
-        <button class="submit-btn" onclick="t3Submit()">→</button>
-      </div>
-    </div>
-    <!-- QWERTY keyboard -->
-    <div id="hira-input-section" style="display:none">
-      <div class="hira-display" id="hira-display">
-        <span id="hira-display-text" style="font-size:12px;letter-spacing:2px;opacity:0.35">ひらがなを入力してね</span>
-        <div class="hira-romaji-buf" id="hira-romaji-buf"></div>
-      </div>
-      <div class="qwerty-kb" id="qwerty-kb">
-        <div class="qwerty-row" id="qwerty-r1"></div>
-        <div class="qwerty-row" id="qwerty-r2"></div>
-        <div class="qwerty-row" id="qwerty-r3"></div>
-        <div class="qwerty-row" id="qwerty-r4"></div>
-      </div>
-    </div>
-    <div class="te-result" id="t3-result">
-      <div class="te-result-main" id="t3-result-main"></div>
-      <div class="te-result-rule" id="t3-result-rule"></div>
-    </div>
-    <div class="next-wrap" id="t3-next"><button class="next-btn" onclick="t3Next()">次へ →</button></div>
-  </div>
-  <div class="complete-screen" id="t3-done">
-    <div class="complete-emoji">🌸</div>
-    <div class="complete-title">クリア！</div>
-    <div id="t3-done-score" class="complete-score"></div>
-    <div id="t3-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t3-review"><thead><tr><th>#</th><th>ます形</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="t3Start()">もう一度</button>
-  </div>
-</div>
-</div>
-
-<!-- Rules popup -->
-<div class="rules-overlay" id="rules-overlay" onclick="if(event.target===this)hideRules()">
-  <div class="rules-panel">
-    <div class="rules-panel-title">て形のルール <button class="rules-close" onclick="hideRules()">✕</button></div>
-    <div class="rule-group">
-      <div class="rule-group-title">グループ１（五段動詞） ます形の最後の音で変わる</div>
-      <div class="rule-rows">
-        <div class="rule-row"><span class="rule-from">い・ち・り</span><span class="rule-arrow">→</span><span class="rule-to">って</span><span class="rule-example">かいます→かって</span></div>
-        <div class="rule-row"><span class="rule-from">み・び・に</span><span class="rule-arrow">→</span><span class="rule-to">んで</span><span class="rule-example">のみます→のんで</span></div>
-        <div class="rule-row"><span class="rule-from">き</span><span class="rule-arrow">→</span><span class="rule-to">いて</span><span class="rule-example">かきます→かいて</span></div>
-        <div class="rule-row"><span class="rule-from">ぎ</span><span class="rule-arrow">→</span><span class="rule-to">いで</span><span class="rule-example">およぎます→およいで</span></div>
-        <div class="rule-row"><span class="rule-from">し</span><span class="rule-arrow">→</span><span class="rule-to">して</span><span class="rule-example">はなします→はなして</span></div>
-        <div class="rule-row"><span class="rule-from">★例外：いきます</span><span class="rule-arrow">→</span><span class="rule-to">いって</span><span class="rule-example"></span></div>
-      </div>
-    </div>
-    <div class="rule-group">
-      <div class="rule-group-title">グループ２（一段動詞）</div>
-      <div class="rule-rows">
-        <div class="rule-row"><span class="rule-from">〜ます</span><span class="rule-arrow">→</span><span class="rule-to">〜て</span><span class="rule-example">たべます→たべて</span></div>
-      </div>
-    </div>
-    <div class="rule-group">
-      <div class="rule-group-title" style="color:#c4a46b">⚠️ グループ２ 要注意！i-masu でもグループ２の動詞（例外8個）</div>
-      <div class="rule-rows">
-        <div class="rule-row"><span class="rule-from">起きます</span><span class="rule-arrow">→</span><span class="rule-to">起きて</span><span class="rule-example">おきます→おきて</span></div>
-        <div class="rule-row"><span class="rule-from">着ます</span><span class="rule-arrow">→</span><span class="rule-to">着て</span><span class="rule-example">きます→きて</span></div>
-        <div class="rule-row"><span class="rule-from">見ます</span><span class="rule-arrow">→</span><span class="rule-to">見て</span><span class="rule-example">みます→みて</span></div>
-        <div class="rule-row"><span class="rule-from">います</span><span class="rule-arrow">→</span><span class="rule-to">いて</span><span class="rule-example">います→いて</span></div>
-        <div class="rule-row"><span class="rule-from">借ります</span><span class="rule-arrow">→</span><span class="rule-to">借りて</span><span class="rule-example">かります→かりて</span></div>
-        <div class="rule-row"><span class="rule-from">降ります</span><span class="rule-arrow">→</span><span class="rule-to">降りて</span><span class="rule-example">おります→おりて</span></div>
-        <div class="rule-row"><span class="rule-from">閉めます</span><span class="rule-arrow">→</span><span class="rule-to">閉めて</span><span class="rule-example">しめます→しめて</span></div>
-        <div class="rule-row"><span class="rule-from">浴びます</span><span class="rule-arrow">→</span><span class="rule-to">浴びて</span><span class="rule-example">あびます→あびて</span></div>
-      </div>
-      <p style="font-size:11px;color:#b09090;padding:10px 16px;line-height:1.8">
-        ※ i-masu (き・み・り・い・び) でも<strong>グループ２</strong>の動詞がある。<br>
-        見分け方：辞書形が「〜いる・〜える」→ グループ２
-      </p>
-    </div>
-    <div class="rule-group">
-      <div class="rule-group-title">グループ３（不規則動詞）</div>
-      <div class="rule-rows">
-        <div class="rule-row"><span class="rule-from">します</span><span class="rule-arrow">→</span><span class="rule-to">して</span><span class="rule-example">べんきょうします→して</span></div>
-        <div class="rule-row"><span class="rule-from">きます</span><span class="rule-arrow">→</span><span class="rule-to">きて</span><span class="rule-example">きます→きて</span></div>
-      </div>
-    </div>
-  </div>
+  </header>
+  <div class="tab-bar" id="tabBar"></div>
+  <div id="tabContent"></div>
 </div>
 
 <script>
-// ── Sound ──────────────────────────────────────────
-let _actx;
-function getACtx(){
-  if(!_actx) _actx=new(window.AudioContext||window.webkitAudioContext)();
-  if(_actx.state==='suspended') _actx.resume();
-  return _actx;
-}
-// Unlock audio on first touch (iOS Safari requirement)
-document.addEventListener('touchstart',function(){getACtx();},{once:true,passive:true});
-document.addEventListener('click',function(){getACtx();},{once:true});
-function playSound(type){
-  try{
-    const ctx=getACtx(),osc=ctx.createOscillator(),g=ctx.createGain();
-    osc.connect(g);g.connect(ctx.destination);
-    if(type==='correct'){
-      osc.type='sine';osc.frequency.setValueAtTime(660,ctx.currentTime);osc.frequency.setValueAtTime(880,ctx.currentTime+0.12);
-      g.gain.setValueAtTime(0.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.5);
-      osc.start();osc.stop(ctx.currentTime+0.5);
-    }else{
-      osc.type='sawtooth';osc.frequency.setValueAtTime(200,ctx.currentTime);osc.frequency.setValueAtTime(160,ctx.currentTime+0.1);
-      g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);
-      osc.start();osc.stop(ctx.currentTime+0.35);
-    }
-  }catch(e){}
-}
+// ▼▼▼ ここに Google Cloud Console で作った Client ID を貼るだけ ▼▼▼
+const GOOGLE_CLIENT_ID = '176773735482-5uj0i09c5hchb9l87grglq0bmlrqe5sj.apps.googleusercontent.com';
+// ▲▲▲ 例: 1234567890-abcxyz.apps.googleusercontent.com ▲▲▲
 
-// ── Tab ────────────────────────────────────────────
-function switchTab(id,btn){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
+const SUPABASE_URL = 'https://ploropobmgwlpphtkndo.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_UiW9NELmp2_nVbp2PRHrhA_WYCYrTDl';
 
-// ── Data ───────────────────────────────────────────
-const BANK1=[
-  {prompt:'おちゃ',   parts:['o','cha'],             kanji:'お茶',  zh:'🇹🇼 茶',      en:'🇬🇧 tea',          cat:'飲み物'},
-  {prompt:'みず',     parts:['mi','zu'],              kanji:'水',    zh:'🇹🇼 水',      en:'🇬🇧 water',        cat:'飲み物'},
-  {prompt:'ねこ',     parts:['ne','ko'],              kanji:'猫',    zh:'🇹🇼 貓',      en:'🇬🇧 cat',          cat:'動物'},
-  {prompt:'いぬ',     parts:['i','nu'],               kanji:'犬',    zh:'🇹🇼 狗',      en:'🇬🇧 dog',          cat:'動物'},
-  {prompt:'はな',     parts:['ha','na'],              kanji:'花',    zh:'🇹🇼 花',      en:'🇬🇧 flower',       cat:'自然'},
-  {prompt:'やま',     parts:['ya','ma'],              kanji:'山',    zh:'🇹🇼 山',      en:'🇬🇧 mountain',     cat:'自然'},
-  {prompt:'そら',     parts:['so','ra'],              kanji:'空',    zh:'🇹🇼 天空',    en:'🇬🇧 sky',          cat:'自然'},
-  {prompt:'うみ',     parts:['u','mi'],               kanji:'海',    zh:'🇹🇼 海',      en:'🇬🇧 sea',          cat:'自然'},
-  {prompt:'くるま',   parts:['ku','ru','ma'],         kanji:'車',    zh:'🇹🇼 車',      en:'🇬🇧 car',          cat:'乗り物'},
-  {prompt:'でんしゃ', parts:['de','n','sha'],         kanji:'電車',  zh:'🇹🇼 電車',    en:'🇬🇧 train',        cat:'乗り物'},
-  {prompt:'せんせい', parts:['se','n','se','i'],      kanji:'先生',  zh:'🇹🇼 老師',    en:'🇬🇧 teacher',      cat:'人'},
-  {prompt:'ともだち', parts:['to','mo','da','chi'],   kanji:'友達',  zh:'🇹🇼 朋友',    en:'🇬🇧 friend',       cat:'人'},
-  {prompt:'がっこう', parts:['ga','k','ko','u'],      kanji:'学校',  zh:'🇹🇼 學校',    en:'🇬🇧 school',       cat:'場所'},
-  {prompt:'びょういん',parts:['byo','u','i','n'],     kanji:'病院',  zh:'🇹🇼 醫院',    en:'🇬🇧 hospital',     cat:'場所'},
-  {prompt:'おおきい', parts:['o','o','ki','i'],       kanji:'大きい',zh:'🇹🇼 大',      en:'🇬🇧 big',          cat:'形容詞'},
-  {prompt:'ちいさい', parts:['chi','i','sa','i'],     kanji:'小さい',zh:'🇹🇼 小',      en:'🇬🇧 small',        cat:'形容詞'},
-  {prompt:'たかい',   parts:['ta','ka','i'],          kanji:'高い',  zh:'🇹🇼 高・貴',  en:'🇬🇧 tall/expensive',cat:'形容詞'},
-  {prompt:'やすい',   parts:['ya','su','i'],          kanji:'安い',  zh:'🇹🇼 便宜',    en:'🇬🇧 cheap',        cat:'形容詞'},
-  {prompt:'たべもの', parts:['ta','be','mo','no'],    kanji:'食べ物',zh:'🇹🇼 食物',    en:'🇬🇧 food',         cat:'食べ物'},
-  {prompt:'のみもの', parts:['no','mi','mo','no'],    kanji:'飲み物',zh:'🇹🇼 飲料',    en:'🇬🇧 drink',        cat:'食べ物'},
-  {prompt:'あたらしい',parts:['a','ta','ra','shi','i'],kanji:'新しい',zh:'🇹🇼 新',    en:'🇬🇧 new',          cat:'形容詞'},
-  {prompt:'たのしい', parts:['ta','no','shi','i'],    kanji:'楽しい',zh:'🇹🇼 快樂',    en:'🇬🇧 fun',          cat:'形容詞'},
-];
-
-const BANK2_DATE=[
-  {prompt:'一日',  parts:['tsu','i','ta','chi'],  kanji:'一日（ついたち）', zh:'🇹🇼 一號', en:'🇬🇧 1st',  cat:'日付'},
-  {prompt:'二日',  parts:['fu','tsu','ka'],        kanji:'二日（ふつか）',   zh:'🇹🇼 二號', en:'🇬🇧 2nd',  cat:'日付'},
-  {prompt:'三日',  parts:['mi','k','ka'],          kanji:'三日（みっか）',   zh:'🇹🇼 三號', en:'🇬🇧 3rd',  cat:'日付'},
-  {prompt:'四日',  parts:['yo','k','ka'],          kanji:'四日（よっか）',   zh:'🇹🇼 四號', en:'🇬🇧 4th',  cat:'日付'},
-  {prompt:'五日',  parts:['i','tsu','ka'],         kanji:'五日（いつか）',   zh:'🇹🇼 五號', en:'🇬🇧 5th',  cat:'日付'},
-  {prompt:'六日',  parts:['mu','i','ka'],          kanji:'六日（むいか）',   zh:'🇹🇼 六號', en:'🇬🇧 6th',  cat:'日付'},
-  {prompt:'七日',  parts:['na','no','ka'],         kanji:'七日（なのか）',   zh:'🇹🇼 七號', en:'🇬🇧 7th',  cat:'日付'},
-  {prompt:'八日',  parts:['yo','u','ka'],          kanji:'八日（ようか）',   zh:'🇹🇼 八號', en:'🇬🇧 8th',  cat:'日付'},
-  {prompt:'九日',  parts:['ko','ko','no','ka'],    kanji:'九日（ここのか）', zh:'🇹🇼 九號', en:'🇬🇧 9th',  cat:'日付'},
-  {prompt:'十日',  parts:['to','o','ka'],          kanji:'十日（とおか）',   zh:'🇹🇼 十號', en:'🇬🇧 10th', cat:'日付'},
-  {prompt:'十四日',parts:['ju','yo','k','ka'],     kanji:'十四日（じゅうよっか）',zh:'🇹🇼 十四號',en:'🇬🇧 14th',cat:'日付'},
-  {prompt:'二十日',parts:['ha','tsu','ka'],        kanji:'二十日（はつか）', zh:'🇹🇼 二十號',en:'🇬🇧 20th', cat:'日付'},
-];
-const BANK2_VERB=[
-  {prompt:'たべます', parts:['ta','be','ma','su'],          kanji:'食べます', zh:'🇹🇼 吃',   en:'🇬🇧 to eat',    cat:'動詞'},
-  {prompt:'のみます', parts:['no','mi','ma','su'],          kanji:'飲みます', zh:'🇹🇼 喝',   en:'🇬🇧 to drink',  cat:'動詞'},
-  {prompt:'みます',   parts:['mi','ma','su'],               kanji:'見ます',   zh:'🇹🇼 看',   en:'🇬🇧 to see',    cat:'動詞'},
-  {prompt:'かきます', parts:['ka','ki','ma','su'],          kanji:'書きます', zh:'🇹🇼 寫',   en:'🇬🇧 to write',  cat:'動詞'},
-  {prompt:'よみます', parts:['yo','mi','ma','su'],          kanji:'読みます', zh:'🇹🇼 讀',   en:'🇬🇧 to read',   cat:'動詞'},
-  {prompt:'はなします',parts:['ha','na','shi','ma','su'],   kanji:'話します', zh:'🇹🇼 說話', en:'🇬🇧 to speak',  cat:'動詞'},
-  {prompt:'いきます', parts:['i','ki','ma','su'],           kanji:'行きます', zh:'🇹🇼 去',   en:'🇬🇧 to go',     cat:'動詞'},
-  {prompt:'きます',   parts:['ki','ma','su'],               kanji:'来ます',   zh:'🇹🇼 來',   en:'🇬🇧 to come',   cat:'動詞'},
-  {prompt:'すわります',parts:['su','wa','ri','ma','su'],    kanji:'座ります', zh:'🇹🇼 坐',   en:'🇬🇧 to sit',    cat:'動詞'},
-  {prompt:'はたらきます',parts:['ha','ta','ra','ki','ma','su'],kanji:'働きます',zh:'🇹🇼 工作',en:'🇬🇧 to work',  cat:'動詞'},
-];
-const BANK2_ADJ=[
-  {prompt:'むずかしい',parts:['mu','zu','ka','shi','i'],   kanji:'難しい',   zh:'🇹🇼 難',   en:'🇬🇧 difficult',  cat:'形容詞'},
-  {prompt:'おもしろい',parts:['o','mo','shi','ro','i'],    kanji:'面白い',   zh:'🇹🇼 有趣', en:'🇬🇧 interesting', cat:'形容詞'},
-  {prompt:'ふるい',   parts:['fu','ru','i'],               kanji:'古い',     zh:'🇹🇼 舊',   en:'🇬🇧 old',        cat:'形容詞'},
-];
-
-const BANK3=[
-  {masu:'たべます',       te:'たべて',      kanji:'食べます',   group:'2', pattern:'〜ます → 〜て'},
-  {masu:'のみます',       te:'のんで',      kanji:'飲みます',   group:'1', pattern:'む → んで'},
-  {masu:'みます',         te:'みて',        kanji:'見ます',     group:'2', pattern:'〜ます → 〜て'},
-  {masu:'かきます',       te:'かいて',      kanji:'書きます',   group:'1', pattern:'き → いて'},
-  {masu:'よみます',       te:'よんで',      kanji:'読みます',   group:'1', pattern:'み → んで'},
-  {masu:'ねます',         te:'ねて',        kanji:'寝ます',     group:'2', pattern:'〜ます → 〜て'},
-  {masu:'おきます',       te:'おきて',      kanji:'起きます',   group:'2', pattern:'〜ます → 〜て'},
-  {masu:'いきます',       te:'いって',      kanji:'行きます',   group:'1★', pattern:'★例外 く → って'},
-  {masu:'きます',         te:'きて',        kanji:'来ます',     group:'3', pattern:'不規則（くる）'},
-  {masu:'します',         te:'して',        kanji:'します',     group:'3', pattern:'不規則（する）'},
-  {masu:'はなします',     te:'はなして',    kanji:'話します',   group:'1', pattern:'し → して'},
-  {masu:'まちます',       te:'まって',      kanji:'待ちます',   group:'1', pattern:'ち → って'},
-  {masu:'かいます',       te:'かって',      kanji:'買います',   group:'1', pattern:'い → って'},
-  {masu:'あそびます',     te:'あそんで',    kanji:'遊びます',   group:'1', pattern:'び → んで'},
-  {masu:'はたらきます',   te:'はたらいて',  kanji:'働きます',   group:'1', pattern:'き → いて'},
-  {masu:'べんきょうします',te:'べんきょうして',kanji:'勉強します',group:'3',pattern:'不規則（〜する）'},
-  {masu:'かえります',     te:'かえって',    kanji:'帰ります',   group:'1', pattern:'り → って'},
-  {masu:'わかります',     te:'わかって',    kanji:'分かります', group:'1', pattern:'り → って'},
-];
-
-// ── Utils ──────────────────────────────────────────
-const shuffle=a=>[...a].sort(()=>Math.random()-0.5);
-
-// ── Anagram State ─────────────────────────────────
-const gState={
-  t1:{bank:BANK1,words:[],cur:0,correct:0,placed:[],wrongCount:0,totalWrong:0,history:[]},
-  t2:{bank:[],words:[],cur:0,correct:0,placed:[],wrongCount:0,totalWrong:0,history:[],filter:'all'},
-};
-
-function getT2Bank(filter){
-  if(filter==='date') return BANK2_DATE;
-  if(filter==='verb') return BANK2_VERB;
-  if(filter==='adj')  return BANK2_ADJ;
-  return [...BANK2_DATE,...BANK2_VERB,...BANK2_ADJ];
-}
-
-function setT2Filter(f,btn){
-  gState.t2.filter=f;
-  document.querySelectorAll('#t2 .filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  gStart('t2');
-}
-
-function gStart(id){
-  const s=gState[id];
-  if(id==='t2') s.bank=getT2Bank(s.filter);
-  s.words=shuffle(s.bank).slice(0,Math.min(10,s.bank.length));
-  s.cur=0;s.correct=0;s.wrongCount=0;s.totalWrong=0;s.placed=[];s.history=[];
-  document.getElementById(id+'-done').classList.remove('show');
-  document.getElementById(id+'-game').style.display='block';
-  document.getElementById(id+'-strike').classList.remove('show');
-  gLoad(id);
-}
-
-function gLoad(id){
-  const s=gState[id];
-  const w=s.words[s.cur];
-  s.placed=[];s.wrongCount=0;
-
-  document.getElementById(id+'-prompt').textContent=w.prompt;
-  document.getElementById(id+'-cat').textContent=w.cat;
-  document.getElementById(id+'-reveal').classList.remove('show');
-
-  const ans=document.getElementById(id+'-ans');
-  ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
-  ans.className='answer-area';
-
-  const wb=document.getElementById(id+'-wbadge');
-  wb.textContent='0';wb.classList.remove('show');
-
-  const total=s.words.length;
-  document.getElementById(id+'-prog').style.width=(s.cur/total*100)+'%';
-  document.getElementById(id+'-score').textContent=s.correct+' / '+s.cur;
-  document.getElementById(id+'-qnum').textContent=(s.cur+1)+' / '+total;
-
-  const shuffled=shuffle(w.parts.map((v,i)=>({v,i})));
-  const bank=document.getElementById(id+'-bank');
-  bank.innerHTML='';
-  shuffled.forEach(({v,i})=>{
-    const btn=document.createElement('button');
-    btn.className='tile';btn.textContent=v;btn.dataset.idx=i;
-    btn.onclick=()=>gTap(id,btn,i,v);
-    bank.appendChild(btn);
-  });
-}
-
-function gTap(id,btn,idx,val){
-  if(btn.classList.contains('used')) return;
-  btn.classList.add('used');
-  const s=gState[id];
-  s.placed.push({idx,val,btn});
-
-  const ans=document.getElementById(id+'-ans');
-  const ph=ans.querySelector('.answer-placeholder');
-  if(ph) ph.remove();
-
-  const tile=document.createElement('span');
-  tile.className='placed-tile';tile.textContent=val;
-  tile.onclick=()=>gRemove(id,tile,idx,btn);
-  ans.appendChild(tile);
-
-  if(s.placed.length===s.words[s.cur].parts.length) gCheck(id);
-}
-
-function gRemove(id,tile,idx,origBtn){
-  const s=gState[id];
-  let removed=false;
-  s.placed=s.placed.filter(p=>{if(!removed&&p.idx===idx){removed=true;return false;}return true;});
-  tile.remove();
-  origBtn.classList.remove('used');
-  const ans=document.getElementById(id+'-ans');
-  if(!ans.querySelector('.placed-tile')) ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
-}
-
-function gCheck(id){
-  const s=gState[id];
-  const w=s.words[s.cur];
-  const ans=document.getElementById(id+'-ans');
-  const user=s.placed.map(p=>p.val).join('');
-  const correct=w.parts.join('');
-
-  if(user===correct){
-    playSound('correct');
-    ans.classList.add('correct-state');
-    s.correct++;
-    s.history.push({q:w.prompt,user:user,correct:correct,wrongs:s.wrongCount,passed:true});
-    document.getElementById(id+'-score').textContent=s.correct+' / '+(s.cur+1);
-    document.getElementById(id+'-kanji').textContent=w.kanji;
-    document.getElementById(id+'-romaji').textContent=w.parts.join('-');
-    document.getElementById(id+'-zh').textContent=w.zh;
-    document.getElementById(id+'-en').textContent=w.en;
-    document.getElementById(id+'-reveal').classList.add('show');
-  } else {
-    playSound('wrong');
-    s.wrongCount++;s.totalWrong++;
-    const wb=document.getElementById(id+'-wbadge');
-    wb.textContent=s.wrongCount;wb.classList.add('show');
-    ans.classList.add('wrong-state');
-    setTimeout(()=>{
-      ans.classList.remove('wrong-state');
-      s.placed=[];
-      ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
-      document.querySelectorAll('#'+id+'-bank .tile').forEach(t=>t.classList.remove('used'));
-      if(s.wrongCount>=3){
-        s.history.push({q:w.prompt,user:'(3回ミス)',correct:correct,wrongs:3,passed:false});
-        showStrike(id);
+class SupabaseClient {
+  constructor(url, key) {
+    this.url = url;
+    this.key = key;
+  }
+  async request(method, path, data = null) {
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': this.key,
+        'Authorization': `Bearer ${this.key}`
       }
-    },500);
+    };
+    if (data) options.body = JSON.stringify(data);
+    const res = await fetch(`${this.url}/rest/v1${path}`, options);
+    return res.json();
+  }
+  async getUser(email) {
+    return this.request('GET', `/users?email=eq.${email}`);
+  }
+  async createUser(email, name) {
+    return this.request('POST', '/users', { email, name });
+  }
+  async saveScore(userId, level, score, total) {
+    return this.request('POST', '/quiz_scores', { user_id: userId, level, score, total_questions: total, completed_at: new Date().toISOString() });
   }
 }
 
-function showStrike(id){
-  const el=document.getElementById(id+'-strike');
-  el.classList.add('show');
-  setTimeout(()=>{el.classList.remove('show');gStart(id);},2500);
-  document.getElementById(id+'-game').style.display='none';
-}
+const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
 
-function gNext(id){
-  const s=gState[id];
-  s.cur++;
-  if(s.cur>=s.words.length){
-    document.getElementById(id+'-game').style.display='none';
-    document.getElementById(id+'-prog').style.width='100%';
-    document.getElementById(id+'-done-score').textContent='正解 '+s.correct+' / '+s.words.length+' 問';
-    document.getElementById(id+'-done-wrongs').textContent='合計ミス回数：'+s.totalWrong+'回';
-    buildReview(id,s.history);
-    document.getElementById(id+'-done').classList.add('show');
-  }else{gLoad(id);}
-}
-
-function buildReview(id,history){
-  const tbody=document.querySelector('#'+id+'-review tbody');
-  tbody.innerHTML='';
-  history.forEach((h,i)=>{
-    const tr=document.createElement('tr');
-    tr.className=h.passed?'ok-row':'wrong-row';
-    const userDisplay=h.user===h.correct?'<span class="ans-correct">'+h.user+'</span>':'<span class="ans-wrong">'+h.user+'</span>';
-    tr.innerHTML='<td>'+(i+1)+'</td><td>'+h.q+'</td><td>'+userDisplay+'</td><td class="ans-correct">'+h.correct+'</td><td>'+(h.wrongs>0?'⚠️ '+h.wrongs:'✓')+'</td>';
-    tbody.appendChild(tr);
+window.onload = function() {
+  // Client ID がまだ未設定なら、壊れたボタンの代わりに案内を表示
+  if (GOOGLE_CLIENT_ID.startsWith('PASTE_')) {
+    document.getElementById('google-signin-btn').innerHTML =
+      '<div style="background:rgba(255,255,255,0.9);color:#8a3a3a;padding:14px 18px;border-radius:8px;font-size:13px;line-height:1.6;max-width:320px;">⚠️ Google Client ID が未設定です。<br>quiz.html の GOOGLE_CLIENT_ID に貼り付けてください。</div>';
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredentialResponse
   });
-}
-
-// ── て形 ──────────────────────────────────────────
-let t3InputMode='device',t3HiraText='';
-const t3State={words:[],cur:0,correct:0,wrongCount:0,totalWrong:0,history:[],lastInput:''};
-
-// ── Romaji → Hiragana converter ─────────────────────────────
-const RM={
-  'a':'あ','i':'い','u':'う','e':'え','o':'お',
-  'ka':'か','ki':'き','ku':'く','ke':'け','ko':'こ',
-  'kya':'きゃ','kyu':'きゅ','kyo':'きょ',
-  'ga':'が','gi':'ぎ','gu':'ぐ','ge':'げ','go':'ご',
-  'gya':'ぎゃ','gyu':'ぎゅ','gyo':'ぎょ',
-  'sa':'さ','si':'し','su':'す','se':'せ','so':'そ',
-  'shi':'し','sha':'しゃ','shu':'しゅ','sho':'しょ',
-  'za':'ざ','zi':'じ','zu':'ず','ze':'ぜ','zo':'ぞ',
-  'ji':'じ','ja':'じゃ','ju':'じゅ','jo':'じょ',
-  'ta':'た','ti':'ち','tu':'つ','te':'て','to':'と',
-  'chi':'ち','cha':'ちゃ','chu':'ちゅ','cho':'ちょ',
-  'tsu':'つ',
-  'da':'だ','di':'ぢ','du':'づ','de':'で','do':'ど',
-  'na':'な','ni':'に','nu':'ぬ','ne':'ね','no':'の',
-  'nya':'にゃ','nyu':'にゅ','nyo':'にょ',
-  'nn':'ん',
-  'ha':'は','hi':'ひ','hu':'ふ','fu':'ふ','he':'へ','ho':'ほ',
-  'hya':'ひゃ','hyu':'ひゅ','hyo':'ひょ',
-  'ba':'ば','bi':'び','bu':'ぶ','be':'べ','bo':'ぼ',
-  'bya':'びゃ','byu':'びゅ','byo':'びょ',
-  'pa':'ぱ','pi':'ぴ','pu':'ぷ','pe':'ぺ','po':'ぽ',
-  'pya':'ぴゃ','pyu':'ぴゅ','pyo':'ぴょ',
-  'ma':'ま','mi':'み','mu':'む','me':'め','mo':'も',
-  'mya':'みゃ','myu':'みゅ','myo':'みょ',
-  'ya':'や','yu':'ゆ','yo':'よ',
-  'ra':'ら','ri':'り','ru':'る','re':'れ','ro':'ろ',
-  'rya':'りゃ','ryu':'りゅ','ryo':'りょ',
-  'wa':'わ','wo':'を','wi':'ゐ',
-  '-':'ー','xtsu':'っ','xtu':'っ',
+  google.accounts.id.renderButton(
+    document.getElementById('google-signin-btn'),
+    { theme: 'outline', size: 'large', text: 'signin_with' }
+  );
 };
-const VOWELS='aiueo';
-let qRomBuf='';  // romaji buffer
-let qHiraTxt=''; // committed hiragana
 
-function qProcess(forceFlush){
-  let buf=qRomBuf;
-  let out='';
-  while(buf.length>0){
-    // double consonant → っ
-    if(buf.length>=2&&buf[0]===buf[1]&&!VOWELS.includes(buf[0])&&buf[0]!=='n'){
-      out+='っ';buf=buf.slice(1);continue;
-    }
-    // 'n' handling
-    if(buf[0]==='n'){
-      if(buf.length>=2){
-        const nxt=buf[1];
-        if(nxt==='n'){out+='ん';buf=buf.slice(2);continue;}
-        if(!VOWELS.includes(nxt)&&nxt!=='y'){out+='ん';buf=buf.slice(1);continue;}
-        // n+vowel or n+y: could be 'na','nu'... try lookup
-      }else if(forceFlush){out+='ん';buf=buf.slice(1);continue;}
-      // else wait for more input
-    }
-    // longest match first
-    let matched=false;
-    for(let len=Math.min(4,buf.length);len>=1;len--){
-      const c=buf.slice(0,len);
-      if(RM[c]){out+=RM[c];buf=buf.slice(len);matched=true;break;}
-    }
-    if(!matched){
-      // could buffer eventually match?
-      let couldMatch=Object.keys(RM).some(k=>k.startsWith(buf));
-      if(couldMatch&&!forceFlush) break;
-      else{buf=buf.slice(1);}// discard unmatchable
-    }
-  }
-  qHiraTxt+=out;
-  qRomBuf=buf;
-  updateHiraDisplay();
-}
+async function handleCredentialResponse(response) {
+  const token = response.credential;
+  const decoded = parseJwt(token);
+  const email = decoded.email;
+  const name = decoded.name;
 
-function updateHiraDisplay(){
-  const dt=document.getElementById('hira-display-text');
-  const rb=document.getElementById('hira-romaji-buf');
-  if(qHiraTxt||qRomBuf){
-    dt.textContent=qHiraTxt;
-    dt.style.fontSize='26px';dt.style.opacity='1';
-    rb.textContent=qRomBuf?'['+qRomBuf+']':'';
-  }else{
-    dt.textContent='ひらがなを入力してね';
-    dt.style.fontSize='12px';dt.style.opacity='0.35';
-    rb.textContent='';
-  }
-}
-
-function qKey(ch){
-  if(ch==='BACK'){
-    if(qRomBuf.length>0){qRomBuf=qRomBuf.slice(0,-1);}
-    else{qHiraTxt=[...qHiraTxt].slice(0,-1).join('');}
-    updateHiraDisplay();
-  }else if(ch==='SEND'){
-    qProcess(true);t3Submit();
-  }else if(ch==='ん'){
-    qProcess(true);qHiraTxt+='ん';updateHiraDisplay();
-  }else if(ch==='ー'){
-    qProcess(true);qHiraTxt+='ー';updateHiraDisplay();
-  }else{
-    qRomBuf+=ch;qProcess(false);
-  }
-}
-
-function buildHiraGrid(){
-  const QROWS=[
-    ['Q','W','E','R','T','Y','U','I','O','P'],
-    ['A','S','D','F','G','H','J','K','L'],
-    ['Z','X','C','V','B','N','M'],
-    ['BACK','ん','ー','SEND'],
-  ];
-  const labels={'BACK':'⌫','SEND':'送信 →','ん':'ん','ー':'ー'};
-  const ids=['qwerty-r1','qwerty-r2','qwerty-r3','qwerty-r4'];
-  QROWS.forEach((row,ri)=>{
-    const rowEl=document.getElementById(ids[ri]);
-    rowEl.innerHTML='';
-    row.forEach(k=>{
-      const btn=document.createElement('button');
-      btn.textContent=labels[k]||k;
-      let cls='qk';
-      if(k==='BACK')cls+=' back-key';
-      else if(k==='SEND')cls+=' send-key wider';
-      else if(k==='ん'||k==='ー')cls+=' wide';
-      btn.className=cls;
-      btn.onclick=()=>qKey(k.toLowerCase()==='back'?'BACK':k==='SEND'?'SEND':k.toLowerCase()==='ん'?'ん':k==='ー'?'ー':k.toLowerCase());
-      rowEl.appendChild(btn);
-    });
-  });
-}
-
-function hiraBack(){qKey('BACK');}
-
-function setInputMode(mode){
-  t3InputMode=mode;
-  document.getElementById('mode-device').classList.toggle('active',mode==='device');
-  document.getElementById('mode-hira').classList.toggle('active',mode==='hira');
-  document.getElementById('device-input-section').style.display=mode==='device'?'block':'none';
-  document.getElementById('hira-input-section').style.display=mode==='hira'?'block':'none';
-}
-
-function t3Start(){
-  t3State.words=shuffle(BANK3).slice(0,10);
-  t3State.cur=0;t3State.correct=0;t3State.wrongCount=0;t3State.totalWrong=0;t3State.history=[];
-  document.getElementById('t3-done').classList.remove('show');
-  document.getElementById('t3-game').style.display='block';
-  document.getElementById('t3-strike').classList.remove('show');
-  t3Load();
-}
-
-function t3Load(){
-  const q=t3State.words[t3State.cur];
-  document.getElementById('t3-masu').textContent=q.masu;
-  document.getElementById('t3-group-hint').textContent='グループ'+q.group;
-  document.getElementById('t3-result').className='te-result';
-  document.getElementById('t3-next').className='next-wrap';
-  const wb=document.getElementById('t3-wbadge');
-  wb.textContent='ミス 0回';wb.classList.remove('show');
-  t3State.wrongCount=0;
-  t3State.lastInput='';
-
-  const total=t3State.words.length;
-  document.getElementById('t3-prog').style.width=(t3State.cur/total*100)+'%';
-  document.getElementById('t3-score').textContent=t3State.correct+' / '+t3State.cur;
-  document.getElementById('t3-qnum').textContent=(t3State.cur+1)+' / '+total;
-
-  // Reset inputs
-  document.getElementById('device-input').value='';
-  qRomBuf='';qHiraTxt='';updateHiraDisplay();
-}
-
-function t3Submit(){
-  const q=t3State.words[t3State.cur];
-  // Flush any pending romaji buffer
-  if(t3InputMode==='hira'){qProcess(true);}
-  const userRaw=t3InputMode==='device'
-    ?document.getElementById('device-input').value.trim()
-    :qHiraTxt.trim();
-  // normalize: remove spaces
-  const user=userRaw.replace(/\s/g,'');
-  t3State.lastInput=user;
-
-  if(!user) return;
-
-  if(user===q.te){
-    playSound('correct');
-    t3State.correct++;
-    t3State.history.push({q:q.masu,user:user,correct:q.te,wrongs:t3State.wrongCount,passed:true});
-    document.getElementById('t3-score').textContent=t3State.correct+' / '+(t3State.cur+1);
-    const res=document.getElementById('t3-result');
-    document.getElementById('t3-result-main').textContent='✓ '+q.te;
-    document.getElementById('t3-result-rule').textContent='グループ'+q.group+'｜'+q.pattern;
-    res.className='te-result correct show';
-    document.getElementById('t3-next').className='next-wrap show';
-    // disable input
-    document.getElementById('device-input').disabled=true;
-    document.querySelectorAll('#qwerty-kb button').forEach(b=>b.disabled=true);
+  let users = await supabase.getUser(email);
+  let userId;
+  if (users.length === 0) {
+    const result = await supabase.createUser(email, name);
+    userId = result[0].id;
   } else {
-    playSound('wrong');
-    t3State.wrongCount++;t3State.totalWrong++;
-    const wb=document.getElementById('t3-wbadge');
-    wb.textContent='ミス '+t3State.wrongCount+'回';wb.classList.add('show');
-    const res=document.getElementById('t3-result');
-    document.getElementById('t3-result-main').textContent='✗ '+user;
-    document.getElementById('t3-result-rule').textContent='もう一度試してね…';
-    res.className='te-result wrong show';
-    setTimeout(()=>{res.className='te-result';},900);
-    // Clear input
-    document.getElementById('device-input').value='';
-    qRomBuf='';qHiraTxt='';updateHiraDisplay();
-
-    if(t3State.wrongCount>=3){
-      t3State.history.push({q:q.masu,user:'(3回ミス)',correct:q.te,wrongs:3,passed:false});
-      setTimeout(()=>t3ShowStrike(),700);
-    }
+    userId = users[0].id;
   }
+
+  sessionStorage.setItem('userId', userId);
+  sessionStorage.setItem('userEmail', email);
+  sessionStorage.setItem('userName', name);
+
+  showGameScreen();
 }
 
-function t3ShowStrike(){
-  const el=document.getElementById('t3-strike');
-  el.classList.add('show');
-  document.getElementById('t3-game').style.display='none';
-  setTimeout(()=>{el.classList.remove('show');t3Start();},2500);
+function parseJwt(token) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+  return JSON.parse(jsonPayload);
 }
 
-function t3Next(){
-  t3State.cur++;
-  if(t3State.cur>=t3State.words.length){
-    document.getElementById('t3-game').style.display='none';
-    document.getElementById('t3-prog').style.width='100%';
-    document.getElementById('t3-done-score').textContent='正解 '+t3State.correct+' / '+t3State.words.length+' 問';
-    document.getElementById('t3-done-wrongs').textContent='合計ミス回数：'+t3State.totalWrong+'回';
-    buildT3Review();
-    document.getElementById('t3-done').classList.add('show');
-  } else {
-    document.getElementById('device-input').disabled=false;
-    document.querySelectorAll('#qwerty-kb button').forEach(b=>b.disabled=false);
-    t3Load();
-  }
+function showGameScreen() {
+  document.getElementById('loginScreen').classList.remove('show');
+  document.getElementById('gameContainer').style.display = 'block';
+  const userName = sessionStorage.getItem('userName');
+  document.getElementById('userDisplay').textContent = userName;
+  loadQuizLevels();
 }
 
-function buildT3Review(){
-  const tbody=document.querySelector('#t3-review tbody');
-  tbody.innerHTML='';
-  t3State.history.forEach((h,i)=>{
-    const tr=document.createElement('tr');
-    tr.className=h.passed?'ok-row':'wrong-row';
-    const userDisplay=h.user===h.correct?'<span class="ans-correct">'+h.user+'</span>':'<span class="ans-wrong">'+h.user+'</span>';
-    tr.innerHTML='<td>'+(i+1)+'</td><td>'+h.q+'</td><td>'+userDisplay+'</td><td class="ans-correct">'+h.correct+'</td><td>'+(h.wrongs>0?'⚠️ '+h.wrongs:'✓')+'</td>';
-    tbody.appendChild(tr);
+function logout() {
+  sessionStorage.clear();
+  document.getElementById('gameContainer').style.display = 'none';
+  document.getElementById('loginScreen').classList.add('show');
+}
+
+const quizLevels = {
+  'N1': [
+    { kanji: '齟齬', romaji: 'そご', meaning: '意見の相違', options: ['そご', 'きご', 'そかい'] },
+    { kanji: '沈黙', romaji: 'ちんもく', meaning: '黙ること', options: ['ちんもく', 'せんもく', 'ちゅんもく'] }
+  ],
+  'N2': [
+    { kanji: '努力', romaji: 'どりょく', meaning: '頑張ること', options: ['どりょく', 'のうりょく', 'どうりょく'] }
+  ],
+  'N3': [
+    { kanji: '猫', romaji: 'ねこ', meaning: 'cat', options: ['ねこ', 'ぬこ', 'にこ'] }
+  ]
+};
+
+function loadQuizLevels() {
+  const tabBar = document.getElementById('tabBar');
+  const tabContent = document.getElementById('tabContent');
+  tabBar.innerHTML = '';
+  tabContent.innerHTML = '';
+
+  Object.keys(quizLevels).forEach((level, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+    btn.textContent = level;
+    btn.onclick = () => selectLevel(level);
+    tabBar.appendChild(btn);
   });
+
+  selectLevel('N1');
 }
 
-// ── Rules popup ────────────────────────────────────
-function showRules(){document.getElementById('rules-overlay').classList.add('show');}
-function hideRules(){document.getElementById('rules-overlay').classList.remove('show');}
+function selectLevel(level) {
+  const questions = quizLevels[level];
+  const tabContent = document.getElementById('tabContent');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach((btn, idx) => {
+    btn.classList.toggle('active', Object.keys(quizLevels)[idx] === level);
+  });
 
-// ── Init ───────────────────────────────────────────
-buildHiraGrid();
-gStart('t1');
-gStart('t2');
-t3Start();
+  tabContent.innerHTML = '';
+  const panel = document.createElement('div');
+  panel.className = 'tab-panel active';
+  const gameWrap = document.createElement('div');
+  gameWrap.className = 'game-wrap';
+  panel.appendChild(gameWrap);
+  tabContent.appendChild(panel);
 
-(function(){const h=location.hash.replace('#','');const m={t1:0,t2:1,t3:2};if(h in m){switchTab(h,document.querySelectorAll('.tab-btn')[m[h]]);}})();
+  let currentQ = 0;
+  let score = 0;
+
+  function renderQuestion() {
+    if (currentQ >= questions.length) {
+      showComplete(level, score, questions.length);
+      return;
+    }
+
+    const q = questions[currentQ];
+    const buttons = q.options.map(opt =>
+      `<button class="next-btn" onclick="checkAnswer('${opt}', '${q.romaji}')">${opt}</button>`
+    ).join('');
+
+    gameWrap.innerHTML = `
+      <div class="prompt-box">
+        <div class="prompt-main">${q.kanji}</div>
+        <div class="prompt-sub">ローマ字を選んでください</div>
+      </div>
+      ${buttons}
+    `;
+  }
+
+  window.checkAnswer = (selected, correct) => {
+    if (selected === correct) {
+      score++;
+    }
+    currentQ++;
+    renderQuestion();
+  };
+
+  window.showComplete = async (level, score, total) => {
+    const userId = sessionStorage.getItem('userId');
+    await supabase.saveScore(userId, level, score, total);
+
+    gameWrap.innerHTML = `
+      <div class="complete-screen show">
+        <div class="complete-emoji">🎉</div>
+        <div class="complete-title">完了！</div>
+        <div class="complete-score">${score} / ${total} 正解</div>
+        <button class="back-home-btn" onclick="location.href='/'">HOME へ戻る</button>
+      </div>
+    `;
+  };
+
+  renderQuestion();
+}
 </script>
 </body>
 </html>
