@@ -299,12 +299,14 @@ async function addStudent(){
   const dayInput = prompt('曜日番号（0=日 1=月 2=火 3=水 4=木 5=金 6=土、未定なら空欄）:');
   const time = prompt('時間（例: 19:00、未定なら空欄）:') || null;
   const lessons = parseInt(prompt('初期の残り回数（数字のみ、なければ0）:', '0')) || 0;
+  const driveUrl = prompt('学習ノートのGoogle DriveフォルダURL（任意・後で編集からでも追加できます）:') || null;
 
   const weekly_day = (dayInput !== null && dayInput.trim() !== '') ? parseInt(dayInput) : null;
 
   const { error } = await Classroom.client.from('classroom_students').insert({
     email: email.trim(), name: name.trim(), nickname: name.trim(),
-    weekly_day, weekly_time: time, remaining_lessons: lessons
+    weekly_day, weekly_time: time, remaining_lessons: lessons,
+    drive_folder_url: (driveUrl || '').trim() || null
   });
   if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
   loadStudents();
@@ -333,6 +335,8 @@ async function editStudent(id){
   const time = prompt('時間（例: 19:00）:', s.weekly_time || '');
   const lessons = prompt('残り回数:', s.remaining_lessons ?? 0);
   const status = prompt('状態（active / paused / inactive）:', s.status || 'active');
+  const driveUrl = prompt('学習ノートのGoogle DriveフォルダURL（未設定なら空欄でOK）:', s.drive_folder_url || '');
+  if (driveUrl === null) return;
 
   const weekly_day = (dayInput !== null && dayInput.trim() !== '') ? parseInt(dayInput) : null;
 
@@ -340,7 +344,8 @@ async function editStudent(id){
     name: name.trim(), nickname: name.trim(),
     weekly_day, weekly_time: time || null,
     remaining_lessons: parseInt(lessons) || 0,
-    status: status || 'active'
+    status: status || 'active',
+    drive_folder_url: driveUrl.trim() || null
   }).eq('id', id);
   if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
   loadStudents();
