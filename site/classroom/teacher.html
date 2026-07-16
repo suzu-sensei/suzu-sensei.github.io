@@ -150,6 +150,7 @@ async function loadStudents(){
       <td>
         <button class="btn small" onclick="editStudent('${s.id}')">編集</button>
         <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
+        <button class="btn small" onclick="completeLesson('${s.id}')" ${(s.remaining_lessons || 0) <= 0 ? 'disabled' : ''}>授業完了</button>
       </td>
     </tr>`).join('');
   window._students = students;
@@ -260,6 +261,20 @@ async function addStudent(){
     weekly_day, weekly_time: time, remaining_lessons: lessons
   });
   if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
+  loadStudents();
+}
+
+async function completeLesson(id){
+  const s = (window._students || []).find(x => x.id === id);
+  if (!s) return;
+  const current = s.remaining_lessons || 0;
+  if (current <= 0){ alert('残り回数がありません。'); return; }
+  const next = nextSessionLabel(s);
+  if (!confirm(`${s.nickname || s.name || s.email} さんの授業完了を記録し、残り回数を1減らしますか？\n（今回: ${next}）`)) return;
+
+  const { error } = await Classroom.client
+    .from('classroom_students').update({ remaining_lessons: current - 1 }).eq('id', id);
+  if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
   loadStudents();
 }
 
