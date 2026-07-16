@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>先生用ダッシュボード | SUZU先生</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FAF6F0;--blush:#F2E0D5;--rose:#C9897A;--deep:#6B3D3D;--ink:#2C1F1F;--sage:#8B9E8A;--gold:#C4A46B;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+
+.header{background:var(--deep);padding:20px 40px;color:white;display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-family:'Noto Serif JP',serif;font-size:20px;letter-spacing:2px;font-weight:300;}
+.back-link{color:white;text-decoration:none;font-size:12px;padding:8px 16px;border:1px solid rgba(255,255,255,0.3);border-radius:4px;}
+.back-link:hover{border-color:white;}
+
+.container{max-width:1000px;margin:0 auto;padding:40px 20px;}
+
+.section{margin-bottom:40px;}
+.section-title{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--deep);margin-bottom:20px;letter-spacing:2px;border-bottom:2px solid var(--rose);padding-bottom:10px;}
+
+.table{width:100%;border-collapse:collapse;background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden;}
+.table th{background:var(--blush);padding:14px;text-align:left;font-weight:500;letter-spacing:1px;font-size:12px;}
+.table td{padding:12px 14px;border-bottom:1px solid #eee;font-size:13px;}
+.table tr:hover{background:#fafaf8;}
+
+.stat-card{background:white;border:1px solid #ddd;border-radius:8px;padding:20px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.stat-label{font-size:12px;letter-spacing:1px;color:#999;}
+.stat-value{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:300;color:var(--deep);}
+
+.level-badge{display:inline-block;background:var(--rose);color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:500;letter-spacing:1px;}
+.score-bar{background:var(--blush);height:20px;border-radius:4px;overflow:hidden;}
+.score-fill{background:var(--rose);height:100%;transition:width 0.3s;}
+
+.loading{text-align:center;padding:40px;color:#999;}
+.error{background:#fce8e8;border:1px solid #c97a7a;border-radius:8px;padding:20px;color:#8a3a3a;margin:20px 0;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 先生用ダッシュボード</h1>
+  <a href="/" class="back-link">← HOME</a>
+</div>
+
+<div class="container">
+  <!-- 統計 -->
+  <div class="section">
+    <div class="section-title">サマリー</div>
+    <div id="stats" class="loading">読み込み中...</div>
+  </div>
+
+  <!-- 学生一覧 -->
+  <div class="section">
+    <div class="section-title">登録済み学生</div>
+    <table class="table" id="userTable">
+      <thead>
+        <tr>
+          <th>名前</th>
+          <th>メールアドレス</th>
+          <th>登録日</th>
+          <th>クイズ受験回数</th>
+          <th>平均スコア</th>
+        </tr>
+      </thead>
+      <tbody id="userBody">
+        <tr><td colspan="5" class="loading">読み込み中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- クイズスコア詳細 -->
+  <div class="section">
+    <div class="section-title">クイズスコア履歴</div>
+    <table class="table" id="scoreTable">
+      <thead>
+        <tr>
+          <th>学生名</th>
+          <th>レベル</th>
+          <th>スコア</th>
+          <th>実施日時</th>
+        </tr>
+      </thead>
+      <tbody id="scoreBody">
+        <tr><td colspan="4" class="loading">読み込み中...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ploropobmgwlpphtkndo.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_UiW9NELmp2_nVbp2PRHrhA_WYCYrTDl';
+
+class SupabaseClient {
+  constructor(url, key) {
+    this.url = url;
+    this.key = key;
+  }
+  async request(method, path, data = null) {
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': this.key,
+        'Authorization': `Bearer ${this.key}`
+      }
+    };
+    if (data) options.body = JSON.stringify(data);
+    const res = await fetch(`${this.url}/rest/v1${path}`, options);
+    return res.json();
+  }
+  async getAllUsers() {
+    return this.request('GET', '/users');
+  }
+  async getAllScores() {
+    return this.request('GET', '/quiz_scores?order=completed_at.desc');
+  }
+}
+
+const supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadDashboard() {
+  try {
+    const users = await supabase.getAllUsers();
+    const scores = await supabase.getAllScores();
+
+    // サマリー表示
+    displayStats(users, scores);
+
+    // ユーザー一覧
+    displayUsers(users, scores);
+
+    // スコア履歴
+    displayScores(users, scores);
+  } catch (error) {
+    console.error('Error loading dashboard:', error);
+    document.getElementById('stats').innerHTML = '<div class="error">データ読み込みエラー</div>';
+  }
+}
+
+function displayStats(users, scores) {
+  const totalUsers = users.length;
+  const totalQuizzes = scores.length;
+  const avgScore = scores.length > 0
+    ? (scores.reduce((sum, s) => sum + (s.score / s.total_questions), 0) / scores.length * 100).toFixed(1)
+    : 0;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">登録済み学生数</div>
+        <div class="stat-value">${totalUsers}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">クイズ実施回数</div>
+        <div class="stat-value">${totalQuizzes}</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div>
+        <div class="stat-label">平均正答率</div>
+        <div class="stat-value">${avgScore}%</div>
+      </div>
+    </div>
+  `;
+}
+
+function displayUsers(users, scores) {
+  const tbody = document.getElementById('userBody');
+  tbody.innerHTML = '';
+
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5">学生がまだ登録されていません</td></tr>';
+    return;
+  }
+
+  users.forEach(user => {
+    const userScores = scores.filter(s => s.user_id === user.id);
+    const quizCount = userScores.length;
+    const avgScore = userScores.length > 0
+      ? (userScores.reduce((sum, s) => sum + (s.score / s.total_questions), 0) / userScores.length * 100).toFixed(1)
+      : '-';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${user.name || 'N/A'}</td>
+      <td>${user.email}</td>
+      <td>${new Date(user.created_at).toLocaleDateString('ja-JP')}</td>
+      <td>${quizCount}回</td>
+      <td>${avgScore}${avgScore !== '-' ? '%' : ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function displayScores(users, scores) {
+  const tbody = document.getElementById('scoreBody');
+  tbody.innerHTML = '';
+
+  if (scores.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4">スコアはまだありません</td></tr>';
+    return;
+  }
+
+  scores.forEach(score => {
+    const user = users.find(u => u.id === score.user_id);
+    const percentage = ((score.score / score.total_questions) * 100).toFixed(1);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${user ? user.name : 'Unknown'}</td>
+      <td><span class="level-badge">${score.level}</span></td>
+      <td>
+        <div class="score-bar">
+          <div class="score-fill" style="width:${percentage}%"></div>
+        </div>
+        ${score.score}/${score.total_questions} (${percentage}%)
+      </td>
+      <td>${new Date(score.completed_at).toLocaleString('ja-JP')}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

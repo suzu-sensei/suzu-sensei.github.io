@@ -271,6 +271,84 @@
     font-weight: 300;
   }
 
+  /* 5-STEP FLOW */
+  .steps-outer { background: var(--cream); }
+  .steps-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 70px 40px 30px;
+  }
+  .steps-header { text-align: center; margin-bottom: 44px; }
+  .steps-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .step-item {
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+    position: relative;
+  }
+  .step-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--blush);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin: 0 auto 12px;
+  }
+  .step-num {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--rose);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .step-label {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    color: var(--deep);
+    margin-bottom: 4px;
+  }
+  .step-desc {
+    font-size: 11px;
+    color: #9a8080;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .step-arrow {
+    color: var(--rose);
+    font-size: 20px;
+    align-self: center;
+    margin-top: 22px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    .steps-row { flex-direction: column; }
+    .step-arrow { transform: rotate(90deg); margin: 2px 0; }
+    .steps-section { padding: 50px 24px 20px; }
+  }
+
+  /* CALENDLY BOOKING */
+  .booking-outer { background: var(--blush); }
+  .booking-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 90px 40px;
+    text-align: center;
+  }
+  .calendly-inline-widget {
+    margin-top: 32px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(107,61,61,0.08);
+  }
+
   /* SAFE SPACE SECTION */
   .safe-outer { background: white; }
   .safe-section {
@@ -1248,10 +1326,12 @@
 <!-- Side panel -->
 <nav class="nav-panel" id="nav-panel">
   <div class="nav-panel-title">MENU</div>
+  <a class="nav-link" href="textbook.html" onclick="closeNav()"><span data-lang="zh">📖 教材</span><span data-lang="en" style="display:none">📖 Textbook</span></a>
   <a class="nav-link" href="#about"   onclick="closeNav()"><span data-lang="zh">自己紹介</span><span data-lang="en" style="display:none">About</span></a>
   <a class="nav-link" href="#reviews" onclick="closeNav()"><span data-lang="zh">学生からの声</span><span data-lang="en" style="display:none">Reviews</span></a>
   <a class="nav-link" href="#pricing" onclick="closeNav()"><span data-lang="zh">費用</span><span data-lang="en" style="display:none">Pricing</span></a>
   <a class="nav-link" href="#contact" onclick="closeNav()"><span data-lang="zh">お問い合わせ</span><span data-lang="en" style="display:none">Contact</span></a>
+  <a class="nav-link" href="dashboard.html" onclick="closeNav()"><span data-lang="zh">📊 先生ダッシュボード</span><span data-lang="en" style="display:none">📊 Dashboard</span></a>
   <a class="nav-quiz-link" href="quiz.html">🌸 <span data-lang="zh">クイズで練習！</span><span data-lang="en" style="display:none">Practice Quiz!</span></a>
   <a class="nav-quiz-link" href="jlpt.html">📖 <span data-lang="zh">JLPT単語カード</span><span data-lang="en" style="display:none">JLPT Word Cards</span></a>
 </nav>
@@ -1305,6 +1385,7 @@ function closeNav() {
     </p>
     <div class="cta-group">
       <button class="btn-primary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで体験レッスンを申し込む</button>
+      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
       <button class="btn-secondary" onclick="document.querySelector('.lessons-section').scrollIntoView({behavior:'smooth'})">レッスン内容を見る</button>
     </div>
     <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">※ LINEビジネスアカウントに繋がります</p>
@@ -1334,6 +1415,54 @@ function closeNav() {
   </div>
 </section>
 
+<div class="steps-outer">
+<section class="steps-section scroll-reveal">
+  <div class="steps-header">
+    <div class="section-label">学びの流れ</div>
+    <h2 class="section-title" style="font-size: clamp(22px,2.6vw,32px);">ゲームから会話実践まで、<br>楽しく続けられるステップ。</h2>
+  </div>
+  <div class="steps-row">
+    <div class="step-item">
+      <div class="step-icon">🎮</div>
+      <div class="step-num">STEP 1</div>
+      <div class="step-label">ゲーム</div>
+      <div class="step-desc"><span data-lang="zh">從遊戲式教材開始，輕鬆入門</span><span data-lang="en" style="display:none">Start with game-based materials</span></div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step-item">
+      <div class="step-icon">🎁</div>
+      <div class="step-num">STEP 2</div>
+      <div class="step-label">体験課</div>
+      <div class="step-desc"><span data-lang="zh">免費體驗課，確認上課風格</span><span data-lang="en" style="display:none">Free trial lesson</span></div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step-item">
+      <div class="step-icon">📋</div>
+      <div class="step-num">STEP 3</div>
+      <div class="step-label">カリキュラム</div>
+      <div class="step-desc"><span data-lang="zh">依目標量身訂做課程計畫</span><span data-lang="en" style="display:none">Personalised curriculum</span></div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step-item">
+      <div class="step-icon">📝</div>
+      <div class="step-num">STEP 4</div>
+      <div class="step-label">ノート</div>
+      <div class="step-desc"><span data-lang="zh">每堂課後收到整理好的筆記</span><span data-lang="en" style="display:none">Notes shared after every lesson</span></div>
+    </div>
+    <div class="step-arrow">›</div>
+    <div class="step-item">
+      <div class="step-icon">💬</div>
+      <div class="step-num">STEP 5</div>
+      <div class="step-label">会話実践</div>
+      <div class="step-desc"><span data-lang="zh">實際運用，自然開口說日文</span><span data-lang="en" style="display:none">Put it into real conversation</span></div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:44px;">
+    <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
+  </div>
+</section>
+</div>
+
 <div class="safe-outer">
 <section class="safe-section scroll-reveal">
   <div>
@@ -1349,7 +1478,10 @@ function closeNav() {
       SUZU has personally studied English, Mandarin, and Thai — self-studying for years yet struggling to communicate with locals in the field. That frustration was very real.<br>
       That's exactly why every lesson is <strong>immersion time</strong>: building solid foundations while learning the authentic pronunciation and everyday vocabulary that Japanese people actually use — not just textbook phrases.</span>
     </p>
-    <button class="btn-primary" style="background: var(--deep);" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEでまず体験してみる →</button>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <button class="btn-primary" style="background: var(--deep);" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEでまず体験してみる →</button>
+      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する →</button>
+    </div>
   </div>
   <div class="safe-cards">
     <div class="safe-card">
@@ -1678,7 +1810,45 @@ function closeNav() {
       </div>
     </div>
 
-    <div style="text-align:center;">
+    <!-- 支払い方法 -->
+    <div class="flow-box" style="background: #faf6f0; margin-top: 32px;">
+      <div class="flow-title">支払い方法
+        <span class="flow-title-cn" data-lang="zh">付款方式</span><span class="flow-title-cn" data-lang="en" style="display:none">Payment Methods</span>
+      </div>
+      <p style="font-size: 12px; color: #b09090; margin-bottom: 16px; line-height: 1.8;">
+        <span data-lang="zh">體驗課後，老師會透過 LINE 傳送你個人銀行帳號資訊。</span>
+        <span data-lang="en" style="display:none">After your trial lesson, SUZU will share her bank details via LINE.</span>
+      </p>
+      <div style="display: grid; gap: 12px;">
+        <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🌍 Wise（国際送金）
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">國際轉帳</small><small style="font-weight: 300; color: #b09090; margin-left: 8px; display:none" data-lang="en">International Transfer</small></div>
+          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <span data-lang="zh">方便國際學生跨境匯款</span><span data-lang="en" style="display:none">Convenient for international transfers</span>
+          </div>
+        </div>
+        <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🇹🇭 Kasikorn Bank（タイ）
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">泰國銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px; display:none" data-lang="en">Thailand Banking</small></div>
+          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <span data-lang="zh">泰國居住者專用</span><span data-lang="en" style="display:none">For students in Thailand</span>
+          </div>
+        </div>
+        <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🇹🇼 中華銀行（台湾）
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">台灣銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px; display:none" data-lang="en">Taiwan Banking</small></div>
+          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <span data-lang="zh">台灣居住者專用</span><span data-lang="en" style="display:none">For students in Taiwan</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 14px; font-size: 12px; color: #b09090; line-height: 1.8;">
+        💡 <span data-lang="zh">體驗課預約後，老師會直接分享付款帳號資訊。</span>
+        <span data-lang="en" style="display:none">Payment details will be shared privately after booking your trial lesson.</span>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top: 40px;">
       <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: #06C755;" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">
         💬 LINEで申し込む ✿
       </button>
@@ -1690,6 +1860,21 @@ function closeNav() {
     </div>
   </div>
 </section>
+
+<!-- BOOKING -->
+<div class="booking-outer">
+<section class="booking-section scroll-reveal">
+  <div class="section-label" style="justify-content:center;">オンライン予約</div>
+  <h2 class="section-title">今すぐ無料体験レッスンを<br>予約しましょう。</h2>
+  <p class="section-body" style="max-width:480px;margin-left:auto;margin-right:auto;">
+    <span data-lang="zh">下方直接選擇方便的時間，即可完成預約。</span>
+    <span data-lang="en" style="display:none">Pick a time that works for you below to book instantly.</span>
+  </p>
+  <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
+  <div class="calendly-inline-widget" data-url="https://calendly.com/suzu-nihongo/30min" style="min-width:280px;height:650px;"></div>
+</section>
+</div>
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 <!-- CONTACT -->
 <section class="contact-section" id="contact">

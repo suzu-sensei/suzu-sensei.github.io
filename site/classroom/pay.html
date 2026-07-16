@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>繳費・入班｜純香老師的暖心日語</title>
+<link rel="stylesheet" href="../textbook/theme.css">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-zh-sans);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-zh-serif);}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 60px;}
+  .hero{background:linear-gradient(135deg,var(--step),var(--frame));border-radius:16px;padding:28px 20px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(122,79,130,.25);}
+  .hero h1{font-size:1.3rem;margin:0 0 6px;}
+  .hero p{font-size:0.88rem;opacity:0.92;margin:0;}
+  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .card h2{font-size:1rem;font-weight:700;margin:0 0 14px;color:var(--frame);border-bottom:1px solid var(--border);padding-bottom:10px;}
+  .course-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .course-card{border:1.5px solid var(--border2);border-radius:12px;padding:14px;background:var(--bg);}
+  .course-card .c-name{font-weight:700;font-size:0.92rem;color:var(--ink);}
+  .course-card .c-desc{font-size:0.78rem;color:var(--ink-mid);margin-top:4px;line-height:1.6;}
+  .course-card .c-price{font-size:0.85rem;color:var(--frame);font-weight:700;margin-top:8px;}
+  .pay-method{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;background:var(--bg);font-size:0.9rem;line-height:1.8;}
+  .pay-method .pm-title{font-weight:700;color:var(--frame);margin-bottom:4px;}
+  .placeholder{color:var(--ink-light);}
+  .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:10px;}
+  .btn-main{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:15px;font-weight:700;font-size:0.95rem;}
+  .steps{font-size:0.9rem;line-height:2.1;padding-left:20px;}
+  .todo{background:var(--amber-pale);border:1px dashed var(--amber);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--ink-mid);line-height:1.7;}
+  .todo b{color:var(--frame);}
+  a.back{display:inline-block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-mid);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../index.html">← 回首頁</a>
+
+  <div class="hero">
+    <h1>💛 繳費・入班</h1>
+    <p>純香老師的暖心日語 · すず先生</p>
+  </div>
+
+  <div class="card">
+    <h2>課程方案</h2>
+    <div class="course-grid">
+      <div class="course-card">
+        <div class="c-name">一對一</div>
+        <div class="c-desc">50分鐘 / 客製化教學</div>
+        <div class="c-price">NT <span class="placeholder">＿＿＿</span> / 堂</div>
+      </div>
+      <div class="course-card">
+        <div class="c-name">雙人共學</div>
+        <div class="c-desc">50分鐘 / 兩人一起上</div>
+        <div class="c-price">NT <span class="placeholder">＿＿＿</span> / 堂</div>
+      </div>
+    </div>
+    <p class="note">＊ 價格為佔位文字，請自行填入實際金額，或加入堂數優惠方案。</p>
+  </div>
+
+  <div class="card">
+    <h2>付款方式</h2>
+    <div class="pay-method">
+      <div class="pm-title">🏦 台幣銀行轉帳</div>
+      銀行：<span class="placeholder">＿＿銀行＿＿分行</span><br>
+      戶名：<span class="placeholder">＿＿＿＿</span><br>
+      帳號：<span class="placeholder">＿＿＿ － ＿＿＿＿＿＿＿</span>
+    </div>
+    <div class="pay-method">
+      <div class="pm-title">🇹🇭 PromptPay（泰銖）</div>
+      <span class="placeholder">請貼上你的 PromptPay QR code 圖片或帳號</span>
+    </div>
+    <div class="pay-method">
+      <div class="pm-title">🌍 Wise（國際匯款）</div>
+      <span class="placeholder">請填入你的 Wise 收款帳號 / 連結</span>
+    </div>
+    <p class="note">＊ 目前尚未串接自動對帳系統，匯款完成後請依下方步驟通知老師確認。</p>
+  </div>
+
+  <div class="card">
+    <h2>入班步驟</h2>
+    <ol class="steps">
+      <li>選擇課程方案，完成匯款</li>
+      <li>將匯款截圖，透過 <span class="placeholder">LINE / Email（請填入你的聯絡方式）</span> 傳給老師</li>
+      <li>老師確認收款後，會另外傳送上課連結給你</li>
+    </ol>
+    <a class="btn-main" href="#" onclick="alert('請填入你的 LINE 官方帳號或聯絡連結');return false;">📩 傳送繳費截圖給老師</a>
+  </div>
+
+  <div class="todo">
+    <b>給すず先生的待辦：</b> 這頁目前是「靜態版」，尚未接自動收款/對帳系統（避免誤連到別人的後端）。
+    請把上面「＿＿＿」的地方換成你自己的銀行資訊、PromptPay、Wise、聯絡方式即可直接使用。
+    之後想做「自動確認 + 自動開通上課連結」的話，可以另外幫你接一個全新、只屬於你自己的資料庫。
+  </div>
+
+</div>
+</body>
+</html>

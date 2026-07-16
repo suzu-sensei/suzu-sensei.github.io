@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>純香老師的暖心日語｜陪伴你用日文看世界</title>
+<link rel="stylesheet" href="textbook/theme.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-zh-sans);
+    line-height:1.85;
+  }
+  .hero{
+    padding:64px 20px 40px; text-align:center;
+    background:linear-gradient(180deg, var(--step-pale), var(--bg) 80%);
+  }
+  .hero .avatar{
+    width:72px;height:72px;border-radius:50%;margin:0 auto 18px;
+    background:linear-gradient(135deg, var(--step), var(--frame));
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-family:var(--font-zh-serif);font-size:1.6rem;font-weight:700;
+    box-shadow:0 8px 22px rgba(122,79,130,.25);
+  }
+  .hero h1{
+    font-family:var(--font-zh-serif); font-size:1.9rem; color:var(--frame);
+    margin-bottom:10px; line-height:1.5;
+  }
+  .hero p{ color:var(--ink-mid); font-size:0.98rem; max-width:420px; margin:0 auto; }
+
+  .page{ max-width:640px; margin:0 auto; padding:8px 20px 80px; }
+
+  .card-link{
+    display:flex; align-items:center; gap:16px;
+    background:var(--paper); border:1px solid var(--border);
+    border-radius:16px; padding:20px 20px; margin-bottom:14px;
+    text-decoration:none; color:var(--ink);
+    transition:.15s;
+  }
+  .card-link:hover{ border-color:var(--step); box-shadow:0 8px 22px rgba(122,79,130,.12); }
+  .card-link .ico{
+    width:44px;height:44px;border-radius:12px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+    background:var(--step-pale); color:var(--frame);
+  }
+  .card-link .t{ font-weight:700; font-size:1.05rem; margin-bottom:3px; }
+  .card-link .d{ font-size:0.85rem; color:var(--ink-mid); }
+
+  .section-label{
+    font-size:0.78rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ink-light); margin:34px 0 12px; padding-bottom:6px;
+    border-bottom:1px solid var(--border);
+  }
+
+  footer{ text-align:center; font-size:0.78rem; color:var(--ink-light); padding:20px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="avatar">鈴</div>
+  <h1>純香老師的暖心日語<br>陪伴你用日文看世界</h1>
+  <p>すず先生と一緒に、日本語で世界を見にいこう。</p>
+</div>
+
+<div class="page">
+
+  <p class="section-label">學習</p>
+  <a class="card-link" href="textbook/index.html">
+    <div class="ico">📖</div>
+    <div>
+      <div class="t">教材目錄</div>
+      <div class="d">文法・句型整理，隨時複習</div>
+    </div>
+  </a>
+
+  <p class="section-label">上課</p>
+  <a class="card-link" href="classroom/phonics-class.html">
+    <div class="ico">✏️</div>
+    <div>
+      <div class="t">拼音規則｜上課用</div>
+      <div class="d">課堂講解專用頁面</div>
+    </div>
+  </a>
+  <a class="card-link" href="classroom/modal-particles-class.html">
+    <div class="ico">✏️</div>
+    <div>
+      <div class="t">情態助詞｜上課用</div>
+      <div class="d">課堂講解專用頁面</div>
+    </div>
+  </a>
+  <a class="card-link" href="classroom/sentence-structure-class.html">
+    <div class="ico">✏️</div>
+    <div>
+      <div class="t">句子結構五步驟｜上課用</div>
+      <div class="d">課堂講解專用頁面</div>
+    </div>
+  </a>
+
+  <p class="section-label">報名・繳費</p>
+  <a class="card-link" href="classroom/pay.html">
+    <div class="ico">💳</div>
+    <div>
+      <div class="t">繳費・入班</div>
+      <div class="d">課程方案與付款方式</div>
+    </div>
+  </a>
+
+</div>
+
+<footer>純香老師的暖心日語 © <span id="y"></span></footer>
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
