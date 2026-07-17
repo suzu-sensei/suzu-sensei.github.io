@@ -69,8 +69,8 @@ a.link{color:var(--rose);}
         支払い承認待ち
       </div>
       <table class="table" id="pendingTable">
-        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>提出日</th><th>スクショ</th><th>操作</th></tr></thead>
-        <tbody id="pendingBody"><tr><td colspan="6" class="loading">読み込み中...</td></tr></tbody>
+        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>方法</th><th>提出日</th><th>スクショ</th><th>操作</th></tr></thead>
+        <tbody id="pendingBody"><tr><td colspan="7" class="loading">読み込み中...</td></tr></tbody>
       </table>
     </div>
 
@@ -96,8 +96,8 @@ a.link{color:var(--rose);}
     <div class="section">
       <div class="section-title">支払い履歴（全件）</div>
       <table class="table" id="historyTable">
-        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>提出日</th><th>状態</th></tr></thead>
-        <tbody id="historyBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
+        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>方法</th><th>提出日</th><th>状態</th></tr></thead>
+        <tbody id="historyBody"><tr><td colspan="6" class="loading">読み込み中...</td></tr></tbody>
       </table>
     </div>
 
@@ -220,9 +220,9 @@ async function loadHistory(){
   const { data: payments, error } = await Classroom.client
     .from('classroom_payments').select('*').order('submitted_at', { ascending: false }).limit(100);
   const tbody = document.getElementById('historyBody');
-  if (error){ tbody.innerHTML = `<tr><td colspan="5" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (error){ tbody.innerHTML = `<tr><td colspan="6" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
   if (!payments || payments.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" class="center">記録がありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="center">記録がありません</td></tr>';
     return;
   }
   tbody.innerHTML = payments.map(p => `
@@ -230,6 +230,7 @@ async function loadHistory(){
       <td>${p.student_email}</td>
       <td>${p.currency} ${p.amount ?? '-'}</td>
       <td>${p.lessons_purchased ?? '-'}</td>
+      <td>${p.payment_method || '-'}</td>
       <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
       <td><span class="status ${p.status}">${p.status === 'pending' ? '審査中' : p.status === 'approved' ? '承認済み' : '却下'}</span></td>
     </tr>`).join('');
@@ -239,9 +240,9 @@ async function loadPending(){
   const { data: payments, error } = await Classroom.client
     .from('classroom_payments').select('*').eq('status', 'pending').order('submitted_at', { ascending: true });
   const tbody = document.getElementById('pendingBody');
-  if (error){ tbody.innerHTML = `<tr><td colspan="6" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (error){ tbody.innerHTML = `<tr><td colspan="7" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
   if (!payments || payments.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" class="center">承認待ちはありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="center">承認待ちはありません</td></tr>';
     return;
   }
   const rows = await Promise.all(payments.map(async p => {
@@ -255,6 +256,7 @@ async function loadPending(){
         <td>${p.student_email}</td>
         <td>${p.currency} ${p.amount ?? '-'}</td>
         <td>${p.lessons_purchased ?? '-'}</td>
+        <td>${p.payment_method || '-'}</td>
         <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
         <td>${slipLink}</td>
         <td>

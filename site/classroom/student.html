@@ -124,8 +124,8 @@
     <div class="card">
       <h2>繳費記錄</h2>
       <table>
-        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>狀態</th></tr></thead>
-        <tbody id="s-payments"><tr><td colspan="4" class="center">尚無記錄</td></tr></tbody>
+        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>方式</th><th>狀態</th></tr></thead>
+        <tbody id="s-payments"><tr><td colspan="5" class="center">尚無記錄</td></tr></tbody>
       </table>
     </div>
 
@@ -147,6 +147,14 @@
       <div class="form-field">
         <label>購買堂數</label>
         <input type="number" id="p-lessons" placeholder="例：10">
+      </div>
+      <div class="form-field">
+        <label>付款方式</label>
+        <select id="p-method">
+          <option value="銀行振込">🏦 銀行振込</option>
+          <option value="PromptPay">🇹🇭 PromptPay</option>
+          <option value="Wise">🌍 Wise</option>
+        </select>
       </div>
       <div class="form-field">
         <label>轉帳截圖</label>
@@ -267,13 +275,14 @@ async function refresh(){
 
   const tbody = document.getElementById('s-payments');
   if (!payments || payments.length === 0){
-    tbody.innerHTML = '<tr><td colspan="4" class="center">尚無記錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="center">尚無記錄</td></tr>';
   } else {
     tbody.innerHTML = payments.map(p => `
       <tr>
         <td>${new Date(p.submitted_at).toLocaleDateString('zh-TW')}</td>
         <td>${p.currency} ${p.amount ?? '-'}</td>
         <td>${p.lessons_purchased ?? '-'}</td>
+        <td>${p.payment_method || '-'}</td>
         <td><span class="status ${p.status}">${p.status === 'pending' ? '審核中' : p.status === 'approved' ? '已確認' : '已退回'}</span></td>
       </tr>`).join('');
   }
@@ -320,6 +329,7 @@ async function submitPayment(){
   const amount = parseFloat(document.getElementById('p-amount').value) || null;
   const currency = document.getElementById('p-currency').value;
   const lessons = parseInt(document.getElementById('p-lessons').value) || 0;
+  const payment_method = document.getElementById('p-method').value;
   const fileInput = document.getElementById('p-file');
   const statusEl = document.getElementById('p-status');
   const btn = document.getElementById('p-submit');
@@ -337,7 +347,8 @@ async function submitPayment(){
     if (upErr) throw upErr;
 
     const { error: insErr } = await Classroom.client.from('classroom_payments').insert({
-      student_email: email, amount, currency, lessons_purchased: lessons, slip_path: path, status: 'pending'
+      student_email: email, amount, currency, lessons_purchased: lessons, slip_path: path, status: 'pending',
+      payment_method
     });
     if (insErr) throw insErr;
 
