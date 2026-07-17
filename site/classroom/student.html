@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>我的教室｜純香老師的暖心日語</title>
+<title>わたしの教室｜純香老師的暖心日語</title>
 <link rel="stylesheet" href="../textbook/theme.css">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -35,164 +35,277 @@
   .form-field{margin-bottom:12px;}
   .form-field label{display:block;font-size:0.82rem;color:var(--ink-mid);margin-bottom:5px;}
   .form-field input,.form-field select{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:var(--bg);color:var(--ink);}
-  .btn-main{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:15px;font-weight:700;font-size:0.95rem;}
+  .btn-main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;border:none;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:13px;font-weight:700;font-size:0.95rem;}
   .btn-main:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-main small{font-size:0.72rem;font-weight:400;opacity:0.88;}
   .btn-ghost{display:block;text-align:center;margin-top:10px;font-size:0.85rem;color:var(--ink-mid);text-decoration:underline;cursor:pointer;background:none;border:none;}
   .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:8px;}
   .loading,.center{text-align:center;padding:40px 20px;color:var(--ink-mid);}
   .msg{font-size:0.9rem;line-height:1.8;}
   #login-btn{display:flex;justify-content:center;margin:16px 0;}
+  .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  .row .sub{margin-top:1px;}
+  [data-lang="en"]{display:none;}
+  body.lang-en [data-lang="zh"]{display:none;}
+  body.lang-en [data-lang="en"]{display:inline;}
+  .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
+  .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
+  .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
+  .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
+  .acct-tabs{display:flex;gap:6px;margin-bottom:14px;}
+  .acct-tab-btn{flex:1;padding:8px 4px;border:1px solid var(--border2);background:var(--bg);border-radius:8px;font-size:0.78rem;cursor:pointer;color:var(--ink-mid);}
+  .acct-tab-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <a class="back" href="../index.html">← 回首頁</a>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <a class="back" href="../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <div class="lang-switcher">
+      <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
+      <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+    </div>
+  </div>
 
   <div class="hero">
-    <h1>🏫 我的教室</h1>
+    <h1>🏫 わたしの教室<span class="sub" data-lang="zh">我的教室</span><span class="sub" data-lang="en">My Classroom</span></h1>
     <p id="hero-sub">純香老師的暖心日語 · すず先生</p>
   </div>
 
   <!-- 未ログイン -->
   <div class="card" id="view-login" style="display:none;">
-    <h2>請先登入</h2>
-    <p class="msg">請用你上課登記時使用的 Google 帳號登入，即可看到只屬於你自己的上課資訊。</p>
+    <h2>まずログインしてください<span class="sub" data-lang="zh">請先登入</span><span class="sub" data-lang="en">Please Log In</span></h2>
+    <p class="msg">授業登録時に使ったGoogleアカウントでログインしてください。ログインすると、自分専用の授業情報が表示されます。<br>
+      <span class="sub" data-lang="zh">請用你上課登記時使用的 Google 帳號登入，即可看到只屬於你自己的上課資訊。</span>
+      <span class="sub" data-lang="en">Please log in with the Google account you used to register. You'll see your own class information only.</span>
+    </p>
     <div id="login-btn"></div>
   </div>
 
   <!-- 読み込み中 -->
-  <div class="loading" id="view-loading">讀取中...</div>
+  <div class="loading" id="view-loading">読み込み中...</div>
 
   <!-- 未登録 -->
   <div class="card" id="view-notfound" style="display:none;">
-    <h2>尚未開通</h2>
-    <p class="msg">這個帳號還沒有被登記為學生。請透過 LINE 聯絡老師，確認繳費／登記後即可使用。</p>
-    <a class="btn-main" style="margin-top:14px;" href="https://lin.ee/u3ojW9D" target="_blank">💬 聯絡老師</a>
-    <button class="btn-ghost" onclick="Classroom.logout()">登出</button>
+    <h2>まだ登録されていません<span class="sub" data-lang="zh">尚未開通</span><span class="sub" data-lang="en">Not Registered Yet</span></h2>
+    <p class="msg">このアカウントはまだ学生として登録されていません。LINEで先生に連絡し、お支払い・登録の確認後にご利用いただけます。<br>
+      <span class="sub" data-lang="zh">這個帳號還沒有被登記為學生。請透過 LINE 聯絡老師，確認繳費／登記後即可使用。</span>
+      <span class="sub" data-lang="en">This account hasn't been registered as a student yet. Please contact the teacher via LINE to confirm payment/registration.</span>
+    </p>
+    <a class="btn-main" style="margin-top:14px;" href="https://lin.ee/u3ojW9D" target="_blank">💬 先生に連絡する<small data-lang="zh">聯絡老師</small><small data-lang="en">Contact Teacher</small></a>
+    <button class="btn-ghost" onclick="Classroom.logout()">ログアウト<span class="sub" data-lang="zh">登出</span><span class="sub" data-lang="en">Log Out</span></button>
   </div>
 
   <!-- 学生ダッシュボード -->
   <div id="view-student" style="display:none;">
 
     <div class="card">
-      <h2>🎥 錄影（選填）</h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">按下後瀏覽器會請你選擇要分享的畫面，請選「Chrome分頁」→ 選Google Meet那個分頁 → 記得勾選「分享分頁音訊」。停止後影片會自動儲存到你自己的電腦，不需要就不用按。</p>
-      <button class="btn-main" id="rec-btn" onclick="toggleRecording()">🔴 開始錄影</button>
+      <h2>🎥 録画（任意）<span class="sub" data-lang="zh">錄影（選填）</span><span class="sub" data-lang="en">Recording (Optional)</span></h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">
+        押すとブラウザが共有する画面を尋ねます。「Chromeタブ」→Google Meetのタブを選び、「タブの音声を共有」にチェックを入れてください。停止すると動画が自分のPCに自動保存されます。不要な場合は押さなくて大丈夫です。<br>
+        <span class="sub" data-lang="zh">按下後瀏覽器會請你選擇要分享的畫面，請選「Chrome分頁」→ 選Google Meet那個分頁 → 記得勾選「分享分頁音訊」。停止後影片會自動儲存到你自己的電腦，不需要就不用按。</span>
+        <span class="sub" data-lang="en">Click to be asked which screen to share — choose "Chrome Tab" → select the Google Meet tab → check "Share tab audio". The video auto-saves to your computer when stopped. Optional — no need to click if you don't want to record.</span>
+      </p>
+      <button class="btn-main" id="rec-btn" onclick="toggleRecording()">🔴 録画開始</button>
       <div class="note" id="rec-status"></div>
     </div>
 
     <div class="card">
-      <h2>上課時間</h2>
-      <div class="row"><span class="label">固定時間</span><span class="value" id="s-schedule">—</span></div>
-      <p class="note">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</p>
+      <h2>授業時間<span class="sub" data-lang="zh">上課時間</span><span class="sub" data-lang="en">Class Schedule</span></h2>
+      <div class="row"><span class="label">固定の時間<span class="sub" data-lang="zh">固定時間</span><span class="sub" data-lang="en">Fixed Time</span></span><span class="value" id="s-schedule">—</span></div>
+      <p class="note">＊現在は固定の毎週の授業時間です。変更やお休みが必要な場合は、下の「変更・お休み申請」から提出してください。<br>
+        <span class="sub" data-lang="zh">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</span>
+        <span class="sub" data-lang="en">＊ This is your fixed weekly schedule. To request a change or day off, use the form below.</span>
+      </p>
     </div>
 
     <div class="card" id="card-links" style="display:none;">
-      <h2>上課連結</h2>
+      <h2>授業リンク<span class="sub" data-lang="zh">上課連結</span><span class="sub" data-lang="en">Class Links</span></h2>
       <div id="s-links" style="display:flex;flex-direction:column;gap:10px;"></div>
-      <p class="note">＊ 連結每次上課都固定不變，請先加入書籤方便下次使用。</p>
+      <p class="note">＊リンクは毎回同じものです。次回のためにブックマークしておくと便利です。<br>
+        <span class="sub" data-lang="zh">＊ 連結每次上課都固定不變，請先加入書籤方便下次使用。</span>
+        <span class="sub" data-lang="en">＊ The link is always the same — bookmarking it is recommended.</span>
+      </p>
     </div>
 
     <div class="card">
-      <h2>接下來的上課日</h2>
+      <h2>次回以降の授業日<span class="sub" data-lang="zh">接下來的上課日</span><span class="sub" data-lang="en">Upcoming Lessons</span></h2>
       <div id="s-upcoming"><p class="note" style="margin-top:0;">—</p></div>
     </div>
 
     <div class="card" id="card-materials" style="display:none;">
-      <h2>📚 學習資料</h2>
+      <h2>📚 学習資料<span class="sub" data-lang="zh">學習資料</span><span class="sub" data-lang="en">Materials</span></h2>
       <div id="s-materials"></div>
     </div>
 
     <div class="card">
-      <h2>請假・改期申請</h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</p>
+      <h2>変更・お休み申請<span class="sub" data-lang="zh">請假・改期申請</span><span class="sub" data-lang="en">Change / Leave Request</span></h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">
+        お休みや変更をしたい授業日を選んでください。送信後、先生が確認します。<br>
+        <span class="sub" data-lang="zh">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</span>
+        <span class="sub" data-lang="en">Select the lesson date you'd like to change or take off. The teacher will review your request.</span>
+      </p>
       <div class="form-field">
-        <label>想調整的上課日</label>
+        <label>変更したい授業日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Date to Change</span></label>
         <select id="r-date"></select>
       </div>
       <div class="form-field">
-        <label>希望的替代時間（選填）</label>
-        <input type="text" id="r-alt" placeholder="例：改成7/20（日）14:00">
+        <label>希望する変更後の時間（任意）<span class="sub" data-lang="zh">希望的替代時間（選填）</span><span class="sub" data-lang="en">Preferred Alternative (optional)</span></label>
+        <input type="text" id="r-alt" placeholder="例：7/20（日）14:00に変更">
       </div>
       <div class="form-field">
-        <label>原因（選填）</label>
-        <input type="text" id="r-reason" placeholder="例：臨時有事">
+        <label>理由（任意）<span class="sub" data-lang="zh">原因（選填）</span><span class="sub" data-lang="en">Reason (optional)</span></label>
+        <input type="text" id="r-reason" placeholder="例：急用ができた">
       </div>
-      <button class="btn-main" id="r-submit" onclick="submitRequest()">送出申請</button>
+      <button class="btn-main" id="r-submit" onclick="submitRequest()">申請を送信<small data-lang="zh">送出申請</small><small data-lang="en">Submit Request</small></button>
       <div class="note" id="r-status"></div>
 
       <table style="margin-top:16px;">
-        <thead><tr><th>申請日期</th><th>想調整的上課日</th><th>狀態</th></tr></thead>
-        <tbody id="s-requests"><tr><td colspan="3" class="center">尚無申請</td></tr></tbody>
+        <thead><tr>
+          <th>申請日<span class="sub" data-lang="zh">申請日期</span><span class="sub" data-lang="en">Submitted</span></th>
+          <th>変更したい日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Requested Date</span></th>
+          <th>状態<span class="sub" data-lang="zh">狀態</span><span class="sub" data-lang="en">Status</span></th>
+        </tr></thead>
+        <tbody id="s-requests"><tr><td colspan="3" class="center">申請はありません</td></tr></tbody>
       </table>
     </div>
 
     <div class="card">
-      <h2>剩餘堂數</h2>
+      <h2>残り回数<span class="sub" data-lang="zh">剩餘堂數</span><span class="sub" data-lang="en">Remaining Lessons</span></h2>
       <div class="big-num" id="s-remaining">—</div>
-      <div class="big-num-label">堂</div>
+      <div class="big-num-label">回<span class="sub" data-lang="zh">堂</span><span class="sub" data-lang="en">lessons</span></div>
     </div>
 
     <div class="card">
-      <h2>繳費記錄</h2>
+      <h2>支払い記録<span class="sub" data-lang="zh">繳費記錄</span><span class="sub" data-lang="en">Payment History</span></h2>
       <table>
-        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>方式</th><th>狀態</th></tr></thead>
-        <tbody id="s-payments"><tr><td colspan="5" class="center">尚無記錄</td></tr></tbody>
+        <thead><tr>
+          <th>日付<span class="sub" data-lang="zh">日期</span><span class="sub" data-lang="en">Date</span></th>
+          <th>金額<span class="sub" data-lang="zh">金額</span><span class="sub" data-lang="en">Amount</span></th>
+          <th>回数<span class="sub" data-lang="zh">堂數</span><span class="sub" data-lang="en">Lessons</span></th>
+          <th>方法<span class="sub" data-lang="zh">方式</span><span class="sub" data-lang="en">Method</span></th>
+          <th>状態<span class="sub" data-lang="zh">狀態</span><span class="sub" data-lang="en">Status</span></th>
+        </tr></thead>
+        <tbody id="s-payments"><tr><td colspan="5" class="center">記録はありません</td></tr></tbody>
       </table>
     </div>
 
     <div class="card">
-      <h2>匯款帳戶資訊</h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">帳號為保護安全僅透過 LINE 提供，戶名如下，轉帳時請核對戶名是否一致。</p>
-      <div class="row"><span class="label">🏦 台幣（中華銀行）</span><span class="value">林泰華</span></div>
-      <div class="row"><span class="label">🇹🇭 泰銖（開泰銀行）</span><span class="value">SUZUKA IGUCHI</span></div>
-      <div class="row"><span class="label">🌍 美金（Wise）</span><span class="value">SUZUKA IGUCHI</span></div>
+      <h2 style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleAccountInfo()">
+        <span>振込先情報<span class="sub" data-lang="zh">匯款帳戶資訊</span><span class="sub" data-lang="en">Payment Account Info</span></span>
+        <span id="acct-toggle-arrow" style="font-size:0.8rem;color:var(--ink-light);">タップして表示 ▾</span>
+      </h2>
+      <div id="acct-info-body" style="display:none;">
+        <p class="note" style="margin-top:0;margin-bottom:14px;">
+          振込時に銀行・名義・口座番号をご確認ください。<br>
+          <span class="sub" data-lang="zh">轉帳時請核對銀行・戶名・帳號是否正確。</span>
+          <span class="sub" data-lang="en">Please confirm the bank, account holder name, and number before transferring.</span>
+        </p>
+        <div class="acct-tabs">
+          <button class="acct-tab-btn active" id="acct-tab-twd" onclick="switchAcctTab('twd')">🏦 台湾ドル</button>
+          <button class="acct-tab-btn" id="acct-tab-thb" onclick="switchAcctTab('thb')">🇹🇭 タイバーツ</button>
+          <button class="acct-tab-btn" id="acct-tab-usd" onclick="switchAcctTab('usd')">🌍 米ドル</button>
+        </div>
+        <div class="acct-tab-panel" id="acct-panel-twd">
+          <div class="row"><span class="label">銀行</span><span class="value">中華銀行</span></div>
+          <div class="row"><span class="label">名義</span><span class="value">林泰華</span></div>
+          <div class="row"><span class="label">口座番号</span><span class="value">107540587096</span></div>
+        </div>
+        <div class="acct-tab-panel" id="acct-panel-thb" style="display:none;">
+          <div class="row"><span class="label">銀行</span><span class="value">開泰銀行 Kasikorn Bank</span></div>
+          <div class="row"><span class="label">名義</span><span class="value">SUZUKA IGUCHI</span></div>
+          <div class="row"><span class="label">口座番号</span><span class="value">137-3-47344-4</span></div>
+        </div>
+        <div class="acct-tab-panel" id="acct-panel-usd" style="display:none;">
+          <div class="row"><span class="label">機関</span><span class="value">Wise</span></div>
+          <div class="row"><span class="label">名義</span><span class="value">SUZUKA IGUCHI</span></div>
+          <div class="row"><span class="label">口座番号</span><span class="value">771735364460669</span></div>
+          <div class="row"><span class="label">Routing（ACH・米国内）</span><span class="value">084009519</span></div>
+          <div class="row"><span class="label">SWIFT/BIC（米国外）</span><span class="value">TRWIUS35XXX</span></div>
+          <p class="note" style="margin-top:8px;">住所: Wise US Inc, 108 W 13th St, Wilmington, DE, 19801, United States</p>
+        </div>
+      </div>
     </div>
 
     <div class="card">
-      <h2>新增繳費（上傳轉帳截圖）</h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">帳號等詳細資訊請透過 LINE 向老師索取。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</p>
+      <h2>支払いを追加（振込スクショをアップロード）<span class="sub" data-lang="zh">新增繳費（上傳轉帳截圖）</span><span class="sub" data-lang="en">Add Payment (Upload Screenshot)</span></h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">
+        口座番号などの詳細はLINEで先生にお尋ねください。振込完了後、ここにスクリーンショットをアップロードすると、先生の確認後に残り回数へ自動加算されます。<br>
+        <span class="sub" data-lang="zh">帳號等詳細資訊請透過 LINE 向老師索取。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</span>
+        <span class="sub" data-lang="en">Please ask the teacher for account details via LINE. After transferring, upload a screenshot here — your remaining lessons will update once confirmed.</span>
+      </p>
       <div class="form-field">
-        <label>金額</label>
+        <label>金額<span class="sub" data-lang="zh">金額</span><span class="sub" data-lang="en">Amount</span></label>
         <input type="number" id="p-amount" placeholder="例：3000">
       </div>
       <div class="form-field">
-        <label>幣別</label>
+        <label>通貨<span class="sub" data-lang="zh">幣別</span><span class="sub" data-lang="en">Currency</span></label>
         <select id="p-currency">
-          <option value="TWD">TWD 台幣</option>
-          <option value="THB">THB 泰銖</option>
-          <option value="USD">USD 美金</option>
+          <option value="TWD">TWD 台湾ドル</option>
+          <option value="THB">THB タイバーツ</option>
+          <option value="USD">USD 米ドル</option>
         </select>
       </div>
       <div class="form-field">
-        <label>購買堂數</label>
+        <label>購入回数<span class="sub" data-lang="zh">購買堂數</span><span class="sub" data-lang="en">Lessons Purchased</span></label>
         <input type="number" id="p-lessons" placeholder="例：10">
       </div>
       <div class="form-field">
-        <label>付款方式</label>
+        <label>支払い方法<span class="sub" data-lang="zh">付款方式</span><span class="sub" data-lang="en">Payment Method</span></label>
         <select id="p-method">
           <option value="銀行振込">🏦 銀行振込</option>
-          <option value="泰銖銀行轉帳">🇹🇭 泰銖銀行轉帳</option>
+          <option value="泰銖銀行轉帳">🇹🇭 タイバーツ銀行振込</option>
           <option value="Wise">🌍 Wise</option>
         </select>
       </div>
       <div class="form-field">
-        <label>轉帳截圖</label>
+        <label>振込スクリーンショット<span class="sub" data-lang="zh">轉帳截圖</span><span class="sub" data-lang="en">Transfer Screenshot</span></label>
         <input type="file" id="p-file" accept="image/*">
       </div>
-      <button class="btn-main" id="p-submit" onclick="submitPayment()">送出</button>
+      <button class="btn-main" id="p-submit" onclick="submitPayment()">送信<small data-lang="zh">送出</small><small data-lang="en">Submit</small></button>
       <div class="note" id="p-status"></div>
     </div>
 
-    <button class="btn-ghost" onclick="Classroom.logout()">登出</button>
+    <button class="btn-ghost" onclick="Classroom.logout()">ログアウト<span class="sub" data-lang="zh">登出</span><span class="sub" data-lang="en">Log Out</span></button>
   </div>
 
 </div>
 
 <script src="classroom-auth.js"></script>
 <script>
-const WEEKDAYS = ['週日','週一','週二','週三','週四','週五','週六'];
+const WEEKDAYS_JP = ['日','月','火','水','木','金','土'];
+
+let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+  refresh();
+}
+
+const STR = {
+  noRequests: {zh:'尚無申請', en:'No requests yet'},
+  noRecords: {zh:'尚無記錄', en:'No records yet'},
+  statusPending: {zh:'審核中', en:'Pending'},
+  statusApproved: {zh:'已同意', en:'Approved'},
+  statusRejected: {zh:'已退回', en:'Rejected'},
+  statusPaymentApproved: {zh:'已確認', en:'Confirmed'},
+  adjusted: {zh:'已調整', en:'Adjusted'},
+  adjustedParen: {zh:'（已調整過）', en:'（adjusted）'},
+  noDateOptions: {zh:'尚無可選擇的上課日', en:'No available dates'},
+  noScheduleSet: {zh:'尚未設定固定時間。', en:'No fixed schedule set yet.'},
+  noRemaining: {zh:'目前沒有剩餘堂數，繳費後會自動顯示上課日。', en:'No remaining lessons — dates will appear after payment.'},
+  scheduleUnset: {zh:'尚未設定（請聯絡老師）', en:'Not set (please contact teacher)'},
+  materialsIntro: {zh:'這裡是老師為你準備的學習筆記資料夾。', en:"This is the notes folder your teacher prepared for you."},
+  openNewTab: {zh:'在新分頁開啟 →', en:'Open in new tab →'},
+  lesson: {zh:'堂', en:''},
+};
+function t(key){ return STR[key] ? STR[key][secondaryLang] : ''; }
 
 function driveFolderId(url){
   if (!url) return null;
@@ -229,10 +342,10 @@ async function refresh(){
   window._student = student;
 
   document.getElementById('hero-sub').textContent = (student.nickname || student.name || email) + ' さん、こんにちは';
-  document.getElementById('s-schedule').textContent =
+  document.getElementById('s-schedule').innerHTML =
     (student.weekly_day !== null && student.weekly_day !== undefined && student.weekly_time)
-      ? `每${WEEKDAYS[student.weekly_day]} ${student.weekly_time}`
-      : '尚未設定（請聯絡老師）';
+      ? `毎週${WEEKDAYS_JP[student.weekly_day]}曜日 ${student.weekly_time}`
+      : t('scheduleUnset');
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
 
   const linksCard = document.getElementById('card-links');
@@ -240,9 +353,10 @@ async function refresh(){
   if (student.meet_link || student.excalidraw_link) {
     linksCard.style.display = '';
     linksEl.innerHTML = [
-      student.meet_link ? `<a class="btn-main" href="${student.meet_link}" target="_blank">📹 加入 Google Meet</a>` : '',
-      student.excalidraw_link ? `<a class="btn-main" style="background:linear-gradient(135deg,var(--sage,#8B9E8A),var(--frame));" href="${student.excalidraw_link}" target="_blank">✏️ 打開 Excalidraw 白板</a>` : ''
+      student.meet_link ? `<a class="btn-main" href="${student.meet_link}" target="_blank">📹 Google Meetに参加<small data-lang="zh">加入 Google Meet</small><small data-lang="en">Join Google Meet</small></a>` : '',
+      student.excalidraw_link ? `<a class="btn-main" style="background:linear-gradient(135deg,var(--sage,#8B9E8A),var(--frame));" href="${student.excalidraw_link}" target="_blank">✏️ Excalidrawホワイトボードを開く<small data-lang="zh">打開 Excalidraw 白板</small><small data-lang="en">Open Excalidraw Board</small></a>` : ''
     ].join('');
+    applyLang();
   } else {
     linksCard.style.display = 'none';
   }
@@ -253,10 +367,10 @@ async function refresh(){
   if (folderId) {
     materialsCard.style.display = '';
     materialsEl.innerHTML = `
-      <p class="note" style="margin-top:0;">這裡是老師為你準備的學習筆記資料夾。</p>
+      <p class="note" style="margin-top:0;">${t('materialsIntro')}</p>
       <iframe src="https://drive.google.com/embeddedfolderview?id=${folderId}#list"
         style="width:100%;height:360px;border:1px solid var(--border);border-radius:10px;"></iframe>
-      <a class="btn-ghost" href="https://drive.google.com/drive/folders/${folderId}" target="_blank" style="margin-top:8px;">在新分頁開啟 →</a>
+      <a class="btn-ghost" href="https://drive.google.com/drive/folders/${folderId}" target="_blank" style="margin-top:8px;">${t('openNewTab')}</a>
     `;
   } else {
     materialsCard.style.display = 'none';
@@ -266,25 +380,25 @@ async function refresh(){
   const remaining = student.remaining_lessons || 0;
   let upcomingList = [];
   if (student.weekly_day === null || student.weekly_day === undefined || !student.weekly_time) {
-    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">尚未設定固定時間。</p>';
+    upcomingEl.innerHTML = `<p class="note" style="margin-top:0;">${t('noScheduleSet')}</p>`;
   } else if (remaining <= 0) {
-    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
+    upcomingEl.innerHTML = `<p class="note" style="margin-top:0;">${t('noRemaining')}</p>`;
   } else {
     upcomingList = await Classroom.upcomingSchedule(email, student.weekly_day, student.weekly_time, Math.min(remaining, 10));
     window._upcomingList = upcomingList;
     upcomingEl.innerHTML = upcomingList.map((entry, i) => `
-      <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${entry.date.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${entry.time}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">已調整</span>' : ''}</span></div>
+      <div class="row"><span class="label">第${i + 1}回</span><span class="value">${entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${entry.time}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">' + t('adjusted') + '</span>' : ''}</span></div>
     `).join('');
   }
 
   const dateSelect = document.getElementById('r-date');
   if (upcomingList.length === 0){
-    dateSelect.innerHTML = '<option value="">尚無可選擇的上課日</option>';
+    dateSelect.innerHTML = `<option value="">${t('noDateOptions')}</option>`;
     dateSelect.disabled = true;
   } else {
     dateSelect.disabled = false;
     dateSelect.innerHTML = upcomingList.map(entry => {
-      const label = entry.date.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? '（已調整過）' : '');
+      const label = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? t('adjustedParen') : '');
       return `<option value="${entry.originalDate}">${label}</option>`;
     }).join('');
   }
@@ -294,13 +408,13 @@ async function refresh(){
     .order('submitted_at', { ascending: false });
   const reqBody = document.getElementById('s-requests');
   if (!requests || requests.length === 0){
-    reqBody.innerHTML = '<tr><td colspan="3" class="center">尚無申請</td></tr>';
+    reqBody.innerHTML = `<tr><td colspan="3" class="center">${t('noRequests') || '申請はありません'}</td></tr>`;
   } else {
     reqBody.innerHTML = requests.map(r => `
       <tr>
-        <td>${new Date(r.submitted_at).toLocaleDateString('zh-TW')}</td>
-        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('zh-TW') : '-'}</td>
-        <td><span class="status ${r.status}">${r.status === 'pending' ? '審核中' : r.status === 'approved' ? '已同意' : '已退回'}</span>${r.status === 'rejected' && r.review_note ? `<div class="note" style="margin-top:4px;">💬 ${r.review_note}</div>` : ''}</td>
+        <td>${new Date(r.submitted_at).toLocaleDateString('ja-JP')}</td>
+        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}</td>
+        <td><span class="status ${r.status}">${r.status === 'pending' ? t('statusPending') : r.status === 'approved' ? t('statusApproved') : t('statusRejected')}</span>${r.status === 'rejected' && r.review_note ? `<div class="note" style="margin-top:4px;">💬 ${r.review_note}</div>` : ''}</td>
       </tr>`).join('');
   }
 
@@ -310,19 +424,41 @@ async function refresh(){
 
   const tbody = document.getElementById('s-payments');
   if (!payments || payments.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" class="center">尚無記錄</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="5" class="center">${t('noRecords') || '記録はありません'}</td></tr>`;
   } else {
     tbody.innerHTML = payments.map(p => `
       <tr>
-        <td>${new Date(p.submitted_at).toLocaleDateString('zh-TW')}</td>
+        <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
         <td>${p.currency} ${p.amount ?? '-'}</td>
         <td>${p.lessons_purchased ?? '-'}</td>
         <td>${p.payment_method || '-'}</td>
-        <td><span class="status ${p.status}">${p.status === 'pending' ? '審核中' : p.status === 'approved' ? '已確認' : '已退回'}</span></td>
+        <td><span class="status ${p.status}">${p.status === 'pending' ? t('statusPending') : p.status === 'approved' ? t('statusPaymentApproved') : t('statusRejected')}</span></td>
       </tr>`).join('');
   }
 
+  applyLang();
   show('view-student');
+}
+
+function applyLang(){
+  document.body.classList.toggle('lang-en', secondaryLang === 'en');
+  document.querySelectorAll('[data-lang="zh"]').forEach(el => { el.style.display = secondaryLang === 'en' ? 'none' : ''; });
+  document.querySelectorAll('[data-lang="en"]').forEach(el => { el.style.display = secondaryLang === 'en' ? '' : 'none'; });
+}
+
+function toggleAccountInfo(){
+  const body = document.getElementById('acct-info-body');
+  const arrow = document.getElementById('acct-toggle-arrow');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  arrow.textContent = isOpen ? 'タップして表示 ▾' : '閉じる ▴';
+}
+
+function switchAcctTab(key){
+  ['twd','thb','usd'].forEach(k => {
+    document.getElementById('acct-panel-' + k).style.display = (k === key) ? '' : 'none';
+    document.getElementById('acct-tab-' + k).classList.toggle('active', k === key);
+  });
 }
 
 async function submitRequest(){
@@ -336,7 +472,7 @@ async function submitRequest(){
   const statusEl = document.getElementById('r-status');
   const btn = document.getElementById('r-submit');
 
-  if (!requested_date){ statusEl.textContent = '請選擇想調整的上課日。'; return; }
+  if (!requested_date){ statusEl.textContent = '変更したい授業日を選んでください。'; return; }
 
   const student = window._student || {};
   const matchedEntry = (window._upcomingList || []).find(e => e.originalDate === requested_date);
@@ -344,19 +480,19 @@ async function submitRequest(){
   const student_name = student.nickname || student.name || null;
 
   btn.disabled = true;
-  statusEl.textContent = '送出中...';
+  statusEl.textContent = '送信中...';
   try {
     const { error } = await Classroom.client.from('classroom_change_requests').insert({
       student_email: email, requested_date, requested_time, student_name, preferred_alternative, reason, status: 'pending'
     });
     if (error) throw error;
-    statusEl.textContent = '已送出，老師確認後會通知你。';
+    statusEl.textContent = '送信しました。先生が確認後にお知らせします。';
     document.getElementById('r-alt').value = '';
     document.getElementById('r-reason').value = '';
     refresh();
   } catch (e) {
     console.error(e);
-    statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
+    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
   }
@@ -374,11 +510,11 @@ async function submitPayment(){
   const statusEl = document.getElementById('p-status');
   const btn = document.getElementById('p-submit');
 
-  if (!fileInput.files[0]){ statusEl.textContent = '請選擇轉帳截圖。'; return; }
-  if (!lessons){ statusEl.textContent = '請輸入購買堂數。'; return; }
+  if (!fileInput.files[0]){ statusEl.textContent = '振込スクリーンショットを選んでください。'; return; }
+  if (!lessons){ statusEl.textContent = '購入回数を入力してください。'; return; }
 
   btn.disabled = true;
-  statusEl.textContent = '上傳中...';
+  statusEl.textContent = 'アップロード中...';
 
   try {
     const file = fileInput.files[0];
@@ -392,14 +528,14 @@ async function submitPayment(){
     });
     if (insErr) throw insErr;
 
-    statusEl.textContent = '已送出，老師確認後會加入剩餘堂數。';
+    statusEl.textContent = '送信しました。先生の確認後、残り回数に加算されます。';
     document.getElementById('p-amount').value = '';
     document.getElementById('p-lessons').value = '';
     fileInput.value = '';
     refresh();
   } catch (e) {
     console.error(e);
-    statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
+    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
   }
@@ -414,14 +550,14 @@ async function toggleRecording(){
     await Classroom.startRecording((state) => {
       if (state === 'recording'){
         _recording = true;
-        btn.textContent = '⏹ 停止錄影';
+        btn.textContent = '⏹ 録画停止';
         btn.disabled = false;
-        status.textContent = '🔴 錄影中...';
+        status.textContent = '🔴 録画中...';
       } else if (state === 'stopped'){
         _recording = false;
-        btn.textContent = '🔴 開始錄影';
+        btn.textContent = '🔴 録画開始';
         btn.disabled = false;
-        status.textContent = '已儲存到你的電腦。';
+        status.textContent = 'PCに保存しました。';
       } else {
         btn.disabled = false;
       }
@@ -431,6 +567,9 @@ async function toggleRecording(){
   }
 }
 
+document.getElementById('ls-' + secondaryLang).classList.add('active');
+document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
+document.body.classList.toggle('lang-en', secondaryLang === 'en');
 refresh();
 </script>
 </body>
