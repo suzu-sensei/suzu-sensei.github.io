@@ -124,14 +124,22 @@
     <div class="card">
       <h2>繳費記錄</h2>
       <table>
-        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>狀態</th></tr></thead>
-        <tbody id="s-payments"><tr><td colspan="4" class="center">尚無記錄</td></tr></tbody>
+        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>方式</th><th>狀態</th></tr></thead>
+        <tbody id="s-payments"><tr><td colspan="5" class="center">尚無記錄</td></tr></tbody>
       </table>
     </div>
 
     <div class="card">
+      <h2>匯款帳戶資訊</h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">帳號為保護安全僅透過 LINE 提供，戶名如下，轉帳時請核對戶名是否一致。</p>
+      <div class="row"><span class="label">🏦 台幣（中華銀行）</span><span class="value">林泰華</span></div>
+      <div class="row"><span class="label">🇹🇭 泰銖（Kasikorn Bank）</span><span class="value">SUZUKA IGUCHI</span></div>
+      <div class="row"><span class="label">🌍 美金（Wise）</span><span class="value">SUZUKA IGUCHI</span></div>
+    </div>
+
+    <div class="card">
       <h2>新增繳費（上傳轉帳截圖）</h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">付款方式與帳戶資訊請參考 <a href="pay.html" style="color:var(--frame);">繳費・入班說明頁</a>。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</p>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">帳號等詳細資訊請透過 LINE 向老師索取。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</p>
       <div class="form-field">
         <label>金額</label>
         <input type="number" id="p-amount" placeholder="例：3000">
@@ -147,6 +155,14 @@
       <div class="form-field">
         <label>購買堂數</label>
         <input type="number" id="p-lessons" placeholder="例：10">
+      </div>
+      <div class="form-field">
+        <label>付款方式</label>
+        <select id="p-method">
+          <option value="銀行振込">🏦 銀行振込</option>
+          <option value="PromptPay">🇹🇭 PromptPay</option>
+          <option value="Wise">🌍 Wise</option>
+        </select>
       </div>
       <div class="form-field">
         <label>轉帳截圖</label>
@@ -227,9 +243,9 @@ async function refresh(){
   } else if (remaining <= 0) {
     upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
   } else {
-    upcomingList = Classroom.upcomingDates(student.weekly_day, student.weekly_time, Math.min(remaining, 10));
-    upcomingEl.innerHTML = upcomingList.map((d, i) => `
-      <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${student.weekly_time}</span></div>
+    upcomingList = await Classroom.upcomingSchedule(email, student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    upcomingEl.innerHTML = upcomingList.map((entry, i) => `
+      <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${entry.date.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${entry.time}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">已調整</span>' : ''}</span></div>
     `).join('');
   }
 
@@ -239,10 +255,9 @@ async function refresh(){
     dateSelect.disabled = true;
   } else {
     dateSelect.disabled = false;
-    dateSelect.innerHTML = upcomingList.map(d => {
-      const iso = d.toISOString().slice(0, 10);
-      const label = d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + student.weekly_time;
-      return `<option value="${iso}">${label}</option>`;
+    dateSelect.innerHTML = upcomingList.map(entry => {
+      const label = entry.date.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? '（已調整過）' : '');
+      return `<option value="${entry.originalDate}">${label}</option>`;
     }).join('');
   }
 
@@ -267,13 +282,14 @@ async function refresh(){
 
   const tbody = document.getElementById('s-payments');
   if (!payments || payments.length === 0){
-    tbody.innerHTML = '<tr><td colspan="4" class="center">尚無記錄</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="center">尚無記錄</td></tr>';
   } else {
     tbody.innerHTML = payments.map(p => `
       <tr>
         <td>${new Date(p.submitted_at).toLocaleDateString('zh-TW')}</td>
         <td>${p.currency} ${p.amount ?? '-'}</td>
         <td>${p.lessons_purchased ?? '-'}</td>
+        <td>${p.payment_method || '-'}</td>
         <td><span class="status ${p.status}">${p.status === 'pending' ? '審核中' : p.status === 'approved' ? '已確認' : '已退回'}</span></td>
       </tr>`).join('');
   }
@@ -320,6 +336,7 @@ async function submitPayment(){
   const amount = parseFloat(document.getElementById('p-amount').value) || null;
   const currency = document.getElementById('p-currency').value;
   const lessons = parseInt(document.getElementById('p-lessons').value) || 0;
+  const payment_method = document.getElementById('p-method').value;
   const fileInput = document.getElementById('p-file');
   const statusEl = document.getElementById('p-status');
   const btn = document.getElementById('p-submit');
@@ -337,7 +354,8 @@ async function submitPayment(){
     if (upErr) throw upErr;
 
     const { error: insErr } = await Classroom.client.from('classroom_payments').insert({
-      student_email: email, amount, currency, lessons_purchased: lessons, slip_path: path, status: 'pending'
+      student_email: email, amount, currency, lessons_purchased: lessons, slip_path: path, status: 'pending',
+      payment_method
     });
     if (insErr) throw insErr;
 

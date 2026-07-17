@@ -86,6 +86,54 @@
         d = new Date(d.getTime() + 7 * 24 * 60 * 60 * 1000);
       }
       return results;
+    },
+
+    // 毎週の曜日・時間パターン + classroom_lesson_overrides（個別の振替・欠席）をふまえた
+    // 実際の今後の上課日をcount件返す。各要素: { date: Date, time: 'HH:MM', overridden: bool,
+    // originalDate: 'YYYY-MM-DD'（本来の週次パターン上の日付・upsertのキーになる）, overrideId? }
+    async upcomingSchedule(studentEmail, weeklyDay, weeklyTime, count) {
+      if (weeklyDay === null || weeklyDay === undefined || !weeklyTime || !count) return [];
+
+      const { data: overrides, error } = await sb
+        .from('classroom_lesson_overrides')
+        .select('*')
+        .eq('student_email', studentEmail)
+        .eq('status', 'active');
+      if (error) console.error('upcomingSchedule: overrides取得エラー', error);
+
+      const byOriginal = {};
+      (overrides || []).forEach(o => { byOriginal[o.original_date] = o; });
+
+      const parts = weeklyTime.split(':').map(Number);
+      const h = parts[0] || 0, m = parts[1] || 0;
+      let d = new Date();
+      d.setHours(h, m, 0, 0);
+      let diff = (weeklyDay - d.getDay() + 7) % 7;
+      if (diff === 0 && d.getTime() <= Date.now()) diff = 7;
+      d.setDate(d.getDate() + diff);
+
+      const results = [];
+      let guard = 0;
+      while (results.length < count && guard < count + 60) {
+        guard++;
+        const iso = d.toISOString().slice(0, 10);
+        const ov = byOriginal[iso];
+        if (ov) {
+          if (ov.new_date) {
+            const [ny, nm, nd] = ov.new_date.split('-').map(Number);
+            const timeStr = ov.new_time || weeklyTime;
+            const [th, tm] = timeStr.split(':').map(Number);
+            const newDateObj = new Date(ny, nm - 1, nd, th || 0, tm || 0, 0, 0);
+            results.push({ date: newDateObj, time: timeStr, overridden: true, originalDate: iso, overrideId: ov.id, note: ov.note || '' });
+          }
+          // ov.new_date が null の場合は「欠席（振替なし）」なのでスキップ（結果に含めない）
+        } else {
+          results.push({ date: new Date(d), time: weeklyTime, overridden: false, originalDate: iso });
+        }
+        d = new Date(d.getTime() + 7 * 24 * 60 * 60 * 1000);
+      }
+      results.sort((a, b) => a.date - b.date);
+      return results;
     }
   };
 
