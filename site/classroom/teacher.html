@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>教室管理 | SUZU先生</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+:root{--cream:#FAF6F0;--blush:#F2E0D5;--rose:#C9897A;--deep:#6B3D3D;--ink:#2C1F1F;--sage:#8B9E8A;--gold:#C4A46B;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+.header{background:var(--deep);padding:20px 40px;color:white;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.header h1{font-family:'Noto Serif JP',serif;font-size:20px;letter-spacing:2px;font-weight:300;}
+.back-link{color:white;text-decoration:none;font-size:12px;padding:8px 16px;border:1px solid rgba(255,255,255,0.3);border-radius:4px;}
+.back-link:hover{border-color:white;}
+.container{max-width:1000px;margin:0 auto;padding:40px 20px;}
+.section{margin-bottom:40px;}
+.section-title{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--deep);margin-bottom:20px;letter-spacing:2px;border-bottom:2px solid var(--rose);padding-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.btn{background:var(--rose);color:white;border:none;border-radius:6px;padding:8px 16px;font-size:12px;cursor:pointer;letter-spacing:1px;}
+.btn:hover{background:var(--deep);}
+.btn.small{padding:4px 10px;font-size:11px;}
+.btn.reject{background:#999;}
+.btn.reject:hover{background:#666;}
+.table{width:100%;border-collapse:collapse;background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden;}
+.table th{background:var(--blush);padding:12px;text-align:left;font-weight:500;letter-spacing:1px;font-size:12px;}
+.table td{padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middle;}
+.table tr:hover{background:#fafaf8;}
+.status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.status.pending{background:#f6e6c9;color:#8a6a2e;}
+.status.approved{background:#dcf3e3;color:#2e7d4f;}
+.status.rejected{background:#fbdada;color:#a13a3a;}
+.loading,.center{text-align:center;padding:40px;color:#999;}
+.error{background:#fce8e8;border:1px solid #c97a7a;border-radius:8px;padding:20px;color:#8a3a3a;margin:20px 0;}
+.card{background:white;border:1px solid #ddd;border-radius:8px;padding:30px;text-align:center;}
+#login-btn{display:flex;justify-content:center;margin:16px 0;}
+a.link{color:var(--rose);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏫 教室管理</h1>
+  <a href="../../dashboard.html" class="back-link">← ダッシュボード</a>
+</div>
+
+<div class="container">
+
+  <div class="card" id="view-login" style="display:none;">
+    <h2 style="font-family:'Noto Serif JP',serif;margin-bottom:12px;">先生用ログイン</h2>
+    <p style="color:#999;font-size:13px;margin-bottom:10px;">先生のGoogleアカウントでログインしてください。</p>
+    <div id="login-btn"></div>
+  </div>
+
+  <div class="loading" id="view-loading">読み込み中...</div>
+
+  <div class="card" id="view-denied" style="display:none;">
+    <h2 style="font-family:'Noto Serif JP',serif;margin-bottom:12px;color:#a13a3a;">アクセス権がありません</h2>
+    <p style="color:#999;font-size:13px;margin-bottom:16px;">このページは先生専用です。</p>
+    <button class="btn" onclick="Classroom.logout()">ログアウト</button>
+  </div>
+
+  <div id="view-teacher" style="display:none;">
+
+    <div class="section">
+      <div class="section-title">
+        支払い承認待ち
+      </div>
+      <table class="table" id="pendingTable">
+        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>提出日</th><th>スクショ</th><th>操作</th></tr></thead>
+        <tbody id="pendingBody"><tr><td colspan="6" class="loading">読み込み中...</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">変更・お休み申請</div>
+      <table class="table" id="requestTable">
+        <thead><tr><th>学生</th><th>調整希望日</th><th>希望する代替</th><th>理由</th><th>操作</th></tr></thead>
+        <tbody id="requestBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        学生一覧
+        <button class="btn" onclick="addStudent()">＋ 学生を追加</button>
+      </div>
+      <table class="table" id="studentTable">
+        <thead><tr><th>名前/ニックネーム</th><th>メール</th><th>曜日・時間</th><th>残り回数</th><th>次回授業</th><th>状態</th><th>操作</th></tr></thead>
+        <tbody id="studentBody"><tr><td colspan="7" class="loading">読み込み中...</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">支払い履歴（全件）</div>
+      <table class="table" id="historyTable">
+        <thead><tr><th>学生</th><th>金額</th><th>堂数</th><th>提出日</th><th>状態</th></tr></thead>
+        <tbody id="historyBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
+      </table>
+    </div>
+
+    <button class="btn" style="background:#999;" onclick="Classroom.logout()">ログアウト</button>
+  </div>
+
+</div>
+
+<script src="classroom-auth.js"></script>
+<script>
+const WEEKDAYS = ['日','月','火','水','木','金','土'];
+
+function show(id){
+  ['view-login','view-loading','view-denied','view-teacher'].forEach(v=>{
+    document.getElementById(v).style.display = (v===id) ? '' : 'none';
+  });
+}
+
+async function refresh(){
+  const session = await Classroom.session();
+  if (!session){
+    show('view-login');
+    Classroom.initButton('login-btn', refresh);
+    return;
+  }
+  show('view-loading');
+  const isTeacher = await Classroom.isTeacher();
+  if (!isTeacher){ show('view-denied'); return; }
+
+  await Promise.all([loadStudents(), loadPending(), loadHistory(), loadRequests()]);
+  show('view-teacher');
+}
+
+async function loadRequests(){
+  const { data: requests, error } = await Classroom.client
+    .from('classroom_change_requests').select('*').eq('status', 'pending').order('submitted_at', { ascending: true });
+  const tbody = document.getElementById('requestBody');
+  if (error){ tbody.innerHTML = `<tr><td colspan="5" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (!requests || requests.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" class="center">申請はありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = requests.map(r => `
+    <tr>
+      <td>${r.student_email}</td>
+      <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}</td>
+      <td>${r.preferred_alternative || '-'}</td>
+      <td>${r.reason || '-'}</td>
+      <td>
+        <button class="btn small" onclick="approveRequest('${r.id}')">承認</button>
+        <button class="btn small reject" onclick="rejectRequest('${r.id}')">却下</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function approveRequest(id){
+  if (!confirm('この変更申請を承認しますか？')) return;
+  const { error } = await Classroom.client
+    .from('classroom_change_requests').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error){ alert('処理に失敗しました。'); console.error(error); return; }
+  loadRequests();
+}
+
+async function rejectRequest(id){
+  if (!confirm('この変更申請を却下しますか？')) return;
+  const { error } = await Classroom.client
+    .from('classroom_change_requests').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error){ alert('処理に失敗しました。'); console.error(error); return; }
+  loadRequests();
+}
+
+function nextSessionLabel(s){
+  if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time || !(s.remaining_lessons > 0)) return '—';
+  const d = Classroom.upcomingDates(s.weekly_day, s.weekly_time, 1)[0];
+  if (!d) return '—';
+  return d.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + s.weekly_time;
+}
+
+async function loadStudents(){
+  const { data: students, error } = await Classroom.client
+    .from('classroom_students').select('*').order('created_at', { ascending: false });
+  const tbody = document.getElementById('studentBody');
+  if (error){ tbody.innerHTML = `<tr><td colspan="7" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (!students || students.length === 0){
+    tbody.innerHTML = '<tr><td colspan="7" class="center">学生がまだ登録されていません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = students.map(s => `
+    <tr>
+      <td>${s.nickname || s.name || '-'}</td>
+      <td>${s.email}</td>
+      <td>${(s.weekly_day !== null && s.weekly_day !== undefined && s.weekly_time) ? `毎週${WEEKDAYS[s.weekly_day]} ${s.weekly_time}` : '未設定'}</td>
+      <td>${s.remaining_lessons ?? 0}</td>
+      <td>${nextSessionLabel(s)}</td>
+      <td>${s.status || 'active'}</td>
+      <td>
+        <button class="btn small" onclick="editStudent('${s.id}')">編集</button>
+        <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
+        <button class="btn small" onclick="completeLesson('${s.id}')" ${(s.remaining_lessons || 0) <= 0 ? 'disabled' : ''}>授業完了</button>
+      </td>
+    </tr>`).join('');
+  window._students = students;
+}
+
+function showUpcoming(id){
+  const s = (window._students || []).find(x => x.id === id);
+  if (!s) return;
+  if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time){
+    alert('曜日・時間が未設定です。');
+    return;
+  }
+  const count = Math.min(s.remaining_lessons || 0, 10);
+  if (count <= 0){ alert('残り回数がありません。'); return; }
+  const dates = Classroom.upcomingDates(s.weekly_day, s.weekly_time, count);
+  const label = dates.map((d, i) => `${i + 1}. ` + d.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + s.weekly_time).join('\n');
+  alert((s.nickname || s.name || s.email) + ' さんの今後の予定:\n\n' + label);
+}
+
+async function loadHistory(){
+  const { data: payments, error } = await Classroom.client
+    .from('classroom_payments').select('*').order('submitted_at', { ascending: false }).limit(100);
+  const tbody = document.getElementById('historyBody');
+  if (error){ tbody.innerHTML = `<tr><td colspan="5" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (!payments || payments.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" class="center">記録がありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = payments.map(p => `
+    <tr>
+      <td>${p.student_email}</td>
+      <td>${p.currency} ${p.amount ?? '-'}</td>
+      <td>${p.lessons_purchased ?? '-'}</td>
+      <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
+      <td><span class="status ${p.status}">${p.status === 'pending' ? '審査中' : p.status === 'approved' ? '承認済み' : '却下'}</span></td>
+    </tr>`).join('');
+}
+
+async function loadPending(){
+  const { data: payments, error } = await Classroom.client
+    .from('classroom_payments').select('*').eq('status', 'pending').order('submitted_at', { ascending: true });
+  const tbody = document.getElementById('pendingBody');
+  if (error){ tbody.innerHTML = `<tr><td colspan="6" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (!payments || payments.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6" class="center">承認待ちはありません</td></tr>';
+    return;
+  }
+  const rows = await Promise.all(payments.map(async p => {
+    let slipLink = '-';
+    if (p.slip_path){
+      const { data } = await Classroom.client.storage.from('payment-slips').createSignedUrl(p.slip_path, 300);
+      if (data && data.signedUrl) slipLink = `<a class="link" href="${data.signedUrl}" target="_blank">画像</a>`;
+    }
+    return `
+      <tr>
+        <td>${p.student_email}</td>
+        <td>${p.currency} ${p.amount ?? '-'}</td>
+        <td>${p.lessons_purchased ?? '-'}</td>
+        <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
+        <td>${slipLink}</td>
+        <td>
+          <button class="btn small" onclick="approvePayment('${p.id}','${p.student_email}',${p.lessons_purchased || 0})">承認</button>
+          <button class="btn small reject" onclick="rejectPayment('${p.id}')">却下</button>
+        </td>
+      </tr>`;
+  }));
+  tbody.innerHTML = rows.join('');
+}
+
+async function approvePayment(id, email, lessons){
+  if (!confirm(`この支払いを承認し、残り回数に${lessons}回を加算しますか？`)) return;
+  const { data: student, error: fErr } = await Classroom.client
+    .from('classroom_students').select('remaining_lessons').eq('email', email).maybeSingle();
+  if (fErr || !student){ alert('学生データの取得に失敗しました。'); console.error(fErr); return; }
+
+  const newRemaining = (student.remaining_lessons || 0) + (lessons || 0);
+  const { error: uErr } = await Classroom.client
+    .from('classroom_students').update({ remaining_lessons: newRemaining }).eq('email', email);
+  if (uErr){ alert('残り回数の更新に失敗しました。'); console.error(uErr); return; }
+
+  const { error: pErr } = await Classroom.client
+    .from('classroom_payments').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (pErr){ alert('承認処理に失敗しました。'); console.error(pErr); return; }
+
+  refresh();
+}
+
+async function rejectPayment(id){
+  if (!confirm('この支払いを却下しますか？')) return;
+  const { error } = await Classroom.client
+    .from('classroom_payments').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', id);
+  if (error){ alert('処理に失敗しました。'); console.error(error); return; }
+  refresh();
+}
+
+async function addStudent(){
+  const email = prompt('学生のメールアドレス（Googleログインに使うもの）:');
+  if (!email || !email.trim()) return;
+  const name = prompt('名前 / ニックネーム:') || '';
+  const dayInput = prompt('曜日番号（0=日 1=月 2=火 3=水 4=木 5=金 6=土、未定なら空欄）:');
+  const time = prompt('時間（例: 19:00、未定なら空欄）:') || null;
+  const lessons = parseInt(prompt('初期の残り回数（数字のみ、なければ0）:', '0')) || 0;
+  const driveUrl = prompt('学習ノートのGoogle DriveフォルダURL（任意・後で編集からでも追加できます）:') || null;
+
+  const weekly_day = (dayInput !== null && dayInput.trim() !== '') ? parseInt(dayInput) : null;
+
+  const { error } = await Classroom.client.from('classroom_students').insert({
+    email: email.trim(), name: name.trim(), nickname: name.trim(),
+    weekly_day, weekly_time: time, remaining_lessons: lessons,
+    drive_folder_url: (driveUrl || '').trim() || null
+  });
+  if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
+  loadStudents();
+}
+
+async function completeLesson(id){
+  const s = (window._students || []).find(x => x.id === id);
+  if (!s) return;
+  const current = s.remaining_lessons || 0;
+  if (current <= 0){ alert('残り回数がありません。'); return; }
+  const next = nextSessionLabel(s);
+  if (!confirm(`${s.nickname || s.name || s.email} さんの授業完了を記録し、残り回数を1減らしますか？\n（今回: ${next}）`)) return;
+
+  const { error } = await Classroom.client
+    .from('classroom_students').update({ remaining_lessons: current - 1 }).eq('id', id);
+  if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
+  loadStudents();
+}
+
+async function editStudent(id){
+  const s = (window._students || []).find(x => x.id === id);
+  if (!s) return;
+  const name = prompt('名前 / ニックネーム:', s.nickname || s.name || '');
+  if (name === null) return;
+  const dayInput = prompt('曜日番号（0=日 1=月 2=火 3=水 4=木 5=金 6=土、未定なら空欄）:', s.weekly_day ?? '');
+  const time = prompt('時間（例: 19:00）:', s.weekly_time || '');
+  const lessons = prompt('残り回数:', s.remaining_lessons ?? 0);
+  const status = prompt('状態（active / paused / inactive）:', s.status || 'active');
+  const driveUrl = prompt('学習ノートのGoogle DriveフォルダURL（未設定なら空欄でOK）:', s.drive_folder_url || '');
+  if (driveUrl === null) return;
+
+  const weekly_day = (dayInput !== null && dayInput.trim() !== '') ? parseInt(dayInput) : null;
+
+  const { error } = await Classroom.client.from('classroom_students').update({
+    name: name.trim(), nickname: name.trim(),
+    weekly_day, weekly_time: time || null,
+    remaining_lessons: parseInt(lessons) || 0,
+    status: status || 'active',
+    drive_folder_url: driveUrl.trim() || null
+  }).eq('id', id);
+  if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
+  loadStudents();
+}
+
+refresh();
+</script>
+</body>
+</html>

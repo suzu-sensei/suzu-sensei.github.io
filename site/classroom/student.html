@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>我的教室｜純香老師的暖心日語</title>
+<link rel="stylesheet" href="../textbook/theme.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-zh-sans);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-zh-serif);}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 70px;}
+  a.back{display:inline-block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-mid);text-decoration:none;}
+  .hero{background:linear-gradient(135deg,var(--step),var(--frame));border-radius:16px;padding:28px 20px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(122,79,130,.25);}
+  .hero h1{font-size:1.3rem;margin:0 0 6px;}
+  .hero p{font-size:0.88rem;opacity:0.92;margin:0;}
+  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .card h2{font-size:1rem;font-weight:700;margin:0 0 14px;color:var(--frame);border-bottom:1px solid var(--border);padding-bottom:10px;}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:0.92rem;}
+  .row + .row{border-top:1px solid var(--border);}
+  .row .label{color:var(--ink-mid);}
+  .row .value{font-weight:700;color:var(--ink);}
+  .big-num{font-size:2.2rem;font-weight:700;color:var(--frame);text-align:center;font-family:var(--font-zh-serif);}
+  .big-num-label{text-align:center;font-size:0.82rem;color:var(--ink-mid);margin-top:2px;}
+  .status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.76rem;font-weight:700;}
+  .status.pending{background:var(--amber-pale);color:#8a6a2e;}
+  .status.approved{background:#dcf3e3;color:#2e7d4f;}
+  .status.rejected{background:#fbdada;color:#a13a3a;}
+  table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+  table th,table td{text-align:left;padding:8px 4px;border-bottom:1px solid var(--border);}
+  table th{color:var(--ink-mid);font-weight:600;font-size:0.78rem;}
+  .form-field{margin-bottom:12px;}
+  .form-field label{display:block;font-size:0.82rem;color:var(--ink-mid);margin-bottom:5px;}
+  .form-field input,.form-field select{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:var(--bg);color:var(--ink);}
+  .btn-main{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:15px;font-weight:700;font-size:0.95rem;}
+  .btn-main:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-ghost{display:block;text-align:center;margin-top:10px;font-size:0.85rem;color:var(--ink-mid);text-decoration:underline;cursor:pointer;background:none;border:none;}
+  .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:8px;}
+  .loading,.center{text-align:center;padding:40px 20px;color:var(--ink-mid);}
+  .msg{font-size:0.9rem;line-height:1.8;}
+  #login-btn{display:flex;justify-content:center;margin:16px 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../index.html">← 回首頁</a>
+
+  <div class="hero">
+    <h1>🏫 我的教室</h1>
+    <p id="hero-sub">純香老師的暖心日語 · すず先生</p>
+  </div>
+
+  <!-- 未ログイン -->
+  <div class="card" id="view-login" style="display:none;">
+    <h2>請先登入</h2>
+    <p class="msg">請用你上課登記時使用的 Google 帳號登入，即可看到只屬於你自己的上課資訊。</p>
+    <div id="login-btn"></div>
+  </div>
+
+  <!-- 読み込み中 -->
+  <div class="loading" id="view-loading">讀取中...</div>
+
+  <!-- 未登録 -->
+  <div class="card" id="view-notfound" style="display:none;">
+    <h2>尚未開通</h2>
+    <p class="msg">這個帳號還沒有被登記為學生。請透過 LINE 聯絡老師，確認繳費／登記後即可使用。</p>
+    <a class="btn-main" style="margin-top:14px;" href="https://lin.ee/u3ojW9D" target="_blank">💬 聯絡老師</a>
+    <button class="btn-ghost" onclick="Classroom.logout()">登出</button>
+  </div>
+
+  <!-- 学生ダッシュボード -->
+  <div id="view-student" style="display:none;">
+
+    <div class="card">
+      <h2>上課時間</h2>
+      <div class="row"><span class="label">固定時間</span><span class="value" id="s-schedule">—</span></div>
+      <p class="note">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</p>
+    </div>
+
+    <div class="card">
+      <h2>接下來的上課日</h2>
+      <div id="s-upcoming"><p class="note" style="margin-top:0;">—</p></div>
+    </div>
+
+    <div class="card" id="card-materials" style="display:none;">
+      <h2>📚 學習資料</h2>
+      <div id="s-materials"></div>
+    </div>
+
+    <div class="card">
+      <h2>請假・改期申請</h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</p>
+      <div class="form-field">
+        <label>想調整的上課日</label>
+        <select id="r-date"></select>
+      </div>
+      <div class="form-field">
+        <label>希望的替代時間（選填）</label>
+        <input type="text" id="r-alt" placeholder="例：改成7/20（日）14:00">
+      </div>
+      <div class="form-field">
+        <label>原因（選填）</label>
+        <input type="text" id="r-reason" placeholder="例：臨時有事">
+      </div>
+      <button class="btn-main" id="r-submit" onclick="submitRequest()">送出申請</button>
+      <div class="note" id="r-status"></div>
+
+      <table style="margin-top:16px;">
+        <thead><tr><th>申請日期</th><th>想調整的上課日</th><th>狀態</th></tr></thead>
+        <tbody id="s-requests"><tr><td colspan="3" class="center">尚無申請</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>剩餘堂數</h2>
+      <div class="big-num" id="s-remaining">—</div>
+      <div class="big-num-label">堂</div>
+    </div>
+
+    <div class="card">
+      <h2>繳費記錄</h2>
+      <table>
+        <thead><tr><th>日期</th><th>金額</th><th>堂數</th><th>狀態</th></tr></thead>
+        <tbody id="s-payments"><tr><td colspan="4" class="center">尚無記錄</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>新增繳費（上傳轉帳截圖）</h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">付款方式與帳戶資訊請參考 <a href="pay.html" style="color:var(--frame);">繳費・入班說明頁</a>。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</p>
+      <div class="form-field">
+        <label>金額</label>
+        <input type="number" id="p-amount" placeholder="例：3000">
+      </div>
+      <div class="form-field">
+        <label>幣別</label>
+        <select id="p-currency">
+          <option value="TWD">TWD 台幣</option>
+          <option value="THB">THB 泰銖</option>
+          <option value="USD">USD 美金</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>購買堂數</label>
+        <input type="number" id="p-lessons" placeholder="例：10">
+      </div>
+      <div class="form-field">
+        <label>轉帳截圖</label>
+        <input type="file" id="p-file" accept="image/*">
+      </div>
+      <button class="btn-main" id="p-submit" onclick="submitPayment()">送出</button>
+      <div class="note" id="p-status"></div>
+    </div>
+
+    <button class="btn-ghost" onclick="Classroom.logout()">登出</button>
+  </div>
+
+</div>
+
+<script src="classroom-auth.js"></script>
+<script>
+const WEEKDAYS = ['週日','週一','週二','週三','週四','週五','週六'];
+
+function driveFolderId(url){
+  if (!url) return null;
+  const s = url.trim();
+  let m = s.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  m = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(s)) return s;
+  return null;
+}
+
+function show(id){
+  ['view-login','view-loading','view-notfound','view-student'].forEach(v=>{
+    document.getElementById(v).style.display = (v===id) ? '' : 'none';
+  });
+}
+
+async function refresh(){
+  const session = await Classroom.session();
+  if (!session){
+    show('view-login');
+    Classroom.initButton('login-btn', refresh);
+    return;
+  }
+  show('view-loading');
+  const email = session.user.email;
+  const { data: student, error } = await Classroom.client
+    .from('classroom_students').select('*').eq('email', email).maybeSingle();
+
+  if (error){ console.error(error); show('view-notfound'); return; }
+  if (!student){ show('view-notfound'); return; }
+
+  document.getElementById('hero-sub').textContent = (student.nickname || student.name || email) + ' さん、こんにちは';
+  document.getElementById('s-schedule').textContent =
+    (student.weekly_day !== null && student.weekly_day !== undefined && student.weekly_time)
+      ? `每${WEEKDAYS[student.weekly_day]} ${student.weekly_time}`
+      : '尚未設定（請聯絡老師）';
+  document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
+
+  const materialsCard = document.getElementById('card-materials');
+  const materialsEl = document.getElementById('s-materials');
+  const folderId = driveFolderId(student.drive_folder_url);
+  if (folderId) {
+    materialsCard.style.display = '';
+    materialsEl.innerHTML = `
+      <p class="note" style="margin-top:0;">這裡是老師為你準備的學習筆記資料夾。</p>
+      <iframe src="https://drive.google.com/embeddedfolderview?id=${folderId}#list"
+        style="width:100%;height:360px;border:1px solid var(--border);border-radius:10px;"></iframe>
+      <a class="btn-ghost" href="https://drive.google.com/drive/folders/${folderId}" target="_blank" style="margin-top:8px;">在新分頁開啟 →</a>
+    `;
+  } else {
+    materialsCard.style.display = 'none';
+  }
+
+  const upcomingEl = document.getElementById('s-upcoming');
+  const remaining = student.remaining_lessons || 0;
+  let upcomingList = [];
+  if (student.weekly_day === null || student.weekly_day === undefined || !student.weekly_time) {
+    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">尚未設定固定時間。</p>';
+  } else if (remaining <= 0) {
+    upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
+  } else {
+    upcomingList = Classroom.upcomingDates(student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    upcomingEl.innerHTML = upcomingList.map((d, i) => `
+      <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${student.weekly_time}</span></div>
+    `).join('');
+  }
+
+  const dateSelect = document.getElementById('r-date');
+  if (upcomingList.length === 0){
+    dateSelect.innerHTML = '<option value="">尚無可選擇的上課日</option>';
+    dateSelect.disabled = true;
+  } else {
+    dateSelect.disabled = false;
+    dateSelect.innerHTML = upcomingList.map(d => {
+      const iso = d.toISOString().slice(0, 10);
+      const label = d.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + student.weekly_time;
+      return `<option value="${iso}">${label}</option>`;
+    }).join('');
+  }
+
+  const { data: requests } = await Classroom.client
+    .from('classroom_change_requests').select('*').eq('student_email', email)
+    .order('submitted_at', { ascending: false });
+  const reqBody = document.getElementById('s-requests');
+  if (!requests || requests.length === 0){
+    reqBody.innerHTML = '<tr><td colspan="3" class="center">尚無申請</td></tr>';
+  } else {
+    reqBody.innerHTML = requests.map(r => `
+      <tr>
+        <td>${new Date(r.submitted_at).toLocaleDateString('zh-TW')}</td>
+        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('zh-TW') : '-'}</td>
+        <td><span class="status ${r.status}">${r.status === 'pending' ? '審核中' : r.status === 'approved' ? '已同意' : '已退回'}</span></td>
+      </tr>`).join('');
+  }
+
+  const { data: payments } = await Classroom.client
+    .from('classroom_payments').select('*').eq('student_email', email)
+    .order('submitted_at', { ascending: false });
+
+  const tbody = document.getElementById('s-payments');
+  if (!payments || payments.length === 0){
+    tbody.innerHTML = '<tr><td colspan="4" class="center">尚無記錄</td></tr>';
+  } else {
+    tbody.innerHTML = payments.map(p => `
+      <tr>
+        <td>${new Date(p.submitted_at).toLocaleDateString('zh-TW')}</td>
+        <td>${p.currency} ${p.amount ?? '-'}</td>
+        <td>${p.lessons_purchased ?? '-'}</td>
+        <td><span class="status ${p.status}">${p.status === 'pending' ? '審核中' : p.status === 'approved' ? '已確認' : '已退回'}</span></td>
+      </tr>`).join('');
+  }
+
+  show('view-student');
+}
+
+async function submitRequest(){
+  const session = await Classroom.session();
+  if (!session) return;
+  const email = session.user.email;
+  const dateEl = document.getElementById('r-date');
+  const requested_date = dateEl.value;
+  const preferred_alternative = document.getElementById('r-alt').value.trim() || null;
+  const reason = document.getElementById('r-reason').value.trim() || null;
+  const statusEl = document.getElementById('r-status');
+  const btn = document.getElementById('r-submit');
+
+  if (!requested_date){ statusEl.textContent = '請選擇想調整的上課日。'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '送出中...';
+  try {
+    const { error } = await Classroom.client.from('classroom_change_requests').insert({
+      student_email: email, requested_date, preferred_alternative, reason, status: 'pending'
+    });
+    if (error) throw error;
+    statusEl.textContent = '已送出，老師確認後會通知你。';
+    document.getElementById('r-alt').value = '';
+    document.getElementById('r-reason').value = '';
+    refresh();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function submitPayment(){
+  const session = await Classroom.session();
+  if (!session) return;
+  const email = session.user.email;
+  const amount = parseFloat(document.getElementById('p-amount').value) || null;
+  const currency = document.getElementById('p-currency').value;
+  const lessons = parseInt(document.getElementById('p-lessons').value) || 0;
+  const fileInput = document.getElementById('p-file');
+  const statusEl = document.getElementById('p-status');
+  const btn = document.getElementById('p-submit');
+
+  if (!fileInput.files[0]){ statusEl.textContent = '請選擇轉帳截圖。'; return; }
+  if (!lessons){ statusEl.textContent = '請輸入購買堂數。'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '上傳中...';
+
+  try {
+    const file = fileInput.files[0];
+    const path = `${email}/${Date.now()}_${file.name}`;
+    const { error: upErr } = await Classroom.client.storage.from('payment-slips').upload(path, file);
+    if (upErr) throw upErr;
+
+    const { error: insErr } = await Classroom.client.from('classroom_payments').insert({
+      student_email: email, amount, currency, lessons_purchased: lessons, slip_path: path, status: 'pending'
+    });
+    if (insErr) throw insErr;
+
+    statusEl.textContent = '已送出，老師確認後會加入剩餘堂數。';
+    document.getElementById('p-amount').value = '';
+    document.getElementById('p-lessons').value = '';
+    fileInput.value = '';
+    refresh();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+refresh();
+</script>
+</body>
+</html>
