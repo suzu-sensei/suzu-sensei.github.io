@@ -56,6 +56,8 @@
   .acct-tabs{display:flex;gap:6px;margin-bottom:14px;}
   .acct-tab-btn{flex:1;padding:8px 4px;border:1px solid var(--border2);background:var(--bg);border-radius:8px;font-size:0.78rem;cursor:pointer;color:var(--ink-mid);}
   .acct-tab-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  input[type=number]{-moz-appearance:textfield;}
 </style>
 </head>
 <body>
@@ -115,9 +117,14 @@
     <div class="card">
       <h2>授業時間<span class="sub" data-lang="zh">上課時間</span><span class="sub" data-lang="en">Class Schedule</span></h2>
       <div class="row"><span class="label">固定の時間<span class="sub" data-lang="zh">固定時間</span><span class="sub" data-lang="en">Fixed Time</span></span><span class="value" id="s-schedule">—</span></div>
-      <p class="note">＊現在は固定の毎週の授業時間です。変更やお休みが必要な場合は、下の「変更・お休み申請」から提出してください。<br>
-        <span class="sub" data-lang="zh">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</span>
-        <span class="sub" data-lang="en">＊ This is your fixed weekly schedule. To request a change or day off, use the form below.</span>
+      <p class="note">＊固定の毎週の授業時間です。日本語力を維持するため、週1回以上のペースでの受講をおすすめしています。変更やお休みが必要な場合は、下の「変更・お休み申請」から提出してください。<br>
+        <span class="sub" data-lang="zh">＊ 固定的每週上課時間。為了維持日語能力，建議至少每週上一次課。如需調整或請假，可以在下方「請假・改期申請」提出。</span>
+        <span class="sub" data-lang="en">＊ This is your fixed weekly schedule. We recommend at least one lesson per week to maintain your Japanese ability. To request a change or day off, use the form below.</span>
+      </p>
+      <p class="note" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);">
+        ＊授業開始の12時間以内の変更は返金できませんので、あらかじめご了承ください。授業の最後には、次回の授業日時を必ず一緒に確認しています。<br>
+        <span class="sub" data-lang="zh">溫馨提醒您，若於課程開始前12小時內進行時間變更，將無法辦理退款，還請您多加留意。每次課程結束時，我也都有與您一起確認下一次的上課時間。</span>
+        <span class="sub" data-lang="en">Kind reminder: changes made within 12 hours of the lesson start time are non-refundable. We always confirm your next lesson time together at the end of each class.</span>
       </p>
     </div>
 
@@ -150,6 +157,10 @@
       <div class="form-field">
         <label>変更したい授業日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Date to Change</span></label>
         <select id="r-date"></select>
+        <p class="note" style="margin-top:6px;">＊授業開始12時間前を過ぎた分は一覧に表示されません（返金不可のため）。<br>
+          <span class="sub" data-lang="zh">＊ 授課開始前12小時內的課程不會顯示在清單中（無法退款）。</span>
+          <span class="sub" data-lang="en">＊ Lessons starting within 12 hours are not listed here (non-refundable).</span>
+        </p>
       </div>
       <div class="form-field">
         <label>希望する変更後の時間（任意）<span class="sub" data-lang="zh">希望的替代時間（選填）</span><span class="sub" data-lang="en">Preferred Alternative (optional)</span></label>
@@ -222,9 +233,7 @@
           <div class="row"><span class="label">機関</span><span class="value">Wise</span></div>
           <div class="row"><span class="label">名義</span><span class="value">SUZUKA IGUCHI</span></div>
           <div class="row"><span class="label">口座番号</span><span class="value">771735364460669</span></div>
-          <div class="row"><span class="label">Routing（ACH・米国内）</span><span class="value">084009519</span></div>
-          <div class="row"><span class="label">SWIFT/BIC（米国外）</span><span class="value">TRWIUS35XXX</span></div>
-          <p class="note" style="margin-top:8px;">住所: Wise US Inc, 108 W 13th St, Wilmington, DE, 19801, United States</p>
+          <div class="row"><span class="label">SWIFT/BIC</span><span class="value">TRWIUS35XXX</span></div>
         </div>
       </div>
     </div>
@@ -232,9 +241,9 @@
     <div class="card">
       <h2>支払いを追加（振込スクショをアップロード）<span class="sub" data-lang="zh">新增繳費（上傳轉帳截圖）</span><span class="sub" data-lang="en">Add Payment (Upload Screenshot)</span></h2>
       <p class="note" style="margin-top:0;margin-bottom:14px;">
-        口座番号などの詳細はLINEで先生にお尋ねください。振込完了後、ここにスクリーンショットをアップロードすると、先生の確認後に残り回数へ自動加算されます。<br>
-        <span class="sub" data-lang="zh">帳號等詳細資訊請透過 LINE 向老師索取。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</span>
-        <span class="sub" data-lang="en">Please ask the teacher for account details via LINE. After transferring, upload a screenshot here — your remaining lessons will update once confirmed.</span>
+        口座の詳細は上の「振込先情報」をご覧ください。振込完了後、ここにスクリーンショットをアップロードすると、先生の確認後に残り回数へ自動加算されます。<br>
+        <span class="sub" data-lang="zh">帳戶詳細請參考上方「匯款帳戶資訊」。轉帳完成後，在這裡上傳截圖，老師確認後會自動加入剩餘堂數。</span>
+        <span class="sub" data-lang="en">See "Payment Account Info" above for account details. After transferring, upload a screenshot here — your remaining lessons will update once confirmed.</span>
       </p>
       <div class="form-field">
         <label>金額<span class="sub" data-lang="zh">金額</span><span class="sub" data-lang="en">Amount</span></label>
@@ -287,6 +296,8 @@ function setLang(lang){
   document.getElementById('ls-en').classList.toggle('active', lang === 'en');
   refresh();
 }
+
+const CHANGE_CUTOFF_MS = 12 * 60 * 60 * 1000; // 授業開始12時間前を過ぎると変更申請不可
 
 const STR = {
   noRequests: {zh:'尚無申請', en:'No requests yet'},
@@ -386,18 +397,34 @@ async function refresh(){
   } else {
     upcomingList = await Classroom.upcomingSchedule(email, student.weekly_day, student.weekly_time, Math.min(remaining, 10));
     window._upcomingList = upcomingList;
-    upcomingEl.innerHTML = upcomingList.map((entry, i) => `
-      <div class="row"><span class="label">第${i + 1}回</span><span class="value">${entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${entry.time}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">' + t('adjusted') + '</span>' : ''}</span></div>
-    `).join('');
+    upcomingEl.innerHTML = upcomingList.map((entry, i) => {
+      const mainLabel = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time;
+      let historyLine = '';
+      if (entry.overridden) {
+        const origDate = new Date(entry.originalDate + 'T00:00:00');
+        const origLabel = origDate.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + student.weekly_time;
+        historyLine = `<div class="note" style="margin-top:2px;width:100%;text-align:right;">${origLabel} → ${mainLabel}</div>`;
+      }
+      return `
+        <div class="row" style="align-items:flex-start;flex-direction:column;">
+          <div style="display:flex;justify-content:space-between;width:100%;">
+            <span class="label">第${i + 1}回</span>
+            <span class="value">${mainLabel}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">' + t('adjusted') + '</span>' : ''}</span>
+          </div>
+          ${historyLine}
+        </div>`;
+    }).join('');
   }
 
   const dateSelect = document.getElementById('r-date');
-  if (upcomingList.length === 0){
+  const changeableList = upcomingList.filter(entry => (entry.date.getTime() - Date.now()) > CHANGE_CUTOFF_MS);
+  window._changeableList = changeableList;
+  if (changeableList.length === 0){
     dateSelect.innerHTML = `<option value="">${t('noDateOptions')}</option>`;
     dateSelect.disabled = true;
   } else {
     dateSelect.disabled = false;
-    dateSelect.innerHTML = upcomingList.map(entry => {
+    dateSelect.innerHTML = changeableList.map(entry => {
       const label = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? t('adjustedParen') : '');
       return `<option value="${entry.originalDate}">${label}</option>`;
     }).join('');
@@ -475,8 +502,9 @@ async function submitRequest(){
   if (!requested_date){ statusEl.textContent = '変更したい授業日を選んでください。'; return; }
 
   const student = window._student || {};
-  const matchedEntry = (window._upcomingList || []).find(e => e.originalDate === requested_date);
-  const requested_time = matchedEntry ? matchedEntry.time : (student.weekly_time || null);
+  const matchedEntry = (window._changeableList || []).find(e => e.originalDate === requested_date);
+  if (!matchedEntry){ statusEl.textContent = '授業開始の12時間以内は変更申請できません。返金もできませんのでご了承ください。'; return; }
+  const requested_time = matchedEntry.time;
   const student_name = student.nickname || student.name || null;
 
   btn.disabled = true;
