@@ -134,6 +134,64 @@
       }
       results.sort((a, b) => a.date - b.date);
       return results;
+    },
+
+    // ══ ブラウザだけで録画（OBS不要）══
+    // Google Meetのタブを画面共有として選び「タブの音声を共有」にチェックすると、
+    // 相手の声（タブ音声）+ 自分のマイクの両方を1本の動画として録画し、
+    // 停止時に自分のPCへ自動ダウンロードする。サーバーには一切送信しない。
+    _recorder: null,
+    _recordedChunks: [],
+    _recordingStreams: [],
+
+    async startRecording(onStateChange) {
+      try {
+        const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        let micStream = null;
+        try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+        catch (e) { console.warn('マイクを取得できませんでした（画面の音声のみ録画します）', e); }
+
+        const tracks = [...displayStream.getVideoTracks(), ...displayStream.getAudioTracks()];
+        if (micStream) tracks.push(...micStream.getAudioTracks());
+        const combined = new MediaStream(tracks);
+
+        this._recordingStreams = [displayStream, micStream].filter(Boolean);
+        this._recordedChunks = [];
+        this._recorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
+        this._recorder.ondataavailable = (e) => { if (e.data.size > 0) this._recordedChunks.push(e.data); };
+        this._recorder.onstop = () => {
+          const blob = new Blob(this._recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+          a.href = url;
+          a.download = `lesson-${ts}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 3000);
+          this._recordingStreams.forEach((s) => s.getTracks().forEach((t) => t.stop()));
+          this._recordingStreams = [];
+          if (onStateChange) onStateChange('stopped');
+        };
+        // 相手がブラウザ側の「共有を停止」を押した場合も止める
+        displayStream.getVideoTracks()[0].addEventListener('ended', () => {
+          if (this._recorder && this._recorder.state !== 'inactive') this._recorder.stop();
+        });
+
+        this._recorder.start();
+        if (onStateChange) onStateChange('recording');
+        return true;
+      } catch (err) {
+        console.error('録画開始エラー', err);
+        alert('録画を開始できませんでした。\n共有する画面を選ぶ時に「Chromeタブ」→Google Meetのタブを選び、「タブの音声を共有」にチェックを入れてください。\n(' + err.message + ')');
+        if (onStateChange) onStateChange('error');
+        return false;
+      }
+    },
+
+    stopRecording() {
+      if (this._recorder && this._recorder.state !== 'inactive') this._recorder.stop();
     }
   };
 

@@ -76,9 +76,22 @@
   <div id="view-student" style="display:none;">
 
     <div class="card">
+      <h2>🎥 錄影（選填）</h2>
+      <p class="note" style="margin-top:0;margin-bottom:14px;">按下後瀏覽器會請你選擇要分享的畫面，請選「Chrome分頁」→ 選Google Meet那個分頁 → 記得勾選「分享分頁音訊」。停止後影片會自動儲存到你自己的電腦，不需要就不用按。</p>
+      <button class="btn-main" id="rec-btn" onclick="toggleRecording()">🔴 開始錄影</button>
+      <div class="note" id="rec-status"></div>
+    </div>
+
+    <div class="card">
       <h2>上課時間</h2>
       <div class="row"><span class="label">固定時間</span><span class="value" id="s-schedule">—</span></div>
       <p class="note">＊ 目前為固定的每週上課時間。如需調整或請假，可以在下方「請假・改期申請」提出。</p>
+    </div>
+
+    <div class="card" id="card-links" style="display:none;">
+      <h2>上課連結</h2>
+      <div id="s-links" style="display:flex;flex-direction:column;gap:10px;"></div>
+      <p class="note">＊ 連結每次上課都固定不變，請先加入書籤方便下次使用。</p>
     </div>
 
     <div class="card">
@@ -133,7 +146,7 @@
       <h2>匯款帳戶資訊</h2>
       <p class="note" style="margin-top:0;margin-bottom:14px;">帳號為保護安全僅透過 LINE 提供，戶名如下，轉帳時請核對戶名是否一致。</p>
       <div class="row"><span class="label">🏦 台幣（中華銀行）</span><span class="value">林泰華</span></div>
-      <div class="row"><span class="label">🇹🇭 泰銖（Kasikorn Bank）</span><span class="value">SUZUKA IGUCHI</span></div>
+      <div class="row"><span class="label">🇹🇭 泰銖（開泰銀行）</span><span class="value">SUZUKA IGUCHI</span></div>
       <div class="row"><span class="label">🌍 美金（Wise）</span><span class="value">SUZUKA IGUCHI</span></div>
     </div>
 
@@ -160,7 +173,7 @@
         <label>付款方式</label>
         <select id="p-method">
           <option value="銀行振込">🏦 銀行振込</option>
-          <option value="PromptPay">🇹🇭 PromptPay</option>
+          <option value="泰銖銀行轉帳">🇹🇭 泰銖銀行轉帳</option>
           <option value="Wise">🌍 Wise</option>
         </select>
       </div>
@@ -213,12 +226,26 @@ async function refresh(){
   if (error){ console.error(error); show('view-notfound'); return; }
   if (!student){ show('view-notfound'); return; }
 
+  window._student = student;
+
   document.getElementById('hero-sub').textContent = (student.nickname || student.name || email) + ' さん、こんにちは';
   document.getElementById('s-schedule').textContent =
     (student.weekly_day !== null && student.weekly_day !== undefined && student.weekly_time)
       ? `每${WEEKDAYS[student.weekly_day]} ${student.weekly_time}`
       : '尚未設定（請聯絡老師）';
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
+
+  const linksCard = document.getElementById('card-links');
+  const linksEl = document.getElementById('s-links');
+  if (student.meet_link || student.excalidraw_link) {
+    linksCard.style.display = '';
+    linksEl.innerHTML = [
+      student.meet_link ? `<a class="btn-main" href="${student.meet_link}" target="_blank">📹 加入 Google Meet</a>` : '',
+      student.excalidraw_link ? `<a class="btn-main" style="background:linear-gradient(135deg,var(--sage,#8B9E8A),var(--frame));" href="${student.excalidraw_link}" target="_blank">✏️ 打開 Excalidraw 白板</a>` : ''
+    ].join('');
+  } else {
+    linksCard.style.display = 'none';
+  }
 
   const materialsCard = document.getElementById('card-materials');
   const materialsEl = document.getElementById('s-materials');
@@ -244,6 +271,7 @@ async function refresh(){
     upcomingEl.innerHTML = '<p class="note" style="margin-top:0;">目前沒有剩餘堂數，繳費後會自動顯示上課日。</p>';
   } else {
     upcomingList = await Classroom.upcomingSchedule(email, student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    window._upcomingList = upcomingList;
     upcomingEl.innerHTML = upcomingList.map((entry, i) => `
       <div class="row"><span class="label">第 ${i + 1} 堂</span><span class="value">${entry.date.toLocaleDateString('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' })} ${entry.time}${entry.overridden ? ' <span class="status approved" style="margin-left:6px;">已調整</span>' : ''}</span></div>
     `).join('');
@@ -272,7 +300,7 @@ async function refresh(){
       <tr>
         <td>${new Date(r.submitted_at).toLocaleDateString('zh-TW')}</td>
         <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('zh-TW') : '-'}</td>
-        <td><span class="status ${r.status}">${r.status === 'pending' ? '審核中' : r.status === 'approved' ? '已同意' : '已退回'}</span></td>
+        <td><span class="status ${r.status}">${r.status === 'pending' ? '審核中' : r.status === 'approved' ? '已同意' : '已退回'}</span>${r.status === 'rejected' && r.review_note ? `<div class="note" style="margin-top:4px;">💬 ${r.review_note}</div>` : ''}</td>
       </tr>`).join('');
   }
 
@@ -310,11 +338,16 @@ async function submitRequest(){
 
   if (!requested_date){ statusEl.textContent = '請選擇想調整的上課日。'; return; }
 
+  const student = window._student || {};
+  const matchedEntry = (window._upcomingList || []).find(e => e.originalDate === requested_date);
+  const requested_time = matchedEntry ? matchedEntry.time : (student.weekly_time || null);
+  const student_name = student.nickname || student.name || null;
+
   btn.disabled = true;
   statusEl.textContent = '送出中...';
   try {
     const { error } = await Classroom.client.from('classroom_change_requests').insert({
-      student_email: email, requested_date, preferred_alternative, reason, status: 'pending'
+      student_email: email, requested_date, requested_time, student_name, preferred_alternative, reason, status: 'pending'
     });
     if (error) throw error;
     statusEl.textContent = '已送出，老師確認後會通知你。';
@@ -369,6 +402,32 @@ async function submitPayment(){
     statusEl.textContent = '送出失敗，請稍後再試。（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
+  }
+}
+
+let _recording = false;
+async function toggleRecording(){
+  const btn = document.getElementById('rec-btn');
+  const status = document.getElementById('rec-status');
+  if (!_recording){
+    btn.disabled = true;
+    await Classroom.startRecording((state) => {
+      if (state === 'recording'){
+        _recording = true;
+        btn.textContent = '⏹ 停止錄影';
+        btn.disabled = false;
+        status.textContent = '🔴 錄影中...';
+      } else if (state === 'stopped'){
+        _recording = false;
+        btn.textContent = '🔴 開始錄影';
+        btn.disabled = false;
+        status.textContent = '已儲存到你的電腦。';
+      } else {
+        btn.disabled = false;
+      }
+    });
+  } else {
+    Classroom.stopRecording();
   }
 }
 

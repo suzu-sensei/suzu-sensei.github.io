@@ -83,6 +83,13 @@ a.link{color:var(--rose);}
   <div id="view-teacher" style="display:none;">
 
     <div class="section">
+      <div class="section-title">🎥 録画</div>
+      <p class="hint" style="margin-bottom:14px;">開始すると共有する画面を選ぶダイアログが出ます。「Chromeタブ」→Google Meetのタブを選び、「タブの音声を共有」にチェックを入れてください。停止すると自分のPCに動画が自動保存されます（任意・毎回押さなくてOK）。</p>
+      <button class="btn" id="rec-btn" onclick="toggleRecording()">🔴 録画開始</button>
+      <span class="hint" id="rec-status" style="margin-left:10px;"></span>
+    </div>
+
+    <div class="section">
       <div class="section-title">
         支払い承認待ち
       </div>
@@ -95,7 +102,7 @@ a.link{color:var(--rose);}
     <div class="section">
       <div class="section-title">変更・お休み申請</div>
       <table class="table" id="requestTable">
-        <thead><tr><th>学生</th><th>調整希望日</th><th>希望する代替</th><th>理由</th><th>操作</th></tr></thead>
+        <thead><tr><th>学生</th><th>変更したい日時</th><th>希望する代替</th><th>理由</th><th>操作</th></tr></thead>
         <tbody id="requestBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
       </table>
     </div>
@@ -169,9 +176,28 @@ a.link{color:var(--rose);}
       <label>学習ノートのGoogle DriveフォルダURL（任意）</label>
       <input type="url" id="sm-drive" placeholder="https://drive.google.com/...">
     </div>
+    <div class="form-group">
+      <label>Google Meetの固定リンク（毎回同じもの・任意）</label>
+      <input type="url" id="sm-meet" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+    </div>
+    <div class="form-group">
+      <label>Excalidrawの共同編集リンク（毎回同じもの・任意）</label>
+      <input type="url" id="sm-excalidraw" placeholder="https://excalidraw.com/#room=...">
+    </div>
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeStudentModal()">キャンセル</button>
       <button class="btn" onclick="saveStudentModal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal-box">
+    <h3>登録完了</h3>
+    <p class="hint" style="margin-bottom:16px;">学生を追加しました。よければ歓迎メールを送ってください（ボタンを押すとGmailの下書きが新しいタブで開くので、内容を確認して送信ボタンを押すだけです）。</p>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeWelcomeModal()">閉じる</button>
+      <a class="btn" id="welcome-email-btn" href="#" target="_blank" style="text-decoration:none;">📧 歓迎メールを開く</a>
     </div>
   </div>
 </div>
@@ -206,6 +232,21 @@ a.link{color:var(--rose);}
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeApproveModal()">キャンセル</button>
       <button class="btn" onclick="confirmApprove()">承認して保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal-box">
+    <h3>変更申請を却下</h3>
+    <p class="hint" id="rejectInfo" style="white-space:pre-line;margin-bottom:16px;"></p>
+    <div class="form-group">
+      <label>却下理由（学生の「我的教室」に表示されます・任意）</label>
+      <input type="text" id="rj-note" placeholder="例：その日は既に定員のためご希望に添えません">
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeRejectModal()">キャンセル</button>
+      <button class="btn reject" onclick="confirmReject()">却下する</button>
     </div>
   </div>
 </div>
@@ -247,8 +288,8 @@ async function loadRequests(){
   }
   tbody.innerHTML = requests.map(r => `
     <tr>
-      <td>${r.student_email}</td>
-      <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}</td>
+      <td>${r.student_name ? r.student_name + '<br><span style="color:#999;font-size:11px;">' + r.student_email + '</span>' : r.student_email}</td>
+      <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}${r.requested_time ? ' ' + r.requested_time : ''}</td>
       <td>${r.preferred_alternative || '-'}</td>
       <td>${r.reason || '-'}</td>
       <td>
@@ -260,16 +301,40 @@ async function loadRequests(){
 
 let _approveRequest = null;
 
+// 「7/25 11:00」「改成7/20（日）14:00」のような自由記述から日付・時間を推測する（あくまで補助・要確認）
+function parsePreferredAlternative(text){
+  if (!text) return { date: '', time: '' };
+  const dateMatch = text.match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
+  const timeMatch = text.match(/(\d{1,2})\s*[:：]\s*(\d{2})/);
+  let date = '';
+  if (dateMatch) {
+    const month = parseInt(dateMatch[1], 10);
+    const day = parseInt(dateMatch[2], 10);
+    const now = new Date();
+    let year = now.getFullYear();
+    let candidate = new Date(year, month - 1, day);
+    const diffDays = (candidate - now) / (1000 * 60 * 60 * 24);
+    if (diffDays < -30) { year += 1; candidate = new Date(year, month - 1, day); }
+    if (!isNaN(candidate.getTime())) {
+      date = year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+    }
+  }
+  const time = timeMatch ? String(parseInt(timeMatch[1], 10)).padStart(2, '0') + ':' + timeMatch[2] : '';
+  return { date, time };
+}
+
 function approveRequest(id){
   const req = (window._requests || []).find(r => r.id === id);
   if (!req) return;
   _approveRequest = req;
   document.getElementById('approveInfo').textContent =
-    req.student_email + '\n対象日: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') +
+    (req.student_name ? req.student_name + '（' + req.student_email + '）' : req.student_email) +
+    '\n対象日時: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') + (req.requested_time ? ' ' + req.requested_time : '') +
     (req.preferred_alternative ? '\n希望する代替: ' + req.preferred_alternative : '') +
     (req.reason ? '\n理由: ' + req.reason : '');
-  document.getElementById('ap-date').value = '';
-  document.getElementById('ap-time').value = '';
+  const guess = parsePreferredAlternative(req.preferred_alternative);
+  document.getElementById('ap-date').value = guess.date;
+  document.getElementById('ap-time').value = guess.time;
   document.getElementById('ap-note').value = req.preferred_alternative || '';
   document.getElementById('approveModal').classList.add('open');
 }
@@ -304,11 +369,33 @@ async function confirmApprove(){
   loadStudents();
 }
 
-async function rejectRequest(id){
-  if (!confirm('この変更申請を却下しますか？')) return;
+let _rejectRequest = null;
+
+function rejectRequest(id){
+  const req = (window._requests || []).find(r => r.id === id);
+  if (!req) return;
+  _rejectRequest = req;
+  document.getElementById('rejectInfo').textContent =
+    (req.student_name ? req.student_name + '（' + req.student_email + '）' : req.student_email) +
+    '\n対象日時: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') + (req.requested_time ? ' ' + req.requested_time : '') +
+    (req.reason ? '\n理由: ' + req.reason : '');
+  document.getElementById('rj-note').value = '';
+  document.getElementById('rejectModal').classList.add('open');
+}
+
+function closeRejectModal(){
+  document.getElementById('rejectModal').classList.remove('open');
+  _rejectRequest = null;
+}
+
+async function confirmReject(){
+  const req = _rejectRequest;
+  if (!req) return;
+  const note = document.getElementById('rj-note').value.trim() || null;
   const { error } = await Classroom.client
-    .from('classroom_change_requests').update({ status: 'rejected', reviewed_at: new Date().toISOString() }).eq('id', id);
-  if (error){ alert('処理に失敗しました。'); console.error(error); return; }
+    .from('classroom_change_requests').update({ status: 'rejected', reviewed_at: new Date().toISOString(), review_note: note }).eq('id', req.id);
+  if (error){ alert('処理に失敗しました。（' + error.message + '）'); console.error(error); return; }
+  closeRejectModal();
   loadRequests();
 }
 
@@ -345,6 +432,8 @@ async function loadStudents(){
         <button class="btn small" onclick="editStudent('${s.id}')">編集</button>
         <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
         <button class="btn small" onclick="completeLesson('${s.id}')" ${(s.remaining_lessons || 0) <= 0 ? 'disabled' : ''}>授業完了</button>
+        ${s.meet_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.meet_link}" target="_blank">📹 Meet</a>` : ''}
+        ${s.excalidraw_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.excalidraw_link}" target="_blank">✏️ 白板</a>` : ''}
       </td>
     </tr>`).join('');
   window._students = students;
@@ -548,6 +637,8 @@ function addStudent(){
   document.getElementById('sm-status').value = 'active';
   document.getElementById('sm-status-group').style.display = 'none';
   document.getElementById('sm-drive').value = '';
+  document.getElementById('sm-meet').value = '';
+  document.getElementById('sm-excalidraw').value = '';
   document.getElementById('studentModal').classList.add('open');
 }
 
@@ -567,6 +658,8 @@ function editStudent(id){
   document.getElementById('sm-status').value = s.status || 'active';
   document.getElementById('sm-status-group').style.display = '';
   document.getElementById('sm-drive').value = s.drive_folder_url || '';
+  document.getElementById('sm-meet').value = s.meet_link || '';
+  document.getElementById('sm-excalidraw').value = s.excalidraw_link || '';
   document.getElementById('studentModal').classList.add('open');
 }
 
@@ -583,6 +676,12 @@ document.getElementById('upcomingModal').addEventListener('click', (e) => {
 document.getElementById('approveModal').addEventListener('click', (e) => {
   if (e.target.id === 'approveModal') closeApproveModal();
 });
+document.getElementById('rejectModal').addEventListener('click', (e) => {
+  if (e.target.id === 'rejectModal') closeRejectModal();
+});
+document.getElementById('welcomeModal').addEventListener('click', (e) => {
+  if (e.target.id === 'welcomeModal') closeWelcomeModal();
+});
 
 async function saveStudentModal(){
   const email = document.getElementById('sm-email').value.trim();
@@ -592,6 +691,8 @@ async function saveStudentModal(){
   const lessons = parseInt(document.getElementById('sm-lessons').value) || 0;
   const status = document.getElementById('sm-status').value || 'active';
   const driveUrl = document.getElementById('sm-drive').value.trim() || null;
+  const meetLink = document.getElementById('sm-meet').value.trim() || null;
+  const excalidrawLink = document.getElementById('sm-excalidraw').value.trim() || null;
   const weekly_day = dayVal !== '' ? parseInt(dayVal) : null;
 
   if (_modalMode === 'add'){
@@ -599,21 +700,45 @@ async function saveStudentModal(){
     const { error } = await Classroom.client.from('classroom_students').insert({
       email, name, nickname: name,
       weekly_day, weekly_time: time, remaining_lessons: lessons,
-      drive_folder_url: driveUrl
+      drive_folder_url: driveUrl, meet_link: meetLink, excalidraw_link: excalidrawLink
     });
     if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
+    closeStudentModal();
+    loadStudents();
+    openWelcomePrompt(email, name);
+    return;
   } else {
     const { error } = await Classroom.client.from('classroom_students').update({
       name, nickname: name,
       weekly_day, weekly_time: time,
       remaining_lessons: lessons,
       status,
-      drive_folder_url: driveUrl
+      drive_folder_url: driveUrl, meet_link: meetLink, excalidraw_link: excalidrawLink
     }).eq('id', _modalStudentId);
     if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
   }
   closeStudentModal();
   loadStudents();
+}
+
+function buildWelcomeMailUrl(email, name){
+  const subject = '【純香老師的暖心日語】歡迎加入！帳號已開通';
+  const body = (name ? name + '同學你好，' : '你好，') + '\n\n' +
+    '歡迎加入純香老師的暖心日語！你的帳號已經開通，可以用這個Google帳號（' + email + '）登入「我的教室」查看上課時間、剩餘堂數、繳費記錄：\n' +
+    'https://suzu-sensei.github.io/site/classroom/student.html\n\n' +
+    '有任何問題歡迎透過LINE聯絡老師。\n\n' +
+    'すず先生';
+  return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+
+function openWelcomePrompt(email, name){
+  document.getElementById('welcome-email-btn').href = buildWelcomeMailUrl(email, name);
+  document.getElementById('welcomeModal').classList.add('open');
+}
+
+function closeWelcomeModal(){
+  document.getElementById('welcomeModal').classList.remove('open');
 }
 
 async function completeLesson(id){
@@ -628,6 +753,32 @@ async function completeLesson(id){
     .from('classroom_students').update({ remaining_lessons: current - 1 }).eq('id', id);
   if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
   loadStudents();
+}
+
+let _recording = false;
+async function toggleRecording(){
+  const btn = document.getElementById('rec-btn');
+  const status = document.getElementById('rec-status');
+  if (!_recording){
+    btn.disabled = true;
+    await Classroom.startRecording((state) => {
+      if (state === 'recording'){
+        _recording = true;
+        btn.textContent = '⏹ 録画停止';
+        btn.disabled = false;
+        status.textContent = '🔴 録画中...';
+      } else if (state === 'stopped'){
+        _recording = false;
+        btn.textContent = '🔴 録画開始';
+        btn.disabled = false;
+        status.textContent = 'PCに保存しました。';
+      } else {
+        btn.disabled = false;
+      }
+    });
+  } else {
+    Classroom.stopRecording();
+  }
 }
 
 refresh();
