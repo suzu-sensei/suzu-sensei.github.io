@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>純香老師的暖心日語｜陪伴你用日文看世界</title>
+<title>純香先生の暖かい日本語教室｜純香老師的暖心日語</title>
 <link rel="stylesheet" href="textbook/theme.css">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -14,13 +14,6 @@
   .hero{
     padding:64px 20px 40px; text-align:center;
     background:linear-gradient(180deg, var(--step-pale), var(--bg) 80%);
-  }
-  .hero .avatar{
-    width:72px;height:72px;border-radius:50%;margin:0 auto 18px;
-    background:linear-gradient(135deg, var(--step), var(--frame));
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;font-family:var(--font-zh-serif);font-size:1.6rem;font-weight:700;
-    box-shadow:0 8px 22px rgba(122,79,130,.25);
   }
   .hero h1{
     font-family:var(--font-zh-serif); font-size:1.9rem; color:var(--frame);
@@ -53,52 +46,97 @@
   }
 
   footer{ text-align:center; font-size:0.78rem; color:var(--ink-light); padding:20px; }
+
+  .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  .t .sub, .hero h1 .sub{margin-top:1px;}
+  [data-lang="en"]{display:none;}
+  body.lang-en [data-lang="zh"]{display:none;}
+  body.lang-en [data-lang="en"]{display:inline;}
+  .lang-switcher{display:flex;justify-content:flex-end;gap:0;padding:16px 20px 0;}
+  .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
+  .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
+  .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
 </style>
 </head>
 <body>
 
+<div class="lang-switcher">
+  <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
+  <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+</div>
+
 <div class="hero">
-  <h1>純香老師的暖心日語<br>陪伴你用日文看世界</h1>
+  <h1>純香先生の暖かい日本語教室<br>日本語で世界を見にいこう
+    <span class="sub" data-lang="zh">純香老師的暖心日語　陪伴你用日文看世界</span>
+    <span class="sub" data-lang="en">Junko's Warm Japanese Classroom — See the world through Japanese</span>
+  </h1>
   <p>すず先生と一緒に、日本語で世界を見にいこう。</p>
 </div>
 
 <div class="page">
 
-  <p class="section-label">學習</p>
+  <p class="section-label">学習<span class="sub" data-lang="zh">學習</span><span class="sub" data-lang="en">Learning</span></p>
   <a class="card-link" href="../平仮名書き順.pdf" target="_blank">
     <div class="ico">📖</div>
     <div>
       <div class="t">ひらがな書き順</div>
-      <div class="d">平假名筆順練習表（PDF）</div>
+      <div class="d">書き順を確認しながら練習できます
+        <span class="sub" data-lang="zh">平假名筆順練習表（PDF）</span>
+        <span class="sub" data-lang="en">Hiragana stroke order worksheet (PDF)</span>
+      </div>
     </div>
   </a>
   <a class="card-link" href="../片仮名書き順.pdf" target="_blank">
     <div class="ico">📖</div>
     <div>
       <div class="t">カタカナ書き順</div>
-      <div class="d">片假名筆順練習表（PDF）</div>
+      <div class="d">書き順を確認しながら練習できます
+        <span class="sub" data-lang="zh">片假名筆順練習表（PDF）</span>
+        <span class="sub" data-lang="en">Katakana stroke order worksheet (PDF)</span>
+      </div>
     </div>
   </a>
 
-  <p class="section-label">報名・繳費</p>
+  <p class="section-label">入会・お支払い<span class="sub" data-lang="zh">報名・繳費</span><span class="sub" data-lang="en">Enroll &amp; Pay</span></p>
   <a class="card-link" href="classroom/pay.html">
     <div class="ico">💳</div>
     <div>
-      <div class="t">繳費・入班</div>
-      <div class="d">課程方案與付款方式</div>
+      <div class="t">お支払い・入会案内<span class="sub" data-lang="zh">繳費・入班</span><span class="sub" data-lang="en">Payment &amp; Enrollment</span></div>
+      <div class="d">コース料金とお支払い方法
+        <span class="sub" data-lang="zh">課程方案與付款方式</span>
+        <span class="sub" data-lang="en">Course pricing and payment methods</span>
+      </div>
     </div>
   </a>
   <a class="card-link" href="classroom/student.html">
     <div class="ico">🏫</div>
     <div>
-      <div class="t">我的教室</div>
-      <div class="d">登入查看上課時間、剩餘堂數、繳費記錄</div>
+      <div class="t">わたしの教室<span class="sub" data-lang="zh">我的教室</span><span class="sub" data-lang="en">My Classroom</span></div>
+      <div class="d">ログインして授業時間・残り回数・支払い記録を確認
+        <span class="sub" data-lang="zh">登入查看上課時間、剩餘堂數、繳費記錄</span>
+        <span class="sub" data-lang="en">Log in to view your schedule, remaining lessons, and payment history</span>
+      </div>
     </div>
   </a>
 
 </div>
 
-<footer>純香老師的暖心日語 © <span id="y"></span></footer>
-<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+<footer>純香先生の暖かい日本語教室<span class="sub" data-lang="zh">純香老師的暖心日語</span><span class="sub" data-lang="en">Junko's Warm Japanese Classroom</span> © <span id="y"></span></footer>
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+
+let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+}
+document.getElementById('ls-' + secondaryLang).classList.add('active');
+document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
+document.body.classList.toggle('lang-en', secondaryLang === 'en');
+</script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>繳費・入班｜純香老師的暖心日語</title>
+<title>お支払い・入会案内｜純香老師的暖心日語</title>
 <link rel="stylesheet" href="../textbook/theme.css">
 <style>
   *{box-sizing:border-box;}
@@ -27,70 +27,127 @@
   .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:10px;}
   .btn-main{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:15px;font-weight:700;font-size:0.95rem;}
   .steps{font-size:0.9rem;line-height:2.1;padding-left:20px;}
-  .todo{background:var(--amber-pale);border:1px dashed var(--amber);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--ink-mid);line-height:1.7;}
-  .todo b{color:var(--frame);}
   a.back{display:inline-block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-mid);text-decoration:none;}
+  .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  [data-lang="en"]{display:none;}
+  body.lang-en [data-lang="zh"]{display:none;}
+  body.lang-en [data-lang="en"]{display:inline;}
+  .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
+  .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
+  .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
+  .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <a class="back" href="../index.html">← 回首頁</a>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <a class="back" href="../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <div class="lang-switcher">
+      <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
+      <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+    </div>
+  </div>
 
   <div class="hero">
-    <h1>💛 繳費・入班</h1>
+    <h1>💛 お支払い・入会案内<span class="sub" data-lang="zh">繳費・入班</span><span class="sub" data-lang="en">Payment &amp; Enrollment</span></h1>
     <p>純香老師的暖心日語 · すず先生</p>
   </div>
 
   <div class="card">
-    <h2>課程方案</h2>
+    <h2>コース料金<span class="sub" data-lang="zh">課程方案</span><span class="sub" data-lang="en">Course Pricing</span></h2>
     <div class="course-grid">
       <div class="course-card">
-        <div class="c-name">一對一</div>
-        <div class="c-desc">50分鐘 / 客製化教學</div>
+        <div class="c-name">マンツーマン<span class="sub" data-lang="zh">一對一</span><span class="sub" data-lang="en">1-on-1</span></div>
+        <div class="c-desc">50分・オーダーメイド授業
+          <span class="sub" data-lang="zh">50分鐘 / 客製化教學</span>
+          <span class="sub" data-lang="en">50 min / Customized lessons</span>
+        </div>
         <div class="c-price">NT$700 ／ ฿700 ／ $22</div>
       </div>
       <div class="course-card">
-        <div class="c-name">雙人共學</div>
-        <div class="c-desc">50分鐘 / 兩人一起上</div>
-        <div class="c-price" style="font-size:0.85rem;">近日公開予定<br><span style="font-size:0.72rem;color:var(--ink-light);font-weight:400;">敬請期待</span></div>
+        <div class="c-name">ペアレッスン<span class="sub" data-lang="zh">雙人共學</span><span class="sub" data-lang="en">Pair Lesson</span></div>
+        <div class="c-desc">50分・お二人で受講
+          <span class="sub" data-lang="zh">50分鐘 / 兩人一起上</span>
+          <span class="sub" data-lang="en">50 min / Two students together</span>
+        </div>
+        <div class="c-price" style="font-size:0.85rem;">近日公開予定<br><span style="font-size:0.72rem;color:var(--ink-light);font-weight:400;" data-lang="zh">敬請期待</span><span style="font-size:0.72rem;color:var(--ink-light);font-weight:400;" data-lang="en">Coming soon</span></div>
       </div>
     </div>
-    <p class="note">＊ 一對一最少10堂起購（NT$7,000 ／ ฿7,000 ／ $220 起）。雙人共學方案準備中，詳情將另行公布。</p>
+    <p class="note">
+      ＊マンツーマンは10回パックからのお申し込みです（NT$7,000 ／ ฿7,000 ／ $220〜）。ペアレッスンは準備中、詳細は追ってお知らせします。<br>
+      <span class="sub" data-lang="zh">＊ 一對一最少10堂起購（NT$7,000 ／ ฿7,000 ／ $220 起）。雙人共學方案準備中，詳情將另行公布。</span>
+      <span class="sub" data-lang="en">＊ 1-on-1 lessons require a minimum 10-lesson pack (from NT$7,000 / ฿7,000 / $220). Pair lessons are coming soon.</span>
+    </p>
   </div>
 
   <div class="card">
-    <h2>付款方式</h2>
+    <h2>お支払い方法<span class="sub" data-lang="zh">付款方式</span><span class="sub" data-lang="en">Payment Methods</span></h2>
     <div class="pay-method">
-      <div class="pm-title">🏦 台幣銀行轉帳</div>
+      <div class="pm-title">🏦 台湾ドル銀行振込<span class="sub" data-lang="zh">台幣銀行轉帳</span><span class="sub" data-lang="en">TWD Bank Transfer</span></div>
       銀行：中華銀行<br>
-      戶名・帳號：🔒 為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取
+      名義・口座番号：🔒 安全のため、正式にご登録後「わたしの教室」でご確認いただくか、LINEで先生にお尋ねください。<br>
+      <span class="sub" data-lang="zh">戶名・帳號：為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取</span>
+      <span class="sub" data-lang="en">Account name/number: for security, available in "My Classroom" after enrollment, or ask the teacher via LINE.</span>
     </div>
     <div class="pay-method">
-      <div class="pm-title">🇹🇭 泰銖銀行轉帳</div>
+      <div class="pm-title">🇹🇭 タイバーツ銀行振込<span class="sub" data-lang="zh">泰銖銀行轉帳</span><span class="sub" data-lang="en">THB Bank Transfer</span></div>
       銀行：開泰銀行<br>
-      戶名・帳號：🔒 為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取
+      名義・口座番号：🔒 安全のため、正式にご登録後「わたしの教室」でご確認いただくか、LINEで先生にお尋ねください。<br>
+      <span class="sub" data-lang="zh">戶名・帳號：為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取</span>
+      <span class="sub" data-lang="en">Account name/number: for security, available in "My Classroom" after enrollment, or ask the teacher via LINE.</span>
     </div>
     <div class="pay-method">
-      <div class="pm-title">🌍 Wise（美金匯款）</div>
-      收款機構：Wise（Wise US Inc.）<br>
-      戶名・帳號：🔒 為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取
+      <div class="pm-title">🌍 Wise（米ドル送金）<span class="sub" data-lang="zh">Wise（美金匯款）</span><span class="sub" data-lang="en">Wise (USD Transfer)</span></div>
+      送金機関：Wise（Wise US Inc.）<br>
+      名義・口座番号：🔒 安全のため、正式にご登録後「わたしの教室」でご確認いただくか、LINEで先生にお尋ねください。<br>
+      <span class="sub" data-lang="zh">戶名・帳號：為保護帳戶安全，請正式報名後於「我的教室」查看，或透過 LINE 向老師索取</span>
+      <span class="sub" data-lang="en">Account name/number: for security, available in "My Classroom" after enrollment, or ask the teacher via LINE.</span>
     </div>
-    <p class="note">＊ 匯款完成後，請到「我的教室」上傳轉帳截圖，老師確認後會自動加入你的剩餘堂數。</p>
+    <p class="note">
+      ＊お振込み後、「わたしの教室」に振込スクリーンショットをアップロードしてください。先生の確認後、自動的に残り回数へ加算されます。<br>
+      <span class="sub" data-lang="zh">＊ 匯款完成後，請到「我的教室」上傳轉帳截圖，老師確認後會自動加入你的剩餘堂數。</span>
+      <span class="sub" data-lang="en">＊ After transferring, upload a screenshot in "My Classroom". Your remaining lessons will update automatically once confirmed.</span>
+    </p>
   </div>
 
   <div class="card">
-    <h2>入班步驟</h2>
+    <h2>入会の流れ<span class="sub" data-lang="zh">入班步驟</span><span class="sub" data-lang="en">Enrollment Steps</span></h2>
     <ol class="steps">
-      <li>透過 LINE 聯絡老師，預約體驗課</li>
-      <li>體驗課後，老師會傳送匯款資訊給你</li>
-      <li>完成匯款後，登入「我的教室」上傳轉帳截圖</li>
-      <li>老師確認收款後，剩餘堂數與上課日會自動顯示</li>
+      <li>LINEで先生に連絡し、体験レッスンを予約
+        <span class="sub" data-lang="zh">透過 LINE 聯絡老師，預約體驗課</span>
+        <span class="sub" data-lang="en">Contact the teacher via LINE to book a trial lesson</span>
+      </li>
+      <li>体験レッスン後、先生から振込先情報が届きます
+        <span class="sub" data-lang="zh">體驗課後，老師會傳送匯款資訊給你</span>
+        <span class="sub" data-lang="en">After the trial, you'll receive payment details from the teacher</span>
+      </li>
+      <li>お振込み後、「わたしの教室」にログインしてスクリーンショットをアップロード
+        <span class="sub" data-lang="zh">完成匯款後，登入「我的教室」上傳轉帳截圖</span>
+        <span class="sub" data-lang="en">After transferring, log in to "My Classroom" and upload the screenshot</span>
+      </li>
+      <li>先生が確認後、残り回数と授業日が自動的に表示されます
+        <span class="sub" data-lang="zh">老師確認收款後，剩餘堂數與上課日會自動顯示</span>
+        <span class="sub" data-lang="en">Once confirmed, your remaining lessons and schedule will appear automatically</span>
+      </li>
     </ol>
-    <a class="btn-main" href="https://lin.ee/u3ojW9D" target="_blank">💬 加LINE聯絡老師</a>
+    <a class="btn-main" href="https://lin.ee/u3ojW9D" target="_blank">💬 LINEで先生に連絡</a>
   </div>
-
 
 </div>
+<script>
+let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+}
+document.getElementById('ls-' + secondaryLang).classList.add('active');
+document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
+document.body.classList.toggle('lang-en', secondaryLang === 'en');
+</script>
 </body>
 </html>
