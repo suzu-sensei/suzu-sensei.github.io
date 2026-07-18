@@ -361,16 +361,13 @@ async function refresh(){
 
   const linksCard = document.getElementById('card-links');
   const linksEl = document.getElementById('s-links');
-  if (student.meet_link || student.excalidraw_link) {
-    linksCard.style.display = '';
-    linksEl.innerHTML = [
-      student.meet_link ? `<a class="btn-main" href="${student.meet_link}" target="_blank">📹 Google Meetに参加<small data-lang="zh">加入 Google Meet</small><small data-lang="en">Join Google Meet</small></a>` : '',
-      student.excalidraw_link ? `<a class="btn-main" style="background:linear-gradient(135deg,var(--sage,#8B9E8A),var(--frame));" href="${student.excalidraw_link}" target="_blank">✏️ Excalidrawホワイトボードを開く<small data-lang="zh">打開 Excalidraw 白板</small><small data-lang="en">Open Excalidraw Board</small></a>` : ''
-    ].join('');
-    applyLang();
-  } else {
-    linksCard.style.display = 'none';
-  }
+  linksCard.style.display = '';
+  linksEl.innerHTML = [
+    student.meet_link ? `<a class="btn-main" href="${student.meet_link}" target="_blank">📹 Google Meetに参加<small data-lang="zh">加入 Google Meet</small><small data-lang="en">Join Google Meet</small></a>` : '',
+    `<a class="btn-main" style="background:linear-gradient(135deg,#e8654f,#3d7ea6);" href="hiragana-board.html" target="_blank">🎴 ひらがなボード<small data-lang="zh">平假名練習板</small><small data-lang="en">Hiragana Board</small></a>`,
+    student.excalidraw_link ? `<a class="btn-main" style="background:linear-gradient(135deg,var(--sage,#8B9E8A),var(--frame));" href="${student.excalidraw_link}" target="_blank">✏️ Excalidrawホワイトボードを開く<small data-lang="zh">打開 Excalidraw 白板</small><small data-lang="en">Open Excalidraw Board</small></a>` : ''
+  ].join('');
+  applyLang();
 
   const materialsCard = document.getElementById('card-materials');
   const materialsEl = document.getElementById('s-materials');

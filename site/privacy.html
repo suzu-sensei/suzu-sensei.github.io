@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人情報の取り扱いについて｜純香老師的暖心日語</title>
+<link rel="stylesheet" href="textbook/theme.css">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-zh-sans);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-zh-serif);}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 70px;}
+  a.back{display:inline-block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-mid);text-decoration:none;}
+  .hero{background:linear-gradient(135deg,var(--step),var(--frame));border-radius:16px;padding:28px 20px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(122,79,130,.25);}
+  .hero h1{font-size:1.25rem;margin:0 0 6px;}
+  .hero p{font-size:0.85rem;opacity:0.92;margin:0;}
+  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .card h2{font-size:1rem;font-weight:700;margin:0 0 12px;color:var(--frame);border-bottom:1px solid var(--border);padding-bottom:10px;}
+  .card p{font-size:0.9rem;line-height:1.9;margin:0 0 10px;}
+  .card ul{font-size:0.9rem;line-height:1.9;margin:0 0 10px;padding-left:20px;}
+  .sub{display:block;font-size:0.78rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
+  [data-lang="en"]{display:none;}
+  body.lang-en [data-lang="zh"]{display:none;}
+  body.lang-en [data-lang="en"]{display:block;}
+  .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
+  .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
+  .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
+  .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
+  .updated{font-size:0.78rem;color:var(--ink-light);text-align:right;margin-top:-6px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <a class="back" href="index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <div class="lang-switcher">
+      <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
+      <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>🔒 個人情報の取り扱いについて<span class="sub" data-lang="zh">個人資料處理原則</span><span class="sub" data-lang="en">Privacy Policy</span></h1>
+    <p>純香老師的暖心日語 · すず先生</p>
+  </div>
+  <p class="updated">最終更新日 <span class="sub" data-lang="zh">最後更新</span><span class="sub" data-lang="en">Last updated</span>：2026-07-18</p>
+
+  <div class="card">
+    <h2>お預かりする情報<span class="sub" data-lang="zh">我們會蒐集的資訊</span><span class="sub" data-lang="en">Information We Collect</span></h2>
+    <p>
+      お名前、メールアドレス（Googleアカウント）、ご希望の授業曜日・時間、レッスンに関するメッセージ、お支払いのスクリーンショットをお預かりします。
+      <span class="sub" data-lang="zh">我們會蒐集您的姓名、Email（Google帳號）、希望的上課日與時間、與課程相關的訊息，以及您上傳的匯款截圖。</span>
+      <span class="sub" data-lang="en">We collect your name, email address (Google account), preferred lesson weekday/time, messages related to lessons, and payment screenshots you upload.</span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>情報の利用目的<span class="sub" data-lang="zh">使用目的</span><span class="sub" data-lang="en">How We Use It</span></h2>
+    <p>
+      入会申込の確認、授業スケジュールの管理、お支払い状況の確認、レッスンに関するご連絡のためだけに使用します。第三者への販売・提供は一切行いません。
+      <span class="sub" data-lang="zh">僅用於確認入班申請、管理上課時間、確認繳費狀況，以及與課程相關的聯繫。絕不會販售或提供給第三方。</span>
+      <span class="sub" data-lang="en">Used only to confirm enrollment, manage your lesson schedule, verify payments, and contact you about lessons. We never sell or share it with third parties.</span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>データの保管方法<span class="sub" data-lang="zh">資料保存方式</span><span class="sub" data-lang="en">How We Store It</span></h2>
+    <p>
+      「わたしの教室」の情報はSupabase（データベースサービス）上で管理し、行レベルセキュリティ（RLS）とGoogleアカウント認証により、ご本人と先生のみが閲覧できる設定になっています。振込先の口座情報も同様に、ログインした本人にのみ表示されます。
+      <span class="sub" data-lang="zh">「我的教室」的資料儲存在Supabase資料庫服務中，透過Row Level Security（列級安全性）與Google帳號驗證，僅有您本人與老師能夠檢視。匯款帳戶資訊也僅在登入後對本人顯示。</span>
+      <span class="sub" data-lang="en">Data in "My Classroom" is stored on Supabase and protected by Row Level Security plus Google account authentication, so only you and the teacher can view it. Bank account details are likewise shown only to the logged-in student.</span>
+    </p>
+    <p>
+      入会申込フォーム（入会申込ページ）の内容は、フォーム送信サービス（formsubmit.co）を経由して先生のメールに直接届く仕組みで、サイト側には保存されません。
+      <span class="sub" data-lang="zh">入班申請表的內容會透過表單傳送服務（formsubmit.co）直接寄送到老師的信箱，網站本身不會儲存這些資料。</span>
+      <span class="sub" data-lang="en">Enrollment form submissions are sent directly to the teacher's email via a form service (formsubmit.co) and are not stored on the site itself.</span>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>データの削除・お問い合わせ<span class="sub" data-lang="zh">刪除資料與聯絡方式</span><span class="sub" data-lang="en">Deletion &amp; Contact</span></h2>
+    <p>
+      ご自身の情報の確認・修正・削除をご希望の場合は、LINEまたはメール（suzu.nihongo@gmail.com）にてお気軽にご連絡ください。
+      <span class="sub" data-lang="zh">若您希望查看、修改或刪除自己的資料，歡迎透過 LINE 或 Email（suzu.nihongo@gmail.com）與我們聯繫。</span>
+      <span class="sub" data-lang="en">If you'd like to review, correct, or delete your information, please contact us via LINE or email (suzu.nihongo@gmail.com).</span>
+    </p>
+  </div>
+
+</div>
+<script>
+let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  document.body.classList.toggle('lang-en', lang === 'en');
+  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+}
+document.getElementById('ls-' + secondaryLang).classList.add('active');
+document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
+document.body.classList.toggle('lang-en', secondaryLang === 'en');
+</script>
+</body>
+</html>

@@ -68,7 +68,7 @@
       <span class="sub" data-lang="en">We recommend trying the free quiz or a trial lesson first to get a feel for the class. If you'd like to formally enroll afterward, please use the form below.</span>
     </p>
     <div class="cta-row">
-      <a class="btn-main" href="../quiz.html">🎴 クイズで日本語を試す<small data-lang="zh">用小測驗試試看</small><small data-lang="en">Try the Practice Quiz</small></a>
+      <a class="btn-main" href="../../quiz.html">🎴 クイズで日本語を試す<small data-lang="zh">用小測驗試試看</small><small data-lang="en">Try the Practice Quiz</small></a>
       <a class="btn-main btn-gold" href="https://calendly.com/suzu-nihongo/30min" target="_blank">📅 無料体験レッスンを予約<small data-lang="zh">預約免費體驗課</small><small data-lang="en">Book a Free Trial Lesson</small></a>
     </div>
   </div>
@@ -122,6 +122,11 @@
       <input type="time" id="ef-time">
     </div>
     <div class="form-field">
+      <label>タイムゾーン<span class="sub" data-lang="zh">時區</span><span class="sub" data-lang="en">Time Zone</span></label>
+      <select id="ef-tz"></select>
+      <p class="note" style="margin-top:6px;" id="ef-tz-note"></p>
+    </div>
+    <div class="form-field">
       <label>ご質問・伝えたいこと（任意）<span class="sub" data-lang="zh">問題或想說的話（選填）</span><span class="sub" data-lang="en">Questions or notes (optional)</span></label>
       <textarea id="ef-msg" placeholder="例：夜21時以降が希望です／子どもと一緒に受けたいです、など"></textarea>
     </div>
@@ -161,6 +166,46 @@ document.getElementById('ls-' + secondaryLang).classList.add('active');
 document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
 document.body.classList.toggle('lang-en', secondaryLang === 'en');
 
+const TZ_LIST = [
+  { zone: 'Asia/Taipei',    label: '台湾（UTC+8）',       labelZh: '台灣（UTC+8）',      labelEn: 'Taiwan (UTC+8)' },
+  { zone: 'Asia/Bangkok',   label: 'タイ（UTC+7）',       labelZh: '泰國（UTC+7）',      labelEn: 'Thailand (UTC+7)' },
+  { zone: 'Asia/Tokyo',     label: '日本（UTC+9）',       labelZh: '日本（UTC+9）',      labelEn: 'Japan (UTC+9)' },
+  { zone: 'Asia/Hong_Kong', label: '香港（UTC+8）',       labelZh: '香港（UTC+8）',      labelEn: 'Hong Kong (UTC+8)' },
+  { zone: 'Asia/Singapore', label: 'シンガポール（UTC+8）', labelZh: '新加坡（UTC+8）',  labelEn: 'Singapore (UTC+8)' },
+  { zone: 'Asia/Shanghai',  label: '中国（UTC+8）',       labelZh: '中國（UTC+8）',      labelEn: 'China (UTC+8)' },
+  { zone: 'Asia/Seoul',     label: '韓国（UTC+9）',       labelZh: '韓國（UTC+9）',      labelEn: 'South Korea (UTC+9)' },
+  { zone: 'America/Los_Angeles', label: 'アメリカ西部（UTC-8/-7）', labelZh: '美國西岸（UTC-8/-7）', labelEn: 'US Pacific (UTC-8/-7)' },
+  { zone: 'America/New_York',    label: 'アメリカ東部（UTC-5/-4）', labelZh: '美國東岸（UTC-5/-4）', labelEn: 'US Eastern (UTC-5/-4)' },
+  { zone: 'Europe/London',  label: 'イギリス（UTC+0/+1）', labelZh: '英國（UTC+0/+1）', labelEn: 'UK (UTC+0/+1)' },
+  { zone: 'Australia/Sydney', label: 'オーストラリア東部（UTC+10/+11）', labelZh: '澳洲東部（UTC+10/+11）', labelEn: 'Australia East (UTC+10/+11)' }
+];
+
+function initTimezone(){
+  const sel = document.getElementById('ef-tz');
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
+  let matched = TZ_LIST.some(tz => tz.zone === detected);
+  if (!matched){
+    TZ_LIST.push({ zone: detected, label: detected, labelZh: detected, labelEn: detected });
+  }
+  sel.innerHTML = TZ_LIST.map(tz =>
+    `<option value="${tz.zone}">${tz.label} / ${tz.labelZh}</option>`
+  ).join('');
+  sel.value = detected;
+  updateTzNote();
+  sel.addEventListener('change', updateTzNote);
+}
+function updateTzNote(){
+  const sel = document.getElementById('ef-tz');
+  const noteEl = document.getElementById('ef-tz-note');
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
+  if (sel.value === detected){
+    noteEl.innerHTML = 'あなたの端末から自動検出しました。違う場合は選び直してください。<span class="sub" data-lang="zh">已自動偵測您的時區，如不正確請重新選擇。</span><span class="sub" data-lang="en">Auto-detected from your device. Please change it if it\'s incorrect.</span>';
+  } else {
+    noteEl.innerHTML = '手動で変更されました。<span class="sub" data-lang="zh">已手動變更時區。</span><span class="sub" data-lang="en">Manually changed.</span>';
+  }
+}
+initTimezone();
+
 async function submitEnrollment(){
   const name = document.getElementById('ef-name').value.trim();
   const email = document.getElementById('ef-email').value.trim();
@@ -168,6 +213,7 @@ async function submitEnrollment(){
   const course = document.getElementById('ef-course').value;
   const day = document.getElementById('ef-day').value;
   const time = document.getElementById('ef-time').value || '（未指定）';
+  const tz = document.getElementById('ef-tz').value;
   const msg = document.getElementById('ef-msg').value.trim() || '（なし）';
   const statusEl = document.getElementById('ef-status');
   const btn = document.getElementById('ef-submit');
@@ -187,6 +233,7 @@ async function submitEnrollment(){
         希望コース: course,
         希望曜日: day,
         希望時間: time,
+        タイムゾーン: tz,
         メッセージ: msg,
         _subject: '【入会申込】' + name + ' さんより',
         _captcha: 'false',
