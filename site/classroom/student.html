@@ -114,9 +114,14 @@
       <div class="note" id="rec-status"></div>
     </div>
 
+    <div class="card" id="card-status-banner" style="display:none;">
+      <div class="row"><span class="label">在籍状況<span class="sub" data-lang="zh">在籍狀態</span><span class="sub" data-lang="en">Account Status</span></span><span class="value" id="s-status"><span class="status" id="s-status-badge">—</span></span></div>
+      <p class="note" id="s-status-note" style="margin-top:8px;"></p>
+    </div>
+
     <div class="card">
       <h2>授業時間<span class="sub" data-lang="zh">上課時間</span><span class="sub" data-lang="en">Class Schedule</span></h2>
-      <div class="row"><span class="label">固定の時間<span class="sub" data-lang="zh">固定時間</span><span class="sub" data-lang="en">Fixed Time</span></span><span class="value" id="s-schedule">—</span></div>
+      <div class="row" style="align-items:flex-start;"><span class="label">固定の時間<span class="sub" data-lang="zh">固定時間</span><span class="sub" data-lang="en">Fixed Time</span></span><span class="value" id="s-schedule" style="text-align:right;">—</span></div>
       <p class="note">＊固定の毎週の授業時間です。日本語力を維持するため、週1回以上のペースでの受講をおすすめしています。変更やお休みが必要な場合は、下の「変更・お休み申請」から提出してください。<br>
         <span class="sub" data-lang="zh">＊ 固定的每週上課時間。為了維持日語能力，建議至少每週上一次課。如需調整或請假，可以在下方「請假・改期申請」提出。</span>
         <span class="sub" data-lang="en">＊ This is your fixed weekly schedule. We recommend at least one lesson per week to maintain your Japanese ability. To request a change or day off, use the form below.</span>
@@ -126,6 +131,7 @@
         <span class="sub" data-lang="zh">溫馨提醒您，若於課程開始前12小時內進行時間變更，將無法辦理退款，還請您多加留意。每次課程結束時，我也都有與您一起確認下一次的上課時間。</span>
         <span class="sub" data-lang="en">Kind reminder: changes made within 12 hours of the lesson start time are non-refundable. We always confirm your next lesson time together at the end of each class.</span>
       </p>
+      <p class="note" id="s-pack-expiry-note" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);color:#a13a3a;"></p>
     </div>
 
     <div class="card" id="card-links" style="display:none;">
@@ -149,37 +155,68 @@
 
     <div class="card">
       <h2>変更・お休み申請<span class="sub" data-lang="zh">請假・改期申請</span><span class="sub" data-lang="en">Change / Leave Request</span></h2>
-      <p class="note" style="margin-top:0;margin-bottom:14px;">
-        お休みや変更をしたい授業日を選んでください。送信後、先生が確認します。<br>
-        <span class="sub" data-lang="zh">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</span>
-        <span class="sub" data-lang="en">Select the lesson date you'd like to change or take off. The teacher will review your request.</span>
-      </p>
-      <div class="form-field">
-        <label>変更したい授業日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Date to Change</span></label>
-        <select id="r-date"></select>
-        <p class="note" style="margin-top:6px;">＊授業開始12時間前を過ぎた分は一覧に表示されません（返金不可のため）。<br>
-          <span class="sub" data-lang="zh">＊ 授課開始前12小時內的課程不會顯示在清單中（無法退款）。</span>
-          <span class="sub" data-lang="en">＊ Lessons starting within 12 hours are not listed here (non-refundable).</span>
+
+      <div class="acct-tabs">
+        <button class="acct-tab-btn active" id="req-tab-normal" onclick="switchRequestTab('normal')">変更・お休み<span class="sub" data-lang="zh">改期・請假</span><span class="sub" data-lang="en">Change/Leave</span></button>
+        <button class="acct-tab-btn" id="req-tab-extra" onclick="switchRequestTab('extra')">＋追加で今すぐ受けたい<span class="sub" data-lang="zh">＋加開一堂</span><span class="sub" data-lang="en">＋Add Extra Now</span></button>
+      </div>
+
+      <div id="req-panel-normal">
+        <p class="note" style="margin-top:0;margin-bottom:14px;">
+          お休みや変更をしたい授業日を選んでください。送信後、先生が確認します。<br>
+          <span class="sub" data-lang="zh">選擇想請假或改期的上課日，送出後老師會收到通知並確認。</span>
+          <span class="sub" data-lang="en">Select the lesson date you'd like to change or take off. The teacher will review your request.</span>
         </p>
+        <div class="form-field">
+          <label>変更したい授業日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Date to Change</span></label>
+          <select id="r-date"></select>
+          <p class="note" style="margin-top:6px;">＊授業開始12時間前を過ぎた分は一覧に表示されません（返金不可のため）。<br>
+            <span class="sub" data-lang="zh">＊ 授課開始前12小時內的課程不會顯示在清單中（無法退款）。</span>
+            <span class="sub" data-lang="en">＊ Lessons starting within 12 hours are not listed here (non-refundable).</span>
+          </p>
+        </div>
+        <div class="form-field">
+          <label>希望する変更後の時間（任意）<span class="sub" data-lang="zh">希望的替代時間（選填）</span><span class="sub" data-lang="en">Preferred Alternative (optional)</span></label>
+          <input type="text" id="r-alt" placeholder="例：7/20（日）14:00に変更">
+        </div>
+        <div class="form-field">
+          <label>理由（任意）<span class="sub" data-lang="zh">原因（選填）</span><span class="sub" data-lang="en">Reason (optional)</span></label>
+          <input type="text" id="r-reason" placeholder="例：急用ができた">
+        </div>
+        <button class="btn-main" id="r-submit" onclick="submitRequest()">申請を送信<small data-lang="zh">送出申請</small><small data-lang="en">Submit Request</small></button>
+        <div class="note" id="r-status"></div>
       </div>
-      <div class="form-field">
-        <label>希望する変更後の時間（任意）<span class="sub" data-lang="zh">希望的替代時間（選填）</span><span class="sub" data-lang="en">Preferred Alternative (optional)</span></label>
-        <input type="text" id="r-alt" placeholder="例：7/20（日）14:00に変更">
+
+      <div id="req-panel-extra" style="display:none;">
+        <p class="note" style="margin-top:0;margin-bottom:14px;">
+          残り回数の中から、通常の固定曜日以外で「追加で今すぐ受けたい」場合はこちら。承認されると、パックの一番最後の予定がこの日時に振り替えられます（回数は増えません）。<br>
+          <span class="sub" data-lang="zh">如果想從剩餘堂數中，在固定時間之外「臨時加開一堂」，請用這裡申請。核准後，會將這期堂數中最後一堂的預定日期改到您指定的時間（總堂數不會增加）。</span>
+          <span class="sub" data-lang="en">Use this if you'd like to take an extra lesson right away, outside your fixed weekly time, using your existing remaining lessons. If approved, the last scheduled lesson in your pack will be moved to this date/time (your total lesson count won't change).</span>
+        </p>
+        <div class="form-field">
+          <label>希望する日付<span class="sub" data-lang="zh">希望日期</span><span class="sub" data-lang="en">Preferred Date</span></label>
+          <input type="date" id="rx-date">
+        </div>
+        <div class="form-field">
+          <label>希望する時間<span class="sub" data-lang="zh">希望時間</span><span class="sub" data-lang="en">Preferred Time</span></label>
+          <input type="time" id="rx-time">
+        </div>
+        <div class="form-field">
+          <label>理由（任意）<span class="sub" data-lang="zh">原因（選填）</span><span class="sub" data-lang="en">Reason (optional)</span></label>
+          <input type="text" id="rx-reason" placeholder="例：もう1回練習したい">
+        </div>
+        <button class="btn-main" id="rx-submit" onclick="submitExtraRequest()">申請を送信<small data-lang="zh">送出申請</small><small data-lang="en">Submit Request</small></button>
+        <div class="note" id="rx-status"></div>
       </div>
-      <div class="form-field">
-        <label>理由（任意）<span class="sub" data-lang="zh">原因（選填）</span><span class="sub" data-lang="en">Reason (optional)</span></label>
-        <input type="text" id="r-reason" placeholder="例：急用ができた">
-      </div>
-      <button class="btn-main" id="r-submit" onclick="submitRequest()">申請を送信<small data-lang="zh">送出申請</small><small data-lang="en">Submit Request</small></button>
-      <div class="note" id="r-status"></div>
 
       <table style="margin-top:16px;">
         <thead><tr>
           <th>申請日<span class="sub" data-lang="zh">申請日期</span><span class="sub" data-lang="en">Submitted</span></th>
+          <th>種類<span class="sub" data-lang="zh">類型</span><span class="sub" data-lang="en">Type</span></th>
           <th>変更したい日<span class="sub" data-lang="zh">想調整的上課日</span><span class="sub" data-lang="en">Requested Date</span></th>
           <th>状態<span class="sub" data-lang="zh">狀態</span><span class="sub" data-lang="en">Status</span></th>
         </tr></thead>
-        <tbody id="s-requests"><tr><td colspan="3" class="center">申請はありません</td></tr></tbody>
+        <tbody id="s-requests"><tr><td colspan="4" class="center">申請はありません</td></tr></tbody>
       </table>
     </div>
 
@@ -198,8 +235,9 @@
           <th>回数<span class="sub" data-lang="zh">堂數</span><span class="sub" data-lang="en">Lessons</span></th>
           <th>方法<span class="sub" data-lang="zh">方式</span><span class="sub" data-lang="en">Method</span></th>
           <th>状態<span class="sub" data-lang="zh">狀態</span><span class="sub" data-lang="en">Status</span></th>
+          <th>スクショ<span class="sub" data-lang="zh">截圖</span><span class="sub" data-lang="en">Screenshot</span></th>
         </tr></thead>
-        <tbody id="s-payments"><tr><td colspan="5" class="center">記録はありません</td></tr></tbody>
+        <tbody id="s-payments"><tr><td colspan="6" class="center">記録はありません</td></tr></tbody>
       </table>
     </div>
 
@@ -315,6 +353,17 @@ const STR = {
   materialsIntro: {zh:'這裡是老師為你準備的學習筆記資料夾。', en:"This is the notes folder your teacher prepared for you."},
   openNewTab: {zh:'在新分頁開啟 →', en:'Open in new tab →'},
   lesson: {zh:'堂', en:''},
+  statusActive: {zh:'在籍中', en:'Active'},
+  statusPaused: {zh:'暫停中', en:'Paused'},
+  statusInactive: {zh:'已停用', en:'Inactive'},
+  statusPausedNote: {zh:'目前帳號為暫停狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently paused. Please contact the teacher via LINE with any questions.'},
+  statusInactiveNote: {zh:'目前帳號為停用狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently inactive. Please contact the teacher via LINE with any questions.'},
+  packExpiredNote: {zh:'＊本期10堂效期已過（自第一次上課起3個月），如需使用剩餘堂數請聯絡老師處理。目前無法送出改期／加開申請。', en:"＊This lesson pack has expired (3 months from your first lesson). Please contact the teacher to use any remaining lessons — change and extra-lesson requests can't be submitted right now."},
+  typeNormal: {zh:'改期・請假', en:'Change/Leave'},
+  typeExtra: {zh:'加開一堂', en:'Extra Lesson'},
+  viewSlip: {zh:'查看截圖', en:'View'},
+  extraNeedDateTime: {zh:'請選擇日期與時間。', en:'Please select a date and time.'},
+  packExpiredCantSubmit: {zh:'本期堂數效期已過，無法送出申請，請聯絡老師。', en:"This pack has expired — requests can't be submitted. Please contact the teacher."},
 };
 function t(key){ return STR[key] ? STR[key][secondaryLang] : ''; }
 
@@ -353,11 +402,38 @@ async function refresh(){
   window._student = student;
 
   document.getElementById('hero-sub').textContent = (student.nickname || student.name || email) + ' さん、こんにちは';
-  document.getElementById('s-schedule').innerHTML =
-    (student.weekly_day !== null && student.weekly_day !== undefined && student.weekly_time)
-      ? `毎週${WEEKDAYS_JP[student.weekly_day]}曜日 ${student.weekly_time}`
-      : t('scheduleUnset');
+
+  const slots = await Classroom.getStudentSlots(student);
+  window._studentSlots = slots;
+  document.getElementById('s-schedule').innerHTML = slots.length
+    ? slots.map(s => `毎週${WEEKDAYS_JP[s.day]}曜日 ${s.time}`).join('<br>')
+    : t('scheduleUnset');
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
+
+  const statusBanner = document.getElementById('card-status-banner');
+  if (student.status && student.status !== 'active'){
+    statusBanner.style.display = '';
+    const badge = document.getElementById('s-status-badge');
+    const noteEl = document.getElementById('s-status-note');
+    if (student.status === 'paused'){
+      badge.className = 'status pending'; badge.textContent = t('statusPaused');
+      noteEl.textContent = t('statusPausedNote');
+    } else {
+      badge.className = 'status rejected'; badge.textContent = t('statusInactive');
+      noteEl.textContent = t('statusInactiveNote');
+    }
+  } else {
+    statusBanner.style.display = 'none';
+  }
+
+  const packExpired = Classroom.isPackExpired(student);
+  const expiryNoteEl = document.getElementById('s-pack-expiry-note');
+  if (packExpired){
+    expiryNoteEl.style.display = '';
+    expiryNoteEl.textContent = t('packExpiredNote');
+  } else {
+    expiryNoteEl.style.display = 'none';
+  }
 
   const linksCard = document.getElementById('card-links');
   const linksEl = document.getElementById('s-links');
@@ -387,20 +463,22 @@ async function refresh(){
   const upcomingEl = document.getElementById('s-upcoming');
   const remaining = student.remaining_lessons || 0;
   let upcomingList = [];
-  if (student.weekly_day === null || student.weekly_day === undefined || !student.weekly_time) {
+  if (!slots.length) {
     upcomingEl.innerHTML = `<p class="note" style="margin-top:0;">${t('noScheduleSet')}</p>`;
   } else if (remaining <= 0) {
     upcomingEl.innerHTML = `<p class="note" style="margin-top:0;">${t('noRemaining')}</p>`;
   } else {
-    upcomingList = await Classroom.upcomingSchedule(email, student.weekly_day, student.weekly_time, Math.min(remaining, 10));
+    upcomingList = await Classroom.upcomingScheduleForSlots(email, slots, Math.min(remaining, 10));
     window._upcomingList = upcomingList;
     upcomingEl.innerHTML = upcomingList.map((entry, i) => {
       const mainLabel = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time;
       let historyLine = '';
       if (entry.overridden) {
         const origDate = new Date(entry.originalDate + 'T00:00:00');
-        const origLabel = origDate.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + student.weekly_time;
+        const origSlot = slots.find(s => s.day === origDate.getDay()) || slots[0];
+        const origLabel = origDate.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + (origSlot ? origSlot.time : '');
         historyLine = `<div class="note" style="margin-top:2px;width:100%;text-align:right;">${origLabel} → ${mainLabel}</div>`;
+        if (entry.note) historyLine += `<div class="note" style="margin-top:2px;width:100%;text-align:right;">💬 ${entry.note}</div>`;
       }
       return `
         <div class="row" style="align-items:flex-start;flex-direction:column;">
@@ -432,12 +510,13 @@ async function refresh(){
     .order('submitted_at', { ascending: false });
   const reqBody = document.getElementById('s-requests');
   if (!requests || requests.length === 0){
-    reqBody.innerHTML = `<tr><td colspan="3" class="center">${t('noRequests') || '申請はありません'}</td></tr>`;
+    reqBody.innerHTML = `<tr><td colspan="4" class="center">${t('noRequests') || '申請はありません'}</td></tr>`;
   } else {
     reqBody.innerHTML = requests.map(r => `
       <tr>
         <td>${new Date(r.submitted_at).toLocaleDateString('ja-JP')}</td>
-        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}</td>
+        <td>${r.request_type === 'extra' ? t('typeExtra') : t('typeNormal')}</td>
+        <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}${r.requested_time ? ' ' + r.requested_time : ''}</td>
         <td><span class="status ${r.status}">${r.status === 'pending' ? t('statusPending') : r.status === 'approved' ? t('statusApproved') : t('statusRejected')}</span>${r.status === 'rejected' && r.review_note ? `<div class="note" style="margin-top:4px;">💬 ${r.review_note}</div>` : ''}</td>
       </tr>`).join('');
   }
@@ -448,17 +527,30 @@ async function refresh(){
 
   const tbody = document.getElementById('s-payments');
   if (!payments || payments.length === 0){
-    tbody.innerHTML = `<tr><td colspan="5" class="center">${t('noRecords') || '記録はありません'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="center">${t('noRecords') || '記録はありません'}</td></tr>`;
   } else {
-    tbody.innerHTML = payments.map(p => `
+    tbody.innerHTML = (await Promise.all(payments.map(async p => {
+      let slipLink = '-';
+      if (p.slip_path){
+        const { data } = await Classroom.client.storage.from('payment-slips').createSignedUrl(p.slip_path, 300);
+        if (data && data.signedUrl) slipLink = `<a href="${data.signedUrl}" target="_blank">${t('viewSlip')}</a>`;
+      }
+      return `
       <tr>
         <td>${new Date(p.submitted_at).toLocaleDateString('ja-JP')}</td>
         <td>${p.currency} ${p.amount ?? '-'}</td>
         <td>${p.lessons_purchased ?? '-'}</td>
         <td>${p.payment_method || '-'}</td>
         <td><span class="status ${p.status}">${p.status === 'pending' ? t('statusPending') : p.status === 'approved' ? t('statusPaymentApproved') : t('statusRejected')}</span></td>
-      </tr>`).join('');
+        <td>${slipLink}</td>
+      </tr>`;
+    }))).join('');
   }
+
+  // 期限切れ・停止中の場合は申請フォームを送信できないようにする
+  const canSubmit = !packExpired && student.status !== 'inactive';
+  document.getElementById('r-submit').disabled = !canSubmit;
+  document.getElementById('rx-submit').disabled = !canSubmit;
 
   applyLang();
   show('view-student');
@@ -485,10 +577,60 @@ function switchAcctTab(key){
   });
 }
 
+function switchRequestTab(key){
+  document.getElementById('req-panel-normal').style.display = (key === 'normal') ? '' : 'none';
+  document.getElementById('req-panel-extra').style.display = (key === 'extra') ? '' : 'none';
+  document.getElementById('req-tab-normal').classList.toggle('active', key === 'normal');
+  document.getElementById('req-tab-extra').classList.toggle('active', key === 'extra');
+}
+
+async function submitExtraRequest(){
+  const session = await Classroom.session();
+  if (!session) return;
+  const email = session.user.email;
+  const student = window._student || {};
+  if (Classroom.isPackExpired(student)){
+    document.getElementById('rx-status').textContent = t('packExpiredCantSubmit');
+    return;
+  }
+  const date = document.getElementById('rx-date').value;
+  const time = document.getElementById('rx-time').value;
+  const reason = document.getElementById('rx-reason').value.trim() || null;
+  const statusEl = document.getElementById('rx-status');
+  const btn = document.getElementById('rx-submit');
+
+  if (!date || !time){ statusEl.textContent = t('extraNeedDateTime'); return; }
+
+  const student_name = student.nickname || student.name || null;
+  btn.disabled = true;
+  statusEl.textContent = '送信中...';
+  try {
+    const { error } = await Classroom.client.from('classroom_change_requests').insert({
+      student_email: email, requested_date: date, requested_time: time, student_name, reason,
+      status: 'pending', request_type: 'extra'
+    });
+    if (error) throw error;
+    statusEl.textContent = '送信しました。先生が確認後にお知らせします。';
+    document.getElementById('rx-date').value = '';
+    document.getElementById('rx-time').value = '';
+    document.getElementById('rx-reason').value = '';
+    refresh();
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function submitRequest(){
   const session = await Classroom.session();
   if (!session) return;
   const email = session.user.email;
+  if (Classroom.isPackExpired(window._student || {})){
+    document.getElementById('r-status').textContent = t('packExpiredCantSubmit');
+    return;
+  }
   const dateEl = document.getElementById('r-date');
   const requested_date = dateEl.value;
   const preferred_alternative = document.getElementById('r-alt').value.trim() || null;

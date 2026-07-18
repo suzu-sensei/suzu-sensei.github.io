@@ -88,52 +88,103 @@
       return results;
     },
 
-    // 毎週の曜日・時間パターン + classroom_lesson_overrides（個別の振替・欠席）をふまえた
-    // 実際の今後の上課日をcount件返す。各要素: { date: Date, time: 'HH:MM', overridden: bool,
-    // originalDate: 'YYYY-MM-DD'（本来の週次パターン上の日付・upsertのキーになる）, overrideId? }
-    async upcomingSchedule(studentEmail, weeklyDay, weeklyTime, count) {
-      if (weeklyDay === null || weeklyDay === undefined || !weeklyTime || !count) return [];
+    // 学生の固定スケジュールを「スロット配列」で取得。
+    // 通常は週1回（classroom_students.weekly_day/weekly_time）のみだが、
+    // 週2回以上固定したい学生はclassroom_weekly_slotsに追加スロットを持てる。
+    // 戻り値: [{ day: 0-6, time: 'HH:MM' }, ...]（重複なし、日時昇順ではない・呼び出し側でOK）
+    async getStudentSlots(student) {
+      const slots = [];
+      if (student && student.weekly_day !== null && student.weekly_day !== undefined && student.weekly_time) {
+        slots.push({ day: student.weekly_day, time: student.weekly_time });
+      }
+      if (student && student.email) {
+        const { data: extra, error } = await sb
+          .from('classroom_weekly_slots')
+          .select('*')
+          .eq('student_email', student.email)
+          .order('created_at', { ascending: true });
+        if (error) console.error('getStudentSlots: 追加スロット取得エラー', error);
+        (extra || []).forEach(s => slots.push({ day: s.weekday, time: s.time }));
+      }
+      return slots;
+    },
+
+    // 複数の「曜日・時間」スロット + classroom_lesson_overrides（個別の振替・欠席）をふまえた
+    // 実際の今後の上課日をcount件返す（全スロットをマージして日時昇順）。各要素:
+    // { date: Date, time: 'HH:MM', overridden: bool,
+    //   originalDate: 'YYYY-MM-DD'（本来の週次パターン上の日付・upsertのキーになる）, overrideId? }
+    async upcomingScheduleForSlots(studentEmail, slots, count) {
+      slots = (slots || []).filter(s => s && s.day !== null && s.day !== undefined && s.time);
+      if (!slots.length || !count) return [];
 
       const { data: overrides, error } = await sb
         .from('classroom_lesson_overrides')
         .select('*')
         .eq('student_email', studentEmail)
         .eq('status', 'active');
-      if (error) console.error('upcomingSchedule: overrides取得エラー', error);
+      if (error) console.error('upcomingScheduleForSlots: overrides取得エラー', error);
 
       const byOriginal = {};
       (overrides || []).forEach(o => { byOriginal[o.original_date] = o; });
 
-      const parts = weeklyTime.split(':').map(Number);
-      const h = parts[0] || 0, m = parts[1] || 0;
-      let d = new Date();
-      d.setHours(h, m, 0, 0);
-      let diff = (weeklyDay - d.getDay() + 7) % 7;
-      if (diff === 0 && d.getTime() <= Date.now()) diff = 7;
-      d.setDate(d.getDate() + diff);
+      const cursors = slots.map(s => {
+        const parts = s.time.split(':').map(Number);
+        const h = parts[0] || 0, m = parts[1] || 0;
+        let d = new Date();
+        d.setHours(h, m, 0, 0);
+        let diff = (s.day - d.getDay() + 7) % 7;
+        if (diff === 0 && d.getTime() <= Date.now()) diff = 7;
+        d.setDate(d.getDate() + diff);
+        return { date: d, time: s.time };
+      });
 
       const results = [];
       let guard = 0;
-      while (results.length < count && guard < count + 60) {
+      const guardMax = (count + 60) * slots.length;
+      while (results.length < count && guard < guardMax) {
         guard++;
-        const iso = d.toISOString().slice(0, 10);
+        let idx = 0;
+        for (let i = 1; i < cursors.length; i++) { if (cursors[i].date < cursors[idx].date) idx = i; }
+        const cur = cursors[idx];
+        const iso = cur.date.toISOString().slice(0, 10);
         const ov = byOriginal[iso];
         if (ov) {
           if (ov.new_date) {
             const [ny, nm, nd] = ov.new_date.split('-').map(Number);
-            const timeStr = ov.new_time || weeklyTime;
+            const timeStr = ov.new_time || cur.time;
             const [th, tm] = timeStr.split(':').map(Number);
             const newDateObj = new Date(ny, nm - 1, nd, th || 0, tm || 0, 0, 0);
             results.push({ date: newDateObj, time: timeStr, overridden: true, originalDate: iso, overrideId: ov.id, note: ov.note || '' });
           }
           // ov.new_date が null の場合は「欠席（振替なし）」なのでスキップ（結果に含めない）
         } else {
-          results.push({ date: new Date(d), time: weeklyTime, overridden: false, originalDate: iso });
+          results.push({ date: new Date(cur.date), time: cur.time, overridden: false, originalDate: iso });
         }
-        d = new Date(d.getTime() + 7 * 24 * 60 * 60 * 1000);
+        cursors[idx] = { date: new Date(cur.date.getTime() + 7 * 24 * 60 * 60 * 1000), time: cur.time };
       }
       results.sort((a, b) => a.date - b.date);
       return results;
+    },
+
+    // 互換用：単一の曜日・時間だけの場合のラッパー（週1回の学生用）
+    async upcomingSchedule(studentEmail, weeklyDay, weeklyTime, count) {
+      if (weeklyDay === null || weeklyDay === undefined || !weeklyTime) return [];
+      return this.upcomingScheduleForSlots(studentEmail, [{ day: weeklyDay, time: weeklyTime }], count);
+    },
+
+    // 10回パックの使用期限（1回目利用日から3ヶ月・購入日ではない）を計算。
+    // first_lesson_dateが未設定（まだ1回も消化していない）ならnullを返す＝期限なし。
+    packExpiryDate(student) {
+      if (!student || !student.first_lesson_date) return null;
+      const [y, m, d] = student.first_lesson_date.split('-').map(Number);
+      const expiry = new Date(y, m - 1, d);
+      expiry.setMonth(expiry.getMonth() + 3);
+      return expiry;
+    },
+    isPackExpired(student) {
+      const expiry = this.packExpiryDate(student);
+      if (!expiry) return false;
+      return Date.now() > expiry.getTime();
     },
 
     // ══ ブラウザだけで録画（OBS不要）══

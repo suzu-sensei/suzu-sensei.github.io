@@ -102,8 +102,8 @@ a.link{color:var(--rose);}
     <div class="section">
       <div class="section-title">変更・お休み申請</div>
       <table class="table" id="requestTable">
-        <thead><tr><th>学生</th><th>変更したい日時</th><th>希望する代替</th><th>理由</th><th>操作</th></tr></thead>
-        <tbody id="requestBody"><tr><td colspan="5" class="loading">読み込み中...</td></tr></tbody>
+        <thead><tr><th>種類</th><th>学生</th><th>変更したい日時</th><th>希望する代替</th><th>理由</th><th>操作</th></tr></thead>
+        <tbody id="requestBody"><tr><td colspan="6" class="loading">読み込み中...</td></tr></tbody>
       </table>
     </div>
 
@@ -144,7 +144,7 @@ a.link{color:var(--rose);}
       <input type="text" id="sm-name" placeholder="例: すず">
     </div>
     <div class="form-group">
-      <label>曜日</label>
+      <label>曜日（基本の固定枠）</label>
       <select id="sm-day">
         <option value="">未定</option>
         <option value="0">日</option>
@@ -161,8 +161,19 @@ a.link{color:var(--rose);}
       <input type="time" id="sm-time">
     </div>
     <div class="form-group">
+      <label>週2回以上の追加固定枠（任意）</label>
+      <div id="sm-extra-slots" style="display:flex;flex-direction:column;gap:8px;"></div>
+      <button type="button" class="btn small ghost" style="margin-top:8px;" onclick="addExtraSlotRow()">＋ 追加枠を増やす</button>
+      <div class="hint" style="margin-top:6px;">週2回以上を固定で受講する学生のみ追加してください。それぞれ曜日・時間を選べます。</div>
+    </div>
+    <div class="form-group">
       <label>残り回数</label>
       <input type="number" id="sm-lessons" min="0" step="1" value="0">
+    </div>
+    <div class="form-group" id="sm-first-lesson-group" style="display:none;">
+      <label>1回目利用日（10回パックの3ヶ月期限の起算日）</label>
+      <input type="date" id="sm-first-lesson">
+      <div class="hint">空欄にすると「まだ未消化」扱いになり、次に授業完了を記録した日が自動的に設定されます。</div>
     </div>
     <div class="form-group" id="sm-status-group">
       <label>状態</label>
@@ -175,6 +186,7 @@ a.link{color:var(--rose);}
     <div class="form-group">
       <label>学習ノートのGoogle DriveフォルダURL（任意）</label>
       <input type="url" id="sm-drive" placeholder="https://drive.google.com/...">
+      <div id="sm-drive-preview" style="margin-top:8px;"></div>
     </div>
     <div class="form-group">
       <label>Google Meetの固定リンク（毎回同じもの・任意）</label>
@@ -255,6 +267,61 @@ a.link{color:var(--rose);}
 <script>
 const WEEKDAYS = ['日','月','火','水','木','金','土'];
 
+function driveFolderId(url){
+  if (!url) return null;
+  const s = url.trim();
+  let m = s.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  m = s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(s)) return s;
+  return null;
+}
+
+function updateDrivePreview(){
+  const url = document.getElementById('sm-drive').value.trim();
+  const previewEl = document.getElementById('sm-drive-preview');
+  const folderId = driveFolderId(url);
+  if (folderId){
+    previewEl.innerHTML = `<iframe src="https://drive.google.com/embeddedfolderview?id=${folderId}#list" style="width:100%;height:220px;border:1px solid #ddd;border-radius:8px;"></iframe>`;
+  } else {
+    previewEl.innerHTML = '';
+  }
+}
+document.getElementById('sm-drive').addEventListener('input', updateDrivePreview);
+document.getElementById('sm-drive').addEventListener('blur', updateDrivePreview);
+
+let _extraSlotSeq = 0;
+function addExtraSlotRow(day, time){
+  const id = 'slot-' + (_extraSlotSeq++);
+  const wrap = document.getElementById('sm-extra-slots');
+  const row = document.createElement('div');
+  row.id = id;
+  row.style.cssText = 'display:flex;gap:6px;align-items:center;';
+  row.innerHTML = `
+    <select style="flex:1;padding:9px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;" class="slot-day">
+      <option value="0">日</option><option value="1">月</option><option value="2">火</option>
+      <option value="3">水</option><option value="4">木</option><option value="5">金</option><option value="6">土</option>
+    </select>
+    <input type="time" class="slot-time" style="flex:1;padding:9px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;">
+    <button type="button" class="btn small reject" onclick="document.getElementById('${id}').remove()">削除</button>
+  `;
+  wrap.appendChild(row);
+  if (day !== undefined && day !== null) row.querySelector('.slot-day').value = String(day);
+  if (time) row.querySelector('.slot-time').value = time;
+}
+
+function getExtraSlotsFromForm(){
+  const rows = document.querySelectorAll('#sm-extra-slots > div');
+  const slots = [];
+  rows.forEach(row => {
+    const day = row.querySelector('.slot-day').value;
+    const time = row.querySelector('.slot-time').value;
+    if (day !== '' && time) slots.push({ weekday: parseInt(day), time });
+  });
+  return slots;
+}
+
 function show(id){
   ['view-login','view-loading','view-denied','view-teacher'].forEach(v=>{
     document.getElementById(v).style.display = (v===id) ? '' : 'none';
@@ -280,14 +347,15 @@ async function loadRequests(){
   const { data: requests, error } = await Classroom.client
     .from('classroom_change_requests').select('*').eq('status', 'pending').order('submitted_at', { ascending: true });
   const tbody = document.getElementById('requestBody');
-  if (error){ tbody.innerHTML = `<tr><td colspan="5" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (error){ tbody.innerHTML = `<tr><td colspan="6" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
   window._requests = requests || [];
   if (!requests || requests.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" class="center">申請はありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="center">申請はありません</td></tr>';
     return;
   }
   tbody.innerHTML = requests.map(r => `
     <tr>
+      <td>${r.request_type === 'extra' ? '<span class="badge">追加</span>' : '変更/休み'}</td>
       <td>${r.student_name ? r.student_name + '<br><span style="color:#999;font-size:11px;">' + r.student_email + '</span>' : r.student_email}</td>
       <td>${r.requested_date ? new Date(r.requested_date).toLocaleDateString('ja-JP') : '-'}${r.requested_time ? ' ' + r.requested_time : ''}</td>
       <td>${r.preferred_alternative || '-'}</td>
@@ -300,6 +368,7 @@ async function loadRequests(){
 }
 
 let _approveRequest = null;
+let _approveExtraOriginalDate = null;
 
 // 「7/25 11:00」「改成7/20（日）14:00」のような自由記述から日付・時間を推測する（あくまで補助・要確認）
 function parsePreferredAlternative(text){
@@ -323,37 +392,65 @@ function parsePreferredAlternative(text){
   return { date, time };
 }
 
-function approveRequest(id){
+async function approveRequest(id){
   const req = (window._requests || []).find(r => r.id === id);
   if (!req) return;
   _approveRequest = req;
-  document.getElementById('approveInfo').textContent =
-    (req.student_name ? req.student_name + '（' + req.student_email + '）' : req.student_email) +
-    '\n対象日時: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') + (req.requested_time ? ' ' + req.requested_time : '') +
-    (req.preferred_alternative ? '\n希望する代替: ' + req.preferred_alternative : '') +
-    (req.reason ? '\n理由: ' + req.reason : '');
-  const guess = parsePreferredAlternative(req.preferred_alternative);
-  document.getElementById('ap-date').value = guess.date;
-  document.getElementById('ap-time').value = guess.time;
-  document.getElementById('ap-note').value = req.preferred_alternative || '';
+  _approveExtraOriginalDate = null;
+
+  if (req.request_type === 'extra'){
+    // 追加で今すぐ受けたい申請 → 消費するのはパックの「一番最後の予定」
+    const s = (window._students || []).find(x => x.email === req.student_email);
+    const slots = s ? await Classroom.getStudentSlots(s) : [];
+    const count = s ? Math.min(s.remaining_lessons || 0, 20) : 0;
+    const schedule = slots.length && count > 0 ? await Classroom.upcomingScheduleForSlots(req.student_email, slots, count) : [];
+    const last = schedule.length ? schedule[schedule.length - 1] : null;
+    if (!last){
+      alert('この学生の今後の予定が見つからないため、自動で最終回を特定できません。「予定を見る」から手動で調整してください。');
+      return;
+    }
+    _approveExtraOriginalDate = last.originalDate;
+    document.getElementById('approveInfo').textContent =
+      (req.student_name ? req.student_name + '（' + req.student_email + '）' : req.student_email) +
+      '\n【追加で今すぐ受けたい申請】希望日時: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') + (req.requested_time ? ' ' + req.requested_time : '') +
+      '\n→ パック最終回（' + last.date.toLocaleDateString('ja-JP') + ' ' + last.time + '）をこの日時に繰り上げて消費します。' +
+      (req.reason ? '\n理由: ' + req.reason : '');
+    document.getElementById('ap-date').value = req.requested_date || '';
+    document.getElementById('ap-time').value = req.requested_time || '';
+    document.getElementById('ap-note').value = '追加消費（最終回くり出し）';
+  } else {
+    document.getElementById('approveInfo').textContent =
+      (req.student_name ? req.student_name + '（' + req.student_email + '）' : req.student_email) +
+      '\n対象日時: ' + (req.requested_date ? new Date(req.requested_date).toLocaleDateString('ja-JP') : '-') + (req.requested_time ? ' ' + req.requested_time : '') +
+      (req.preferred_alternative ? '\n希望する代替: ' + req.preferred_alternative : '') +
+      (req.reason ? '\n理由: ' + req.reason : '');
+    const guess = parsePreferredAlternative(req.preferred_alternative);
+    document.getElementById('ap-date').value = guess.date;
+    document.getElementById('ap-time').value = guess.time;
+    document.getElementById('ap-note').value = req.preferred_alternative || '';
+  }
   document.getElementById('approveModal').classList.add('open');
 }
 
 function closeApproveModal(){
   document.getElementById('approveModal').classList.remove('open');
   _approveRequest = null;
+  _approveExtraOriginalDate = null;
 }
 
 async function confirmApprove(){
   const req = _approveRequest;
-  if (!req || !req.requested_date) return;
+  if (!req) return;
+  const isExtra = req.request_type === 'extra';
+  const originalDate = isExtra ? _approveExtraOriginalDate : req.requested_date;
+  if (!originalDate) return;
   const newDate = document.getElementById('ap-date').value || null;
   const newTime = document.getElementById('ap-time').value || null;
   const note = document.getElementById('ap-note').value.trim() || null;
 
   const { error: ovErr } = await Classroom.client.from('classroom_lesson_overrides').upsert({
     student_email: req.student_email,
-    original_date: req.requested_date,
+    original_date: originalDate,
     new_date: newDate,
     new_time: newDate ? newTime : null,
     note, status: 'active', created_by: Classroom.teacherEmail, request_id: req.id
@@ -405,6 +502,11 @@ function nextSessionLabel(s){
   return entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? ' <span class="badge">変更済み</span>' : '');
 }
 
+function slotsLabel(slots){
+  if (!slots || slots.length === 0) return '未設定';
+  return slots.map(s => `毎週${WEEKDAYS[s.day]} ${s.time}`).join(' / ');
+}
+
 async function loadStudents(){
   const { data: students, error } = await Classroom.client
     .from('classroom_students').select('*').order('created_at', { ascending: false });
@@ -415,17 +517,22 @@ async function loadStudents(){
     return;
   }
   const scheduleEntries = await Promise.all(students.map(async s => {
-    if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time || !(s.remaining_lessons > 0)) return [s.id, null];
-    const sched = await Classroom.upcomingSchedule(s.email, s.weekly_day, s.weekly_time, 1);
-    return [s.id, sched[0] || null];
+    const slots = await Classroom.getStudentSlots(s);
+    if (!slots.length || !(s.remaining_lessons > 0)) return [s.id, { slots, next: null }];
+    const sched = await Classroom.upcomingScheduleForSlots(s.email, slots, 1);
+    return [s.id, { slots, next: sched[0] || null }];
   }));
-  window._nextSession = Object.fromEntries(scheduleEntries);
-  tbody.innerHTML = students.map(s => `
+  window._scheduleInfo = Object.fromEntries(scheduleEntries);
+  window._nextSession = Object.fromEntries(scheduleEntries.map(([id, v]) => [id, v.next]));
+  tbody.innerHTML = students.map(s => {
+    const info = window._scheduleInfo[s.id] || { slots: [] };
+    const expired = Classroom.isPackExpired(s);
+    return `
     <tr>
       <td>${s.nickname || s.name || '-'}</td>
       <td>${s.email}</td>
-      <td>${(s.weekly_day !== null && s.weekly_day !== undefined && s.weekly_time) ? `毎週${WEEKDAYS[s.weekly_day]} ${s.weekly_time}` : '未設定'}</td>
-      <td>${s.remaining_lessons ?? 0}</td>
+      <td>${slotsLabel(info.slots)}</td>
+      <td>${s.remaining_lessons ?? 0}${expired ? ' <span class="badge" style="background:#fbdada;color:#a13a3a;">期限切れ</span>' : ''}</td>
       <td>${nextSessionLabel(s)}</td>
       <td>${s.status || 'active'}</td>
       <td>
@@ -433,9 +540,11 @@ async function loadStudents(){
         <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
         <button class="btn small" onclick="completeLesson('${s.id}')" ${(s.remaining_lessons || 0) <= 0 ? 'disabled' : ''}>授業完了</button>
         ${s.meet_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.meet_link}" target="_blank">📹 Meet</a>` : ''}
+        <a class="btn small" style="text-decoration:none;display:inline-block;" href="hiragana-board.html" target="_blank">🎴 ひらがな</a>
         ${s.excalidraw_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.excalidraw_link}" target="_blank">✏️ 白板</a>` : ''}
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   window._students = students;
 }
 
@@ -448,7 +557,8 @@ function getUpcomingStudent(){
 async function showUpcoming(id){
   const s = (window._students || []).find(x => x.id === id);
   if (!s) return;
-  if (s.weekly_day === null || s.weekly_day === undefined || !s.weekly_time){
+  const slots = (window._scheduleInfo && window._scheduleInfo[id] && window._scheduleInfo[id].slots) || await Classroom.getStudentSlots(s);
+  if (!slots.length){
     alert('曜日・時間が未設定です。');
     return;
   }
@@ -459,11 +569,12 @@ async function showUpcoming(id){
   document.getElementById('upcomingModalTitle').textContent = (s.nickname || s.name || s.email) + ' さんの今後の予定';
   document.getElementById('upcomingList').innerHTML = '<p class="hint">読み込み中...</p>';
   document.getElementById('upcomingModal').classList.add('open');
-  await renderUpcomingList(s, count);
+  await renderUpcomingList(s, count, slots);
 }
 
-async function renderUpcomingList(s, count){
-  const schedule = await Classroom.upcomingSchedule(s.email, s.weekly_day, s.weekly_time, count);
+async function renderUpcomingList(s, count, slots){
+  slots = slots || await Classroom.getStudentSlots(s);
+  const schedule = await Classroom.upcomingScheduleForSlots(s.email, slots, count);
   const listEl = document.getElementById('upcomingList');
   if (schedule.length === 0){ listEl.innerHTML = '<p class="hint">予定がありません。</p>'; return; }
   listEl.innerHTML = schedule.map((entry, i) => {
@@ -482,7 +593,7 @@ async function renderUpcomingList(s, count){
         </div>
         <div class="upcoming-row-edit" id="edit-${key}" style="display:none;">
           <div class="form-group"><label>新しい日付</label><input type="date" id="edit-date-${key}"></div>
-          <div class="form-group"><label>新しい時間</label><input type="time" id="edit-time-${key}" value="${s.weekly_time}"></div>
+          <div class="form-group"><label>新しい時間</label><input type="time" id="edit-time-${key}" value="${entry.time}"></div>
           <div class="form-group"><label>メモ（任意）</label><input type="text" id="edit-note-${key}" value="${entry.note || ''}"></div>
           <div class="modal-actions" style="margin-top:8px;">
             <button class="btn small ghost" onclick="toggleEditRow('${key}')">キャンセル</button>
@@ -597,12 +708,16 @@ async function loadPending(){
 async function approvePayment(id, email, lessons){
   if (!confirm(`この支払いを承認し、残り回数に${lessons}回を加算しますか？`)) return;
   const { data: student, error: fErr } = await Classroom.client
-    .from('classroom_students').select('remaining_lessons').eq('email', email).maybeSingle();
+    .from('classroom_students').select('remaining_lessons, first_lesson_date').eq('email', email).maybeSingle();
   if (fErr || !student){ alert('学生データの取得に失敗しました。'); console.error(fErr); return; }
 
   const newRemaining = (student.remaining_lessons || 0) + (lessons || 0);
+  // 残り0（前のパックを使い切った/期限切れ）から新しいパックを購入した場合は
+  // 「1回目利用日」をリセットし、新パックの利用開始時に3ヶ月の期限が再計算されるようにする
+  const update = { remaining_lessons: newRemaining };
+  if ((student.remaining_lessons || 0) <= 0) update.first_lesson_date = null;
   const { error: uErr } = await Classroom.client
-    .from('classroom_students').update({ remaining_lessons: newRemaining }).eq('email', email);
+    .from('classroom_students').update(update).eq('email', email);
   if (uErr){ alert('残り回数の更新に失敗しました。'); console.error(uErr); return; }
 
   const { error: pErr } = await Classroom.client
@@ -633,16 +748,20 @@ function addStudent(){
   document.getElementById('sm-name').value = '';
   document.getElementById('sm-day').value = '';
   document.getElementById('sm-time').value = '';
+  document.getElementById('sm-extra-slots').innerHTML = '';
   document.getElementById('sm-lessons').value = 0;
+  document.getElementById('sm-first-lesson').value = '';
+  document.getElementById('sm-first-lesson-group').style.display = 'none';
   document.getElementById('sm-status').value = 'active';
   document.getElementById('sm-status-group').style.display = 'none';
   document.getElementById('sm-drive').value = '';
   document.getElementById('sm-meet').value = '';
   document.getElementById('sm-excalidraw').value = '';
+  updateDrivePreview();
   document.getElementById('studentModal').classList.add('open');
 }
 
-function editStudent(id){
+async function editStudent(id){
   const s = (window._students || []).find(x => x.id === id);
   if (!s) return;
   _modalMode = 'edit';
@@ -654,13 +773,21 @@ function editStudent(id){
   document.getElementById('sm-name').value = s.nickname || s.name || '';
   document.getElementById('sm-day').value = (s.weekly_day === null || s.weekly_day === undefined) ? '' : String(s.weekly_day);
   document.getElementById('sm-time').value = s.weekly_time || '';
+  document.getElementById('sm-extra-slots').innerHTML = '';
   document.getElementById('sm-lessons').value = s.remaining_lessons ?? 0;
+  document.getElementById('sm-first-lesson').value = s.first_lesson_date || '';
+  document.getElementById('sm-first-lesson-group').style.display = '';
   document.getElementById('sm-status').value = s.status || 'active';
   document.getElementById('sm-status-group').style.display = '';
   document.getElementById('sm-drive').value = s.drive_folder_url || '';
   document.getElementById('sm-meet').value = s.meet_link || '';
   document.getElementById('sm-excalidraw').value = s.excalidraw_link || '';
+  updateDrivePreview();
   document.getElementById('studentModal').classList.add('open');
+
+  const { data: extra, error } = await Classroom.client
+    .from('classroom_weekly_slots').select('*').eq('student_email', s.email).order('created_at', { ascending: true });
+  if (!error && extra) extra.forEach(row => addExtraSlotRow(row.weekday, row.time));
 }
 
 function closeStudentModal(){
@@ -683,12 +810,26 @@ document.getElementById('welcomeModal').addEventListener('click', (e) => {
   if (e.target.id === 'welcomeModal') closeWelcomeModal();
 });
 
+async function syncExtraSlots(email){
+  const slots = getExtraSlotsFromForm();
+  const { error: delErr } = await Classroom.client.from('classroom_weekly_slots').delete().eq('student_email', email);
+  if (delErr){ console.error(delErr); return delErr; }
+  if (slots.length){
+    const { error: insErr } = await Classroom.client.from('classroom_weekly_slots').insert(
+      slots.map(s => ({ student_email: email, weekday: s.weekday, time: s.time }))
+    );
+    if (insErr){ console.error(insErr); return insErr; }
+  }
+  return null;
+}
+
 async function saveStudentModal(){
   const email = document.getElementById('sm-email').value.trim();
   const name = document.getElementById('sm-name').value.trim();
   const dayVal = document.getElementById('sm-day').value;
   const time = document.getElementById('sm-time').value || null;
   const lessons = parseInt(document.getElementById('sm-lessons').value) || 0;
+  const firstLessonDate = document.getElementById('sm-first-lesson').value || null;
   const status = document.getElementById('sm-status').value || 'active';
   const driveUrl = document.getElementById('sm-drive').value.trim() || null;
   const meetLink = document.getElementById('sm-meet').value.trim() || null;
@@ -703,6 +844,8 @@ async function saveStudentModal(){
       drive_folder_url: driveUrl, meet_link: meetLink, excalidraw_link: excalidrawLink
     });
     if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
+    const slotErr = await syncExtraSlots(email);
+    if (slotErr){ alert('追加枠の保存に失敗しました。（' + slotErr.message + '）'); }
     closeStudentModal();
     loadStudents();
     openWelcomePrompt(email, name);
@@ -712,10 +855,13 @@ async function saveStudentModal(){
       name, nickname: name,
       weekly_day, weekly_time: time,
       remaining_lessons: lessons,
+      first_lesson_date: firstLessonDate,
       status,
       drive_folder_url: driveUrl, meet_link: meetLink, excalidraw_link: excalidrawLink
     }).eq('id', _modalStudentId);
     if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
+    const slotErr = await syncExtraSlots(email);
+    if (slotErr){ alert('追加枠の保存に失敗しました。（' + slotErr.message + '）'); }
   }
   closeStudentModal();
   loadStudents();
@@ -749,8 +895,13 @@ async function completeLesson(id){
   const next = nextSessionLabel(s);
   if (!confirm(`${s.nickname || s.name || s.email} さんの授業完了を記録し、残り回数を1減らしますか？\n（今回: ${next}）`)) return;
 
+  const update = { remaining_lessons: current - 1 };
+  if (!s.first_lesson_date){
+    const today = new Date();
+    update.first_lesson_date = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  }
   const { error } = await Classroom.client
-    .from('classroom_students').update({ remaining_lessons: current - 1 }).eq('id', id);
+    .from('classroom_students').update(update).eq('id', id);
   if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
   loadStudents();
 }
