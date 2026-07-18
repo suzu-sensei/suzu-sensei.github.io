@@ -283,6 +283,8 @@
       <input id="trace-input" placeholder="なぞり文字 例: あいう" />
       <button class="tool-btn" id="trace-btn">なぞり表示</button>
     </div>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="save-image-btn">📥 画像として保存</button>
   </div>
   <div class="canvas-wrap">
     <canvas id="bg-canvas"></canvas>
@@ -519,6 +521,27 @@ document.getElementById("clear-btn").addEventListener("click", () => {
   strokes.length = 0;
   redrawStrokes();
   sendSync({ t: "clear" });
+});
+document.getElementById("save-image-btn").addEventListener("click", () => {
+  // 白紙(背景)+書いた内容を1枚のPNGに合成してダウンロード。ノート貼り付け用の保存機能。
+  const w = bgCanvas.width, h = bgCanvas.height;
+  const out = document.createElement("canvas");
+  out.width = w; out.height = h;
+  const octx = out.getContext("2d");
+  octx.fillStyle = "#fdf8f0";
+  octx.fillRect(0, 0, w, h);
+  octx.drawImage(bgCanvas, 0, 0);
+  octx.drawImage(drawCanvas, 0, 0);
+  const ts = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  const filename = `ひらがなボード_${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}_${pad(ts.getHours())}${pad(ts.getMinutes())}.png`;
+  out.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  }, "image/png");
 });
 
 const bgBlankBtn = document.getElementById("bg-blank");

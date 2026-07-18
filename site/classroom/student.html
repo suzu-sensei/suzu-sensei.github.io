@@ -148,6 +148,11 @@
       <div id="s-upcoming"><p class="note" style="margin-top:0;">—</p></div>
     </div>
 
+    <div class="card" id="card-past" style="display:none;">
+      <h2>過去の授業<span class="sub" data-lang="zh">過去的上課紀錄</span><span class="sub" data-lang="en">Past Lessons</span></h2>
+      <div id="s-past"></div>
+    </div>
+
     <div class="card" id="card-materials" style="display:none;">
       <h2>📚 学習資料<span class="sub" data-lang="zh">學習資料</span><span class="sub" data-lang="en">Materials</span></h2>
       <div id="s-materials"></div>
@@ -489,6 +494,21 @@ async function refresh(){
           ${historyLine}
         </div>`;
     }).join('');
+  }
+
+  const pastCard = document.getElementById('card-past');
+  const pastEl = document.getElementById('s-past');
+  const { data: history } = await Classroom.client
+    .from('classroom_lesson_history').select('*').eq('student_email', email)
+    .order('lesson_date', { ascending: false }).limit(15);
+  if (history && history.length > 0) {
+    pastCard.style.display = '';
+    pastEl.innerHTML = history.map(h => {
+      const label = new Date(h.lesson_date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + (h.lesson_time ? ' ' + h.lesson_time : '');
+      return `<div class="row"><span class="value">${label}</span></div>`;
+    }).join('');
+  } else {
+    pastCard.style.display = 'none';
   }
 
   const dateSelect = document.getElementById('r-date');

@@ -217,6 +217,9 @@ a.link{color:var(--rose);}
 <div class="modal-overlay" id="upcomingModal">
   <div class="modal-box" style="max-width:560px;">
     <h3 id="upcomingModalTitle">今後の予定</h3>
+    <div style="font-weight:700;font-size:13px;color:var(--deep);margin-bottom:8px;">📗 過去の授業</div>
+    <div id="pastList" style="margin-bottom:18px;"></div>
+    <div style="font-weight:700;font-size:13px;color:var(--deep);margin-bottom:8px;">📘 今後の予定</div>
     <p class="hint" style="margin-bottom:14px;">各回の「変更」で振替日時、「欠席にする」で振替なしの欠席として登録できます。</p>
     <div id="upcomingList"></div>
     <div class="modal-actions">
@@ -558,18 +561,37 @@ async function showUpcoming(id){
   const s = (window._students || []).find(x => x.id === id);
   if (!s) return;
   const slots = (window._scheduleInfo && window._scheduleInfo[id] && window._scheduleInfo[id].slots) || await Classroom.getStudentSlots(s);
-  if (!slots.length){
-    alert('曜日・時間が未設定です。');
-    return;
-  }
   const count = Math.min(s.remaining_lessons || 0, 10);
-  if (count <= 0){ alert('残り回数がありません。'); return; }
 
   _upcomingStudentId = id;
-  document.getElementById('upcomingModalTitle').textContent = (s.nickname || s.name || s.email) + ' さんの今後の予定';
-  document.getElementById('upcomingList').innerHTML = '<p class="hint">読み込み中...</p>';
+  document.getElementById('upcomingModalTitle').textContent = (s.nickname || s.name || s.email) + ' さんの授業予定';
+  document.getElementById('pastList').innerHTML = '<p class="hint">読み込み中...</p>';
   document.getElementById('upcomingModal').classList.add('open');
+  await renderPastList(s);
+
+  if (!slots.length){
+    document.getElementById('upcomingList').innerHTML = '<p class="hint">曜日・時間が未設定です。</p>';
+    return;
+  }
+  if (count <= 0){
+    document.getElementById('upcomingList').innerHTML = '<p class="hint">残り回数がありません。</p>';
+    return;
+  }
+  document.getElementById('upcomingList').innerHTML = '<p class="hint">読み込み中...</p>';
   await renderUpcomingList(s, count, slots);
+}
+
+async function renderPastList(s){
+  const { data: history, error } = await Classroom.client
+    .from('classroom_lesson_history').select('*').eq('student_email', s.email)
+    .order('lesson_date', { ascending: false }).limit(15);
+  const pastEl = document.getElementById('pastList');
+  if (error){ pastEl.innerHTML = '<p class="hint">読み込みエラー</p>'; console.error(error); return; }
+  if (!history || history.length === 0){ pastEl.innerHTML = '<p class="hint">まだ記録がありません。</p>'; return; }
+  pastEl.innerHTML = history.map(h => {
+    const label = new Date(h.lesson_date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + (h.lesson_time ? ' ' + h.lesson_time : '');
+    return `<div class="upcoming-row" style="padding:8px 12px;"><span>${label}</span></div>`;
+  }).join('');
 }
 
 async function renderUpcomingList(s, count, slots){
@@ -903,6 +925,24 @@ async function completeLesson(id){
   const { error } = await Classroom.client
     .from('classroom_students').update(update).eq('id', id);
   if (error){ alert('更新に失敗しました。（' + error.message + '）'); console.error(error); return; }
+
+  // 過去の授業として記録（今回の予定日時があればその日、無ければ今日の日付）
+  const entry = (window._nextSession || {})[id];
+  const pad = n => String(n).padStart(2, '0');
+  let lessonDate, lessonTime;
+  if (entry && entry.date){
+    lessonDate = entry.date.getFullYear() + '-' + pad(entry.date.getMonth() + 1) + '-' + pad(entry.date.getDate());
+    lessonTime = entry.time;
+  } else {
+    const today = new Date();
+    lessonDate = today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate());
+    lessonTime = s.weekly_time || null;
+  }
+  const { error: histErr } = await Classroom.client.from('classroom_lesson_history').insert({
+    student_email: s.email, lesson_date: lessonDate, lesson_time: lessonTime
+  });
+  if (histErr) console.error('lesson history insert error', histErr);
+
   loadStudents();
 }
 
