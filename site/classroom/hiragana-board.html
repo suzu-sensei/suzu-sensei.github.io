@@ -97,7 +97,7 @@
     display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   }
   #big-view.open { display: flex; }
-  #big-char { font-size: min(48vh, 44vw); line-height: 1.05; font-weight: 600; }
+  #big-char { font-size: min(48vh, 44vw); font-size: min(48dvh, 44vw); line-height: 1.05; font-weight: 600; }
   #big-romaji { font-size: 46px; color: var(--accent2); font-weight: 600; letter-spacing: 2px; }
   .big-btns { display: flex; gap: 12px; margin-top: 8px; }
   .big-btns button {
@@ -126,8 +126,8 @@
     border-radius: 24px; display: flex; flex-direction: column;
     align-items: center; justify-content: center; cursor: pointer; user-select: none; gap: 6px;
   }
-  #quiz-question { font-size: min(38vh, 34vw); line-height: 1.05; font-weight: 600; }
-  #quiz-question.romaji-q { font-size: min(24vh, 24vw); color: var(--ink); letter-spacing: 3px; }
+  #quiz-question { font-size: min(38vh, 34vw); font-size: min(38dvh, 34vw); line-height: 1.05; font-weight: 600; }
+  #quiz-question.romaji-q { font-size: min(24vh, 24vw); font-size: min(24dvh, 24vw); color: var(--ink); letter-spacing: 3px; }
   #quiz-answer { font-size: 52px; color: var(--accent); font-weight: 600; min-height: 64px; letter-spacing: 2px; }
   #quiz-answer.hidden-ans { visibility: hidden; }
   #quiz-hint { font-size: 15px; color: #b0a99a; }
@@ -148,7 +148,7 @@
 
   /* ---------- stroke order ---------- */
   .stroke-wrap { display: flex; gap: 4px; }
-  .stroke-anim { width: min(30vh,26vw); height: min(30vh,26vw); background: #fff; border-radius: 12px; border: 2px solid var(--line); }
+  .stroke-anim { width: min(30vh,26vw); height: min(30vh,26vw); width: min(30dvh,26vw); height: min(30dvh,26vw); background: #fff; border-radius: 12px; border: 2px solid var(--line); }
   .stroke-anim .guide { fill: none; stroke: #e3dccf; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
   .stroke-anim .draw { fill: none; stroke: var(--accent); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
   .stroke-anim .num { font-size: 8px; fill: var(--accent2); font-weight: 700; font-family: sans-serif; }
@@ -333,7 +333,7 @@
     <div id="quiz-hint">カードをクリックで答え / スペース=答え・→=次へ</div>
   </div>
   <div id="choice-card" style="display:none;flex:1;min-height:0;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;overflow-y:auto;padding:16px 0;">
-    <div id="choice-question" style="font-size:min(18vh,20vw);line-height:1.05;font-weight:600;flex-shrink:0;">あ</div>
+    <div id="choice-question" style="font-size:min(18vh,20vw);font-size:min(18dvh,20vw);line-height:1.05;font-weight:600;flex-shrink:0;">あ</div>
     <div class="choice-grid" id="choice-grid" style="flex-shrink:0;"></div>
     <div id="choice-hint" style="font-size:15px;color:#b0a99a;flex-shrink:0;">番号(1〜4)をチャットで送ってもらってね</div>
   </div>
