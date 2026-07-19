@@ -113,9 +113,17 @@ a.link{color:var(--rose);}
         <button class="btn" onclick="addStudent()">＋ 学生を追加</button>
       </div>
       <table class="table" id="studentTable">
-        <thead><tr><th>名前/ニックネーム</th><th>メール</th><th>曜日・時間</th><th>残り回数</th><th>次回授業</th><th>状態</th><th>操作</th></tr></thead>
-        <tbody id="studentBody"><tr><td colspan="7" class="loading">読み込み中...</td></tr></tbody>
+        <thead><tr><th>名前/ニックネーム</th><th>メール</th><th>曜日・時間</th><th>残り回数</th><th>次回授業</th><th>状態</th><th>LINE</th><th>操作</th></tr></thead>
+        <tbody id="studentBody"><tr><td colspan="8" class="loading">読み込み中...</td></tr></tbody>
       </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📖 学生ページを見る</div>
+      <p class="hint" style="margin-bottom:14px;">学生のページを閲覧できます（編集はここではなく上の「学生一覧」から行ってください）。</p>
+      <div id="studentPageTabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"></div>
+      <iframe id="studentPageFrame" style="width:100%;height:900px;border:1px solid #ddd;border-radius:8px;display:none;"></iframe>
+      <p class="hint center" id="studentPageEmpty">上のタブから学生を選んでください。</p>
     </div>
 
     <div class="section">
@@ -159,6 +167,22 @@ a.link{color:var(--rose);}
     <div class="form-group">
       <label>時間</label>
       <input type="time" id="sm-time">
+    </div>
+    <div class="form-group">
+      <label>学生のタイムゾーン（LINEリマインドの時刻計算に使用）</label>
+      <select id="sm-timezone">
+        <option value="Asia/Taipei">台湾（UTC+8）</option>
+        <option value="Asia/Bangkok">タイ（UTC+7）</option>
+        <option value="Asia/Tokyo">日本（UTC+9）</option>
+        <option value="Asia/Hong_Kong">香港（UTC+8）</option>
+        <option value="Asia/Singapore">シンガポール（UTC+8）</option>
+        <option value="Asia/Shanghai">中国（UTC+8）</option>
+        <option value="Asia/Seoul">韓国（UTC+9）</option>
+        <option value="America/Los_Angeles">アメリカ西部（UTC-8/-7）</option>
+        <option value="America/New_York">アメリカ東部（UTC-5/-4）</option>
+        <option value="Europe/London">イギリス（UTC+0/+1）</option>
+        <option value="Australia/Sydney">オーストラリア東部（UTC+10/+11）</option>
+      </select>
     </div>
     <div class="form-group">
       <label>週2回以上の追加固定枠（任意）</label>
@@ -514,9 +538,9 @@ async function loadStudents(){
   const { data: students, error } = await Classroom.client
     .from('classroom_students').select('*').order('created_at', { ascending: false });
   const tbody = document.getElementById('studentBody');
-  if (error){ tbody.innerHTML = `<tr><td colspan="7" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
+  if (error){ tbody.innerHTML = `<tr><td colspan="8" class="error">読み込みエラー</td></tr>`; console.error(error); return; }
   if (!students || students.length === 0){
-    tbody.innerHTML = '<tr><td colspan="7" class="center">学生がまだ登録されていません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="center">学生がまだ登録されていません</td></tr>';
     return;
   }
   const scheduleEntries = await Promise.all(students.map(async s => {
@@ -538,10 +562,12 @@ async function loadStudents(){
       <td>${s.remaining_lessons ?? 0}${expired ? ' <span class="badge" style="background:#fbdada;color:#a13a3a;">期限切れ</span>' : ''}</td>
       <td>${nextSessionLabel(s)}</td>
       <td>${s.status || 'active'}</td>
+      <td>${s.line_user_id ? '<span class="badge" style="background:#dcf3e3;color:#2e7d4f;">連携済み</span>' : '<span class="badge">未連携</span>'}</td>
       <td>
         <button class="btn small" onclick="editStudent('${s.id}')">編集</button>
         <button class="btn small" onclick="showUpcoming('${s.id}')">予定を見る</button>
         <button class="btn small" onclick="completeLesson('${s.id}')" ${(s.remaining_lessons || 0) <= 0 ? 'disabled' : ''}>授業完了</button>
+        <button class="btn small" onclick="viewStudentPage('${s.email}')">👀 学生ページ</button>
         ${s.meet_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.meet_link}" target="_blank">📹 Meet</a>` : ''}
         <a class="btn small" style="text-decoration:none;display:inline-block;" href="hiragana-board.html" target="_blank">🎴 ひらがな</a>
         ${s.excalidraw_link ? `<a class="btn small" style="text-decoration:none;display:inline-block;" href="${s.excalidraw_link}" target="_blank">✏️ 白板</a>` : ''}
@@ -549,6 +575,34 @@ async function loadStudents(){
     </tr>`;
   }).join('');
   window._students = students;
+  renderStudentPageTabs(students);
+}
+
+let _activeStudentPageEmail = null;
+
+function renderStudentPageTabs(students){
+  const wrap = document.getElementById('studentPageTabs');
+  const active = (students || []).filter(s => (s.status || 'active') === 'active');
+  if (!active.length){
+    wrap.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = active.map(s => {
+    const label = s.nickname || s.name || s.email;
+    const isActive = s.email === _activeStudentPageEmail;
+    return `<button class="btn small ${isActive ? '' : 'ghost'}" onclick="viewStudentPage('${s.email}')">${label}</button>`;
+  }).join('');
+}
+
+function viewStudentPage(email){
+  _activeStudentPageEmail = email;
+  const frame = document.getElementById('studentPageFrame');
+  const empty = document.getElementById('studentPageEmpty');
+  frame.src = 'student.html?viewEmail=' + encodeURIComponent(email);
+  frame.style.display = '';
+  empty.style.display = 'none';
+  renderStudentPageTabs(window._students || []);
+  frame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 let _upcomingStudentId = null;
@@ -770,6 +824,7 @@ function addStudent(){
   document.getElementById('sm-name').value = '';
   document.getElementById('sm-day').value = '';
   document.getElementById('sm-time').value = '';
+  document.getElementById('sm-timezone').value = 'Asia/Taipei';
   document.getElementById('sm-extra-slots').innerHTML = '';
   document.getElementById('sm-lessons').value = 0;
   document.getElementById('sm-first-lesson').value = '';
@@ -795,6 +850,7 @@ async function editStudent(id){
   document.getElementById('sm-name').value = s.nickname || s.name || '';
   document.getElementById('sm-day').value = (s.weekly_day === null || s.weekly_day === undefined) ? '' : String(s.weekly_day);
   document.getElementById('sm-time').value = s.weekly_time || '';
+  document.getElementById('sm-timezone').value = s.timezone || 'Asia/Taipei';
   document.getElementById('sm-extra-slots').innerHTML = '';
   document.getElementById('sm-lessons').value = s.remaining_lessons ?? 0;
   document.getElementById('sm-first-lesson').value = s.first_lesson_date || '';
@@ -856,13 +912,14 @@ async function saveStudentModal(){
   const driveUrl = document.getElementById('sm-drive').value.trim() || null;
   const meetLink = document.getElementById('sm-meet').value.trim() || null;
   const excalidrawLink = document.getElementById('sm-excalidraw').value.trim() || null;
+  const timezone = document.getElementById('sm-timezone').value || 'Asia/Taipei';
   const weekly_day = dayVal !== '' ? parseInt(dayVal) : null;
 
   if (_modalMode === 'add'){
     if (!email){ alert('メールアドレスを入力してください。'); return; }
     const { error } = await Classroom.client.from('classroom_students').insert({
       email, name, nickname: name,
-      weekly_day, weekly_time: time, remaining_lessons: lessons,
+      weekly_day, weekly_time: time, timezone, remaining_lessons: lessons,
       drive_folder_url: driveUrl, meet_link: meetLink, excalidraw_link: excalidrawLink
     });
     if (error){ alert('登録に失敗しました。（' + error.message + '）'); console.error(error); return; }
@@ -875,7 +932,7 @@ async function saveStudentModal(){
   } else {
     const { error } = await Classroom.client.from('classroom_students').update({
       name, nickname: name,
-      weekly_day, weekly_time: time,
+      weekly_day, weekly_time: time, timezone,
       remaining_lessons: lessons,
       first_lesson_date: firstLessonDate,
       status,

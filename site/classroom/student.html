@@ -58,6 +58,9 @@
   .acct-tab-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
   input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
   input[type=number]{-moz-appearance:textfield;}
+  .tv-hide{display:none !important;}
+  .tv-banner{background:var(--frame);color:#fff;border-radius:10px;padding:10px 14px;font-size:0.82rem;text-align:center;margin-bottom:14px;}
+  .link-code{display:inline-block;background:var(--bg);border:1px dashed var(--border2);border-radius:8px;padding:8px 16px;font-size:1.3rem;font-weight:700;letter-spacing:3px;color:var(--frame);margin:8px 0;}
 </style>
 </head>
 <body>
@@ -103,7 +106,9 @@
   <!-- 学生ダッシュボード -->
   <div id="view-student" style="display:none;">
 
-    <div class="card">
+    <div class="tv-banner tv-hide" id="teacher-view-banner">👀 閲覧モード（先生専用・ここからは編集できません。編集は教室管理画面から）</div>
+
+    <div class="card tv-hide" id="card-recording">
       <h2>🎥 録画（任意）<span class="sub" data-lang="zh">錄影（選填）</span><span class="sub" data-lang="en">Recording (Optional)</span></h2>
       <p class="note" style="margin-top:0;margin-bottom:14px;">
         押すとブラウザが共有する画面を尋ねます。「Chromeタブ」→Google Meetのタブを選び、「タブの音声を共有」にチェックを入れてください。停止すると動画が自分のPCに自動保存されます。不要な場合は押さなくて大丈夫です。<br>
@@ -134,6 +139,11 @@
       <p class="note" id="s-pack-expiry-note" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);color:#a13a3a;"></p>
     </div>
 
+    <div class="card">
+      <h2>🔔 LINEリマインド<span class="sub" data-lang="zh">LINE 提醒</span><span class="sub" data-lang="en">LINE Reminders</span></h2>
+      <div id="s-line-link"></div>
+    </div>
+
     <div class="card" id="card-links" style="display:none;">
       <h2>授業リンク<span class="sub" data-lang="zh">上課連結</span><span class="sub" data-lang="en">Class Links</span></h2>
       <div id="s-links" style="display:flex;flex-direction:column;gap:10px;"></div>
@@ -161,6 +171,7 @@
     <div class="card">
       <h2>変更・お休み申請<span class="sub" data-lang="zh">請假・改期申請</span><span class="sub" data-lang="en">Change / Leave Request</span></h2>
 
+      <div class="tv-hide" id="request-forms-wrap">
       <div class="acct-tabs">
         <button class="acct-tab-btn active" id="req-tab-normal" onclick="switchRequestTab('normal')">変更・お休み<span class="sub" data-lang="zh">改期・請假</span><span class="sub" data-lang="en">Change/Leave</span></button>
         <button class="acct-tab-btn" id="req-tab-extra" onclick="switchRequestTab('extra')">＋追加で今すぐ受けたい<span class="sub" data-lang="zh">＋加開一堂</span><span class="sub" data-lang="en">＋Add Extra Now</span></button>
@@ -212,6 +223,7 @@
         </div>
         <button class="btn-main" id="rx-submit" onclick="submitExtraRequest()">申請を送信<small data-lang="zh">送出申請</small><small data-lang="en">Submit Request</small></button>
         <div class="note" id="rx-status"></div>
+      </div>
       </div>
 
       <table style="margin-top:16px;">
@@ -281,7 +293,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card tv-hide" id="card-add-payment">
       <h2>支払いを追加（振込スクショをアップロード）<span class="sub" data-lang="zh">新增繳費（上傳轉帳截圖）</span><span class="sub" data-lang="en">Add Payment (Upload Screenshot)</span></h2>
       <p class="note" style="margin-top:0;margin-bottom:14px;">
         口座の詳細は上の「振込先情報」をご覧ください。振込完了後、ここにスクリーンショットをアップロードすると、先生の確認後に残り回数へ自動加算されます。<br>
@@ -320,7 +332,7 @@
       <div class="note" id="p-status"></div>
     </div>
 
-    <button class="btn-ghost" onclick="Classroom.logout()">ログアウト<span class="sub" data-lang="zh">登出</span><span class="sub" data-lang="en">Log Out</span></button>
+    <button class="btn-ghost tv-hide" id="logout-btn" onclick="Classroom.logout()">ログアウト<span class="sub" data-lang="zh">登出</span><span class="sub" data-lang="en">Log Out</span></button>
   </div>
 
 </div>
@@ -389,6 +401,16 @@ function show(id){
   });
 }
 
+let _teacherViewMode = false;
+
+function applyTeacherViewMode(){
+  document.querySelectorAll('.tv-hide').forEach(el => {
+    el.style.display = _teacherViewMode ? 'none' : '';
+  });
+  const banner = document.getElementById('teacher-view-banner');
+  if (banner) banner.style.display = _teacherViewMode ? '' : 'none';
+}
+
 async function refresh(){
   const session = await Classroom.session();
   if (!session){
@@ -397,7 +419,17 @@ async function refresh(){
     return;
   }
   show('view-loading');
-  const email = session.user.email;
+
+  // 先生が学生一覧タブから閲覧する場合：?viewEmail=xxx で対象学生を指定（先生本人のログインが前提）
+  const params = new URLSearchParams(location.search);
+  const viewEmail = params.get('viewEmail');
+  _teacherViewMode = false;
+  let email = session.user.email;
+  if (viewEmail && await Classroom.isTeacher()){
+    email = viewEmail;
+    _teacherViewMode = true;
+  }
+
   const { data: student, error } = await Classroom.client
     .from('classroom_students').select('*').eq('email', email).maybeSingle();
 
@@ -414,6 +446,22 @@ async function refresh(){
     ? slots.map(s => `毎週${WEEKDAYS_JP[s.day]}曜日 ${s.time}`).join('<br>')
     : t('scheduleUnset');
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
+
+  const lineLinkEl = document.getElementById('s-line-link');
+  const LINE_OA_URL = 'https://lin.ee/7xHz67c';
+  if (student.line_user_id){
+    lineLinkEl.innerHTML = `<p class="note" style="margin-top:0;color:#2e7d4f;font-weight:700;">✅ 連携済み・授業の24時間前と1時間前にLINEでリマインドをお届けします。</p>`;
+  } else {
+    lineLinkEl.innerHTML = `
+      <p class="note" style="margin-top:0;">授業の24時間前・1時間前にLINEでリマインドを受け取れます。以下の手順で連携してください。</p>
+      <ol class="note" style="margin:8px 0 0 18px;padding:0;">
+        <li>先生の公式LINEアカウントを友だち追加する</li>
+        <li>下の連携コードを、そのトーク画面に「LINK ＋コード」の形で送る（例：LINK ${student.line_link_code || ''}）</li>
+      </ol>
+      <div class="link-code">${student.line_link_code || '—'}</div>
+      <a class="btn-main" href="${LINE_OA_URL}" target="_blank">💬 LINE友だち追加はこちら</a>
+    `;
+  }
 
   const statusBanner = document.getElementById('card-status-banner');
   if (student.status && student.status !== 'active'){
@@ -573,6 +621,7 @@ async function refresh(){
   document.getElementById('rx-submit').disabled = !canSubmit;
 
   applyLang();
+  applyTeacherViewMode();
   show('view-student');
 }
 
