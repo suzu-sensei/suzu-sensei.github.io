@@ -101,24 +101,11 @@
     </div>
     <div class="form-field">
       <label>希望のコース<span class="sub" data-lang="zh">希望的課程</span><span class="sub" data-lang="en">Preferred Course</span></label>
-      <select id="ef-course">
-        <option value="一對一（マンツーマン）">一對一（マンツーマン）</option>
-        <option value="雙人共學（ペアレッスン・近日公開）">雙人共學（ペアレッスン・近日公開）</option>
-        <option value="まだ決めていない">まだ決めていない</option>
-      </select>
+      <select id="ef-course"></select>
     </div>
     <div class="form-field">
       <label>希望の曜日<span class="sub" data-lang="zh">希望的上課日</span><span class="sub" data-lang="en">Preferred Weekday</span></label>
-      <select id="ef-day">
-        <option value="未定">まだ決めていない</option>
-        <option value="日">毎週日曜日</option>
-        <option value="月">毎週月曜日</option>
-        <option value="火">毎週火曜日</option>
-        <option value="水">毎週水曜日</option>
-        <option value="木">毎週木曜日</option>
-        <option value="金">毎週金曜日</option>
-        <option value="土">毎週土曜日</option>
-      </select>
+      <select id="ef-day"></select>
     </div>
     <div class="form-field">
       <label>希望の時間（任意）<span class="sub" data-lang="zh">希望的時間（選填）</span><span class="sub" data-lang="en">Preferred Time (optional)</span></label>
@@ -160,17 +147,19 @@
 function wrapJaText(root){
   const hosts = new Set();
   root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
   hosts.forEach(parent => {
     const children = Array.from(parent.childNodes);
     let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
     while (i < children.length) {
-      const isLangEl = (n) => n.nodeType === 1 && n.hasAttribute && n.hasAttribute('data-lang');
-      if (isLangEl(children[i])) { i++; continue; }
+      if (isBoundary(children[i])) { i++; continue; }
       const runStart = i;
-      while (i < children.length && !isLangEl(children[i])) i++;
+      while (i < children.length && !isBoundary(children[i])) i++;
       const run = children.slice(runStart, i);
       const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
-      if (hasContent && i < children.length) {
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
         const span = document.createElement('span');
         span.className = 'sub';
         span.setAttribute('data-lang', 'ja');
@@ -184,6 +173,33 @@ function wrapJaText(root){
 let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
 if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
 
+const COURSE_OPTIONS = [
+  { value: '一對一（マンツーマン）', ja: 'マンツーマン（1対1）', zh: '一對一（マンツーマン）', en: '1-on-1 Lesson' },
+  { value: '雙人共學（ペアレッスン・近日公開）', ja: 'ペアレッスン（2人・近日公開）', zh: '雙人共學（近日公開）', en: 'Pair Lesson (coming soon)' },
+  { value: 'まだ決めていない', ja: 'まだ決めていない', zh: '尚未決定', en: 'Not decided yet' }
+];
+const DAY_OPTIONS = [
+  { value: '未定', ja: 'まだ決めていない', zh: '尚未決定', en: 'Not decided yet' },
+  { value: '日', ja: '毎週日曜日', zh: '每週日', en: 'Every Sunday' },
+  { value: '月', ja: '毎週月曜日', zh: '每週一', en: 'Every Monday' },
+  { value: '火', ja: '毎週火曜日', zh: '每週二', en: 'Every Tuesday' },
+  { value: '水', ja: '毎週水曜日', zh: '每週三', en: 'Every Wednesday' },
+  { value: '木', ja: '毎週木曜日', zh: '每週四', en: 'Every Thursday' },
+  { value: '金', ja: '毎週金曜日', zh: '每週五', en: 'Every Friday' },
+  { value: '土', ja: '毎週土曜日', zh: '每週六', en: 'Every Saturday' }
+];
+function localizeSelectOptions(lang){
+  const courseSel = document.getElementById('ef-course');
+  const prevCourse = courseSel.value;
+  courseSel.innerHTML = COURSE_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+  if ([...courseSel.options].some(op => op.value === prevCourse)) courseSel.value = prevCourse;
+
+  const daySel = document.getElementById('ef-day');
+  const prevDay = daySel.value;
+  daySel.innerHTML = DAY_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+  if ([...daySel.options].some(op => op.value === prevDay)) daySel.value = prevDay;
+}
+
 function setLang(lang){
   secondaryLang = lang;
   localStorage.setItem('classroomLang', lang);
@@ -194,6 +210,11 @@ function setLang(lang){
     const btn = document.getElementById('ls-' + l);
     if (btn) btn.classList.toggle('active', l === lang);
   });
+  localizeSelectOptions(lang);
+  if (typeof initTimezone === 'function' && document.getElementById('ef-tz').options.length) {
+    renderTimezoneOptions(lang);
+    updateTzNote();
+  }
 }
 setLang(secondaryLang);
 
@@ -211,6 +232,15 @@ const TZ_LIST = [
   { zone: 'Australia/Sydney', label: 'オーストラリア東部（UTC+10/+11）', labelZh: '澳洲東部（UTC+10/+11）', labelEn: 'Australia East (UTC+10/+11)' }
 ];
 
+function renderTimezoneOptions(lang){
+  const sel = document.getElementById('ef-tz');
+  const prev = sel.value;
+  const labelKey = lang === 'zh' ? 'labelZh' : (lang === 'en' ? 'labelEn' : 'label');
+  sel.innerHTML = TZ_LIST.map(tz =>
+    `<option value="${tz.zone}">${tz[labelKey] || tz.label}</option>`
+  ).join('');
+  if ([...sel.options].some(op => op.value === prev)) sel.value = prev;
+}
 function initTimezone(){
   const sel = document.getElementById('ef-tz');
   const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
@@ -218,9 +248,7 @@ function initTimezone(){
   if (!matched){
     TZ_LIST.push({ zone: detected, label: detected, labelZh: detected, labelEn: detected });
   }
-  sel.innerHTML = TZ_LIST.map(tz =>
-    `<option value="${tz.zone}">${tz.label} / ${tz.labelZh}</option>`
-  ).join('');
+  renderTimezoneOptions(secondaryLang);
   sel.value = detected;
   updateTzNote();
   sel.addEventListener('change', updateTzNote);
@@ -230,10 +258,11 @@ function updateTzNote(){
   const noteEl = document.getElementById('ef-tz-note');
   const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
   if (sel.value === detected){
-    noteEl.innerHTML = 'あなたの端末から自動検出しました。違う場合は選び直してください。<span class="sub" data-lang="zh">已自動偵測您的時區，如不正確請重新選擇。</span><span class="sub" data-lang="en">Auto-detected from your device. Please change it if it\'s incorrect.</span>';
+    noteEl.innerHTML = '<span data-lang="ja">あなたの端末から自動検出しました。違う場合は選び直してください。</span><span class="sub" data-lang="zh">已自動偵測您的時區，如不正確請重新選擇。</span><span class="sub" data-lang="en">Auto-detected from your device. Please change it if it\'s incorrect.</span>';
   } else {
-    noteEl.innerHTML = '手動で変更されました。<span class="sub" data-lang="zh">已手動變更時區。</span><span class="sub" data-lang="en">Manually changed.</span>';
+    noteEl.innerHTML = '<span data-lang="ja">手動で変更されました。</span><span class="sub" data-lang="zh">已手動變更時區。</span><span class="sub" data-lang="en">Manually changed.</span>';
   }
+  wrapJaText(noteEl);
 }
 initTimezone();
 

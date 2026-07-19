@@ -309,11 +309,7 @@
       </div>
       <div class="form-field">
         <label>通貨<span class="sub" data-lang="zh">幣別</span><span class="sub" data-lang="en">Currency</span></label>
-        <select id="p-currency">
-          <option value="TWD">TWD 台湾ドル</option>
-          <option value="THB">THB タイバーツ</option>
-          <option value="USD">USD 米ドル</option>
-        </select>
+        <select id="p-currency"></select>
       </div>
       <div class="form-field">
         <label>購入回数<span class="sub" data-lang="zh">購買堂數</span><span class="sub" data-lang="en">Lessons Purchased</span></label>
@@ -321,11 +317,7 @@
       </div>
       <div class="form-field">
         <label>支払い方法<span class="sub" data-lang="zh">付款方式</span><span class="sub" data-lang="en">Payment Method</span></label>
-        <select id="p-method">
-          <option value="銀行振込">🏦 銀行振込</option>
-          <option value="泰銖銀行轉帳">🇹🇭 タイバーツ銀行振込</option>
-          <option value="Wise">🌍 Wise</option>
-        </select>
+        <select id="p-method"></select>
       </div>
       <div class="form-field">
         <label>振込スクリーンショット<span class="sub" data-lang="zh">轉帳截圖</span><span class="sub" data-lang="en">Transfer Screenshot</span></label>
@@ -363,26 +355,56 @@ function weeklySlotLabel(day, time){
 function wrapJaText(root){
   const hosts = new Set();
   root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
   hosts.forEach(parent => {
-    if (parent.querySelector(':scope > [data-lang="ja"]')) return;
-    const toWrap = [];
-    let node = parent.firstChild;
-    while (node) {
-      if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('data-lang')) break;
-      toWrap.push(node);
-      node = node.nextSibling;
+    const children = Array.from(parent.childNodes);
+    let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
+    while (i < children.length) {
+      if (isBoundary(children[i])) { i++; continue; }
+      const runStart = i;
+      while (i < children.length && !isBoundary(children[i])) i++;
+      const run = children.slice(runStart, i);
+      const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
+        const span = document.createElement('span');
+        span.className = 'sub';
+        span.setAttribute('data-lang', 'ja');
+        parent.insertBefore(span, run[0]);
+        run.forEach(n => span.appendChild(n));
+      }
     }
-    if (!toWrap.length) return;
-    const span = document.createElement('span');
-    span.className = 'sub';
-    span.setAttribute('data-lang', 'ja');
-    toWrap.forEach(n => span.appendChild(n));
-    parent.insertBefore(span, parent.firstChild);
   });
 }
 
 let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
 if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
+
+const CURRENCY_OPTIONS = [
+  { value: 'TWD', ja: 'TWD 台湾ドル', zh: 'TWD 台幣', en: 'TWD (Taiwan Dollar)' },
+  { value: 'THB', ja: 'THB タイバーツ', zh: 'THB 泰銖', en: 'THB (Thai Baht)' },
+  { value: 'USD', ja: 'USD 米ドル', zh: 'USD 美金', en: 'USD (US Dollar)' }
+];
+const PAY_METHOD_OPTIONS = [
+  { value: '銀行振込', ja: '🏦 銀行振込', zh: '🏦 銀行轉帳', en: '🏦 Bank Transfer' },
+  { value: '泰銖銀行轉帳', ja: '🇹🇭 タイバーツ銀行振込', zh: '🇹🇭 泰銖銀行轉帳', en: '🇹🇭 Thai Bank Transfer' },
+  { value: 'Wise', ja: '🌍 Wise', zh: '🌍 Wise', en: '🌍 Wise' }
+];
+function localizePaymentSelectOptions(lang){
+  const curSel = document.getElementById('p-currency');
+  if (curSel) {
+    const prev = curSel.value;
+    curSel.innerHTML = CURRENCY_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+    if ([...curSel.options].some(op => op.value === prev)) curSel.value = prev;
+  }
+  const methodSel = document.getElementById('p-method');
+  if (methodSel) {
+    const prev = methodSel.value;
+    methodSel.innerHTML = PAY_METHOD_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+    if ([...methodSel.options].some(op => op.value === prev)) methodSel.value = prev;
+  }
+}
 
 function setLang(lang){
   secondaryLang = lang;
@@ -394,6 +416,7 @@ function setLang(lang){
     const btn = document.getElementById('ls-' + l);
     if (btn) btn.classList.toggle('active', l === secondaryLang);
   });
+  localizePaymentSelectOptions(lang);
   refresh();
 }
 

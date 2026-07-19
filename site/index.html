@@ -137,21 +137,26 @@ document.getElementById('y').textContent = new Date().getFullYear();
 function wrapJaText(root){
   const hosts = new Set();
   root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
   hosts.forEach(parent => {
-    if (parent.querySelector(':scope > [data-lang="ja"]')) return;
-    const toWrap = [];
-    let node = parent.firstChild;
-    while (node) {
-      if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('data-lang')) break;
-      toWrap.push(node);
-      node = node.nextSibling;
+    const children = Array.from(parent.childNodes);
+    let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
+    while (i < children.length) {
+      if (isBoundary(children[i])) { i++; continue; }
+      const runStart = i;
+      while (i < children.length && !isBoundary(children[i])) i++;
+      const run = children.slice(runStart, i);
+      const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
+        const span = document.createElement('span');
+        span.className = 'sub';
+        span.setAttribute('data-lang', 'ja');
+        parent.insertBefore(span, run[0]);
+        run.forEach(n => span.appendChild(n));
+      }
     }
-    if (!toWrap.length) return;
-    const span = document.createElement('span');
-    span.className = 'sub';
-    span.setAttribute('data-lang', 'ja');
-    toWrap.forEach(n => span.appendChild(n));
-    parent.insertBefore(span, parent.firstChild);
   });
 }
 

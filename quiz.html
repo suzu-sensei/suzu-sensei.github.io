@@ -175,36 +175,54 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 .rule-arrow{color:var(--rose);}
 .rule-to{font-family:'Zen Kaku Gothic New',sans-serif;font-size:16px;color:var(--deep);font-weight:500;}
 .rule-example{font-size:11px;color:#b09090;text-align:right;}
+
+/* i18n */
+.sub{display:block;font-size:0.72rem;font-weight:400;opacity:0.75;margin-top:2px;}
+[data-lang]{display:none;}
+body.lang-ja [data-lang="ja"]{display:inline;}
+body.lang-zh [data-lang="zh"]{display:inline;}
+body.lang-en [data-lang="en"]{display:inline;}
+.quiz-lang-switcher{display:flex;gap:0;flex-shrink:0;}
+.quiz-lang-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);padding:3px 9px;font-size:10px;letter-spacing:0.5px;color:rgba(255,255,255,0.75);cursor:pointer;}
+.quiz-lang-btn:first-child{border-radius:6px 0 0 6px;}
+.quiz-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+.quiz-lang-btn:not(:first-child){border-left:none;}
+.quiz-lang-btn.active{background:#fff;color:var(--deep);border-color:#fff;}
 </style>
 </head>
 <body>
 
 <header class="quiz-header">
-  <a href="index.html" class="back-btn">← ホーム</a>
-  <div class="quiz-header-title">🌸 日本語クイズ</div>
-  <div id="suzu-login-wrap" style="margin-left:auto;"></div>
+  <a href="index.html" class="back-btn"><span data-lang="ja">← ホーム</span><span data-lang="zh">← 首頁</span><span data-lang="en">← Home</span></a>
+  <div class="quiz-header-title">🌸 <span data-lang="ja">日本語クイズ</span><span data-lang="zh">日語小測驗</span><span data-lang="en">Japanese Quiz</span></div>
+  <div class="quiz-lang-switcher" style="margin-left:auto;">
+    <button class="quiz-lang-btn" id="ls-ja" onclick="setLang('ja')">JP</button>
+    <button class="quiz-lang-btn" id="ls-zh" onclick="setLang('zh')">中文</button>
+    <button class="quiz-lang-btn" id="ls-en" onclick="setLang('en')">EN</button>
+  </div>
+  <div id="suzu-login-wrap"></div>
 </header>
 
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('t1',this)">漢字クイズ</button>
-  <button class="tab-btn" onclick="switchTab('t2',this)">日付・動詞</button>
-  <button class="tab-btn" onclick="switchTab('t3',this)">て形クイズ</button>
-  <button class="tab-btn" onclick="openRanking()">🏆 ランキング</button>
-  <a class="tab-btn" href="jlpt.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:3px;">📖 JLPT単語<span style="background:#C9897A;color:#fff;border-radius:8px;font-size:8px;padding:1px 5px;">NEW</span></a>
+  <button class="tab-btn active" onclick="switchTab('t1',this)"><span data-lang="ja">漢字クイズ</span><span data-lang="zh">漢字測驗</span><span data-lang="en">Kanji Quiz</span></button>
+  <button class="tab-btn" onclick="switchTab('t2',this)"><span data-lang="ja">日付・動詞</span><span data-lang="zh">日期・動詞</span><span data-lang="en">Dates & Verbs</span></button>
+  <button class="tab-btn" onclick="switchTab('t3',this)"><span data-lang="ja">て形クイズ</span><span data-lang="zh">て形測驗</span><span data-lang="en">Te-Form Quiz</span></button>
+  <button class="tab-btn" onclick="openRanking()">🏆 <span data-lang="ja">ランキング</span><span data-lang="zh">排行榜</span><span data-lang="en">Ranking</span></button>
+  <a class="tab-btn" href="jlpt.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:3px;">📖 <span data-lang="ja">JLPT単語</span><span data-lang="zh">JLPT單字</span><span data-lang="en">JLPT Words</span><span style="background:#C9897A;color:#fff;border-radius:8px;font-size:8px;padding:1px 5px;">NEW</span></a>
 </div>
 
 <!-- ══ TAB 1 ══ -->
 <div id="t1" class="tab-panel active">
 <div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">🃏</div><div class="intro-title">アナグラムクイズ</div><div class="intro-desc">ひらがなを見て、ローマ字タイルを正しい順に並べよう。<br>3回不正解で最初から！</div></div>
-  <div id="t1-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
+  <div class="intro-card"><div class="intro-icon">🃏</div><div class="intro-title"><span data-lang="ja">アナグラムクイズ</span><span data-lang="zh">字母重組測驗</span><span data-lang="en">Anagram Quiz</span></div><div class="intro-desc"><span data-lang="ja">ひらがなを見て、ローマ字タイルを正しい順に並べよう。<br>3回不正解で最初から！</span><span data-lang="zh">看平假名，把羅馬字拼塊排成正確順序。<br>錯3次就重新開始！</span><span data-lang="en">Look at the hiragana and arrange the romaji tiles in the right order.<br>3 wrong answers and you start over!</span></div></div>
+  <div id="t1-strike" class="strike-notice">❌ <span data-lang="ja">3回ミス！最初からやり直しです…</span><span data-lang="zh">錯了3次！要重新開始了…</span><span data-lang="en">3 mistakes! Starting over…</span></div>
   <div id="t1-game">
     <div class="score-row"><span id="t1-score">0 / 0</span><span id="t1-qnum"></span></div>
     <div class="progress-bar"><div class="progress-fill" id="t1-prog" style="width:0%"></div></div>
     <div class="prompt-box"><div class="prompt-main" id="t1-prompt"></div><div class="prompt-sub" id="t1-cat"></div></div>
-    <div class="hint-label">▼ タイルをタップして並べよう</div>
+    <div class="hint-label">▼ <span data-lang="ja">タイルをタップして並べよう</span><span data-lang="zh">點擊拼塊排列答案</span><span data-lang="en">Tap the tiles to arrange your answer</span></div>
     <div class="answer-row">
-      <div class="answer-area" id="t1-ans"><span class="answer-placeholder">ここに答えが並びます</span></div>
+      <div class="answer-area" id="t1-ans"><span class="answer-placeholder" data-t="answerPlaceholder"><span data-lang="ja">ここに答えが並びます</span><span data-lang="zh">答案會顯示在這裡</span><span data-lang="en">Your answer will appear here</span></span></div>
       <div class="wrong-badge" id="t1-wbadge">0</div>
     </div>
     <div class="tile-bank" id="t1-bank"></div>
@@ -212,17 +230,17 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
       <div class="reveal-kanji" id="t1-kanji"></div>
       <div class="reveal-romaji" id="t1-romaji"></div>
       <div class="reveal-tags"><span class="reveal-tag" id="t1-zh"></span><span class="reveal-tag" id="t1-en"></span></div>
-      <button class="next-btn" onclick="gNext('t1')">次へ →</button>
+      <button class="next-btn" onclick="gNext('t1')"><span data-lang="ja">次へ →</span><span data-lang="zh">下一題 →</span><span data-lang="en">Next →</span></button>
     </div>
   </div>
   <div class="complete-screen" id="t1-done">
     <div class="complete-emoji">🎉</div>
-    <div class="complete-title">クリア！</div>
+    <div class="complete-title"><span data-lang="ja">クリア！</span><span data-lang="zh">完成！</span><span data-lang="en">Complete!</span></div>
     <div id="t1-done-score" class="complete-score"></div>
     <div id="t1-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t1-review"><thead><tr><th>#</th><th>問題</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="gStart('t1')">もう一度</button>
+    <div class="review-title">📋 <span data-lang="ja">問題の振り返り</span><span data-lang="zh">題目回顧</span><span data-lang="en">Question Review</span></div>
+    <table class="review-table" id="t1-review"><thead><tr><th>#</th><th><span data-lang="ja">問題</span><span data-lang="zh">題目</span><span data-lang="en">Question</span></th><th><span data-lang="ja">あなた</span><span data-lang="zh">你的答案</span><span data-lang="en">You</span></th><th><span data-lang="ja">正解</span><span data-lang="zh">正確答案</span><span data-lang="en">Correct</span></th><th><span data-lang="ja">ミス</span><span data-lang="zh">錯誤</span><span data-lang="en">Miss</span></th></tr></thead><tbody></tbody></table>
+    <button class="restart-btn" onclick="gStart('t1')"><span data-lang="ja">もう一度</span><span data-lang="zh">再玩一次</span><span data-lang="en">Try Again</span></button>
   </div>
 </div>
 </div>
@@ -230,21 +248,21 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 <!-- ══ TAB 2 ══ -->
 <div id="t2" class="tab-panel">
 <div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">📅</div><div class="intro-title">日付・動詞クイズ</div><div class="intro-desc">カテゴリを選んでアナグラムに挑戦！</div></div>
+  <div class="intro-card"><div class="intro-icon">📅</div><div class="intro-title"><span data-lang="ja">日付・動詞クイズ</span><span data-lang="zh">日期・動詞測驗</span><span data-lang="en">Dates & Verbs Quiz</span></div><div class="intro-desc"><span data-lang="ja">カテゴリを選んでアナグラムに挑戦！</span><span data-lang="zh">選擇分類，挑戰字母重組！</span><span data-lang="en">Choose a category and take on the anagram challenge!</span></div></div>
   <div class="filter-bar">
-    <button class="filter-btn active" onclick="setT2Filter('all',this)">すべて</button>
-    <button class="filter-btn" onclick="setT2Filter('date',this)">📅 日付</button>
-    <button class="filter-btn" onclick="setT2Filter('verb',this)">🎯 動詞</button>
-    <button class="filter-btn" onclick="setT2Filter('adj',this)">🌿 形容詞</button>
+    <button class="filter-btn active" onclick="setT2Filter('all',this)"><span data-lang="ja">すべて</span><span data-lang="zh">全部</span><span data-lang="en">All</span></button>
+    <button class="filter-btn" onclick="setT2Filter('date',this)">📅 <span data-lang="ja">日付</span><span data-lang="zh">日期</span><span data-lang="en">Dates</span></button>
+    <button class="filter-btn" onclick="setT2Filter('verb',this)">🎯 <span data-lang="ja">動詞</span><span data-lang="zh">動詞</span><span data-lang="en">Verbs</span></button>
+    <button class="filter-btn" onclick="setT2Filter('adj',this)">🌿 <span data-lang="ja">形容詞</span><span data-lang="zh">形容詞</span><span data-lang="en">Adjectives</span></button>
   </div>
-  <div id="t2-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
+  <div id="t2-strike" class="strike-notice">❌ <span data-lang="ja">3回ミス！最初からやり直しです…</span><span data-lang="zh">錯了3次！要重新開始了…</span><span data-lang="en">3 mistakes! Starting over…</span></div>
   <div id="t2-game">
     <div class="score-row"><span id="t2-score">0 / 0</span><span id="t2-qnum"></span></div>
     <div class="progress-bar"><div class="progress-fill" id="t2-prog" style="width:0%"></div></div>
     <div class="prompt-box"><div class="prompt-main" id="t2-prompt"></div><div class="prompt-sub" id="t2-cat"></div></div>
-    <div class="hint-label">▼ タイルをタップして並べよう</div>
+    <div class="hint-label">▼ <span data-lang="ja">タイルをタップして並べよう</span><span data-lang="zh">點擊拼塊排列答案</span><span data-lang="en">Tap the tiles to arrange your answer</span></div>
     <div class="answer-row">
-      <div class="answer-area" id="t2-ans"><span class="answer-placeholder">ここに答えが並びます</span></div>
+      <div class="answer-area" id="t2-ans"><span class="answer-placeholder"><span data-lang="ja">ここに答えが並びます</span><span data-lang="zh">答案會顯示在這裡</span><span data-lang="en">Your answer will appear here</span></span></div>
       <div class="wrong-badge" id="t2-wbadge">0</div>
     </div>
     <div class="tile-bank" id="t2-bank"></div>
@@ -252,17 +270,17 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
       <div class="reveal-kanji" id="t2-kanji"></div>
       <div class="reveal-romaji" id="t2-romaji"></div>
       <div class="reveal-tags"><span class="reveal-tag" id="t2-zh"></span><span class="reveal-tag" id="t2-en"></span></div>
-      <button class="next-btn" onclick="gNext('t2')">次へ →</button>
+      <button class="next-btn" onclick="gNext('t2')"><span data-lang="ja">次へ →</span><span data-lang="zh">下一題 →</span><span data-lang="en">Next →</span></button>
     </div>
   </div>
   <div class="complete-screen" id="t2-done">
     <div class="complete-emoji">🌟</div>
-    <div class="complete-title">クリア！</div>
+    <div class="complete-title"><span data-lang="ja">クリア！</span><span data-lang="zh">完成！</span><span data-lang="en">Complete!</span></div>
     <div id="t2-done-score" class="complete-score"></div>
     <div id="t2-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t2-review"><thead><tr><th>#</th><th>問題</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="gStart('t2')">もう一度</button>
+    <div class="review-title">📋 <span data-lang="ja">問題の振り返り</span><span data-lang="zh">題目回顧</span><span data-lang="en">Question Review</span></div>
+    <table class="review-table" id="t2-review"><thead><tr><th>#</th><th><span data-lang="ja">問題</span><span data-lang="zh">題目</span><span data-lang="en">Question</span></th><th><span data-lang="ja">あなた</span><span data-lang="zh">你的答案</span><span data-lang="en">You</span></th><th><span data-lang="ja">正解</span><span data-lang="zh">正確答案</span><span data-lang="en">Correct</span></th><th><span data-lang="ja">ミス</span><span data-lang="zh">錯誤</span><span data-lang="en">Miss</span></th></tr></thead><tbody></tbody></table>
+    <button class="restart-btn" onclick="gStart('t2')"><span data-lang="ja">もう一度</span><span data-lang="zh">再玩一次</span><span data-lang="en">Try Again</span></button>
   </div>
 </div>
 </div>
@@ -270,12 +288,12 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 <!-- ══ TAB 3 ══ -->
 <div id="t3" class="tab-panel">
 <div class="game-wrap">
-  <div class="intro-card"><div class="intro-icon">✏️</div><div class="intro-title">て形クイズ</div><div class="intro-desc">ます形からて形を入力しよう。<br>入力方法を選んでね。3回ミスで最初から！</div></div>
+  <div class="intro-card"><div class="intro-icon">✏️</div><div class="intro-title"><span data-lang="ja">て形クイズ</span><span data-lang="zh">て形測驗</span><span data-lang="en">Te-Form Quiz</span></div><div class="intro-desc"><span data-lang="ja">ます形からて形を入力しよう。<br>入力方法を選んでね。3回ミスで最初から！</span><span data-lang="zh">從ます形輸入て形。<br>請選擇輸入方式。錯3次就重新開始！</span><span data-lang="en">Type the te-form from the masu-form.<br>Choose your input method. 3 mistakes and you start over!</span></div></div>
   <div class="input-mode-toggle">
-    <button class="mode-btn active" id="mode-device" onclick="setInputMode('device')">📱 デバイス入力</button>
-    <button class="mode-btn" id="mode-hira" onclick="setInputMode('hira')">🈶 ひらがなキーボード</button>
+    <button class="mode-btn active" id="mode-device" onclick="setInputMode('device')">📱 <span data-lang="ja">デバイス入力</span><span data-lang="zh">裝置輸入</span><span data-lang="en">Device Input</span></button>
+    <button class="mode-btn" id="mode-hira" onclick="setInputMode('hira')">🈶 <span data-lang="ja">ひらがなキーボード</span><span data-lang="zh">平假名鍵盤</span><span data-lang="en">Hiragana Keyboard</span></button>
   </div>
-  <div id="t3-strike" class="strike-notice">❌ 3回ミス！最初からやり直しです…</div>
+  <div id="t3-strike" class="strike-notice">❌ <span data-lang="ja">3回ミス！最初からやり直しです…</span><span data-lang="zh">錯了3次！要重新開始了…</span><span data-lang="en">3 mistakes! Starting over…</span></div>
   <div id="t3-game">
     <div class="score-row"><span id="t3-score">0 / 0</span><span id="t3-qnum"></span></div>
     <div class="progress-bar"><div class="progress-fill" id="t3-prog" style="width:0%"></div></div>
@@ -288,7 +306,7 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
       <button class="info-btn" onclick="showRules()" title="て形のルール">ⓘ</button>
     </div>
     <div class="te-wrong-row">
-      <span id="t3-wbadge" class="te-wrong-badge">ミス 0回</span>
+      <span id="t3-wbadge" class="te-wrong-badge"></span>
     </div>
     <!-- Device input -->
     <div id="device-input-section">
@@ -300,7 +318,7 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
     <!-- QWERTY keyboard -->
     <div id="hira-input-section" style="display:none">
       <div class="hira-display" id="hira-display">
-        <span id="hira-display-text" style="font-size:12px;letter-spacing:2px;opacity:0.35">ひらがなを入力してね</span>
+        <span id="hira-display-text" style="font-size:12px;letter-spacing:2px;opacity:0.35"><span data-lang="ja">ひらがなを入力してね</span><span data-lang="zh">請輸入平假名</span><span data-lang="en">Type in hiragana</span></span>
         <div class="hira-romaji-buf" id="hira-romaji-buf"></div>
       </div>
       <div class="qwerty-kb" id="qwerty-kb">
@@ -314,16 +332,16 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
       <div class="te-result-main" id="t3-result-main"></div>
       <div class="te-result-rule" id="t3-result-rule"></div>
     </div>
-    <div class="next-wrap" id="t3-next"><button class="next-btn" onclick="t3Next()">次へ →</button></div>
+    <div class="next-wrap" id="t3-next"><button class="next-btn" onclick="t3Next()"><span data-lang="ja">次へ →</span><span data-lang="zh">下一題 →</span><span data-lang="en">Next →</span></button></div>
   </div>
   <div class="complete-screen" id="t3-done">
     <div class="complete-emoji">🌸</div>
-    <div class="complete-title">クリア！</div>
+    <div class="complete-title"><span data-lang="ja">クリア！</span><span data-lang="zh">完成！</span><span data-lang="en">Complete!</span></div>
     <div id="t3-done-score" class="complete-score"></div>
     <div id="t3-done-wrongs" class="complete-wrongs"></div>
-    <div class="review-title">📋 問題の振り返り</div>
-    <table class="review-table" id="t3-review"><thead><tr><th>#</th><th>ます形</th><th>あなた</th><th>正解</th><th>ミス</th></tr></thead><tbody></tbody></table>
-    <button class="restart-btn" onclick="t3Start()">もう一度</button>
+    <div class="review-title">📋 <span data-lang="ja">問題の振り返り</span><span data-lang="zh">題目回顧</span><span data-lang="en">Question Review</span></div>
+    <table class="review-table" id="t3-review"><thead><tr><th>#</th><th><span data-lang="ja">ます形</span><span data-lang="zh">ます形</span><span data-lang="en">Masu-form</span></th><th><span data-lang="ja">あなた</span><span data-lang="zh">你的答案</span><span data-lang="en">You</span></th><th><span data-lang="ja">正解</span><span data-lang="zh">正確答案</span><span data-lang="en">Correct</span></th><th><span data-lang="ja">ミス</span><span data-lang="zh">錯誤</span><span data-lang="en">Miss</span></th></tr></thead><tbody></tbody></table>
+    <button class="restart-btn" onclick="t3Start()"><span data-lang="ja">もう一度</span><span data-lang="zh">再玩一次</span><span data-lang="en">Try Again</span></button>
   </div>
 </div>
 </div>
@@ -331,26 +349,26 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 <!-- Rules popup -->
 <div class="rules-overlay" id="rules-overlay" onclick="if(event.target===this)hideRules()">
   <div class="rules-panel">
-    <div class="rules-panel-title">て形のルール <button class="rules-close" onclick="hideRules()">✕</button></div>
+    <div class="rules-panel-title"><span data-lang="ja">て形のルール</span><span data-lang="zh">て形規則</span><span data-lang="en">Te-Form Rules</span> <button class="rules-close" onclick="hideRules()">✕</button></div>
     <div class="rule-group">
-      <div class="rule-group-title">グループ１（五段動詞） ます形の最後の音で変わる</div>
+      <div class="rule-group-title"><span data-lang="ja">グループ１（五段動詞） ます形の最後の音で変わる</span><span data-lang="zh">第一類動詞（五段動詞） 依ます形的最後音節變化</span><span data-lang="en">Group 1 (Godan verbs) — changes based on the last sound of the masu-form</span></div>
       <div class="rule-rows">
         <div class="rule-row"><span class="rule-from">い・ち・り</span><span class="rule-arrow">→</span><span class="rule-to">って</span><span class="rule-example">かいます→かって</span></div>
         <div class="rule-row"><span class="rule-from">み・び・に</span><span class="rule-arrow">→</span><span class="rule-to">んで</span><span class="rule-example">のみます→のんで</span></div>
         <div class="rule-row"><span class="rule-from">き</span><span class="rule-arrow">→</span><span class="rule-to">いて</span><span class="rule-example">かきます→かいて</span></div>
         <div class="rule-row"><span class="rule-from">ぎ</span><span class="rule-arrow">→</span><span class="rule-to">いで</span><span class="rule-example">およぎます→およいで</span></div>
         <div class="rule-row"><span class="rule-from">し</span><span class="rule-arrow">→</span><span class="rule-to">して</span><span class="rule-example">はなします→はなして</span></div>
-        <div class="rule-row"><span class="rule-from">★例外：いきます</span><span class="rule-arrow">→</span><span class="rule-to">いって</span><span class="rule-example"></span></div>
+        <div class="rule-row"><span class="rule-from"><span data-lang="ja">★例外：いきます</span><span data-lang="zh">★例外：いきます</span><span data-lang="en">★Exception: いきます</span></span><span class="rule-arrow">→</span><span class="rule-to">いって</span><span class="rule-example"></span></div>
       </div>
     </div>
     <div class="rule-group">
-      <div class="rule-group-title">グループ２（一段動詞）</div>
+      <div class="rule-group-title"><span data-lang="ja">グループ２（一段動詞）</span><span data-lang="zh">第二類動詞（一段動詞）</span><span data-lang="en">Group 2 (Ichidan verbs)</span></div>
       <div class="rule-rows">
         <div class="rule-row"><span class="rule-from">〜ます</span><span class="rule-arrow">→</span><span class="rule-to">〜て</span><span class="rule-example">たべます→たべて</span></div>
       </div>
     </div>
     <div class="rule-group">
-      <div class="rule-group-title" style="color:#c4a46b">⚠️ グループ２ 要注意！i-masu でもグループ２の動詞（例外8個）</div>
+      <div class="rule-group-title" style="color:#c4a46b">⚠️ <span data-lang="ja">グループ２ 要注意！i-masu でもグループ２の動詞（例外8個）</span><span data-lang="zh">第二類動詞注意！i-masu 但仍屬於第二類的動詞（8個例外）</span><span data-lang="en">Group 2 caution! Verbs that look like i-masu but are actually Group 2 (8 exceptions)</span></div>
       <div class="rule-rows">
         <div class="rule-row"><span class="rule-from">起きます</span><span class="rule-arrow">→</span><span class="rule-to">起きて</span><span class="rule-example">おきます→おきて</span></div>
         <div class="rule-row"><span class="rule-from">着ます</span><span class="rule-arrow">→</span><span class="rule-to">着て</span><span class="rule-example">きます→きて</span></div>
@@ -362,12 +380,13 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
         <div class="rule-row"><span class="rule-from">浴びます</span><span class="rule-arrow">→</span><span class="rule-to">浴びて</span><span class="rule-example">あびます→あびて</span></div>
       </div>
       <p style="font-size:11px;color:#b09090;padding:10px 16px;line-height:1.8">
-        ※ i-masu (き・み・り・い・び) でも<strong>グループ２</strong>の動詞がある。<br>
-        見分け方：辞書形が「〜いる・〜える」→ グループ２
+        <span data-lang="ja">※ i-masu (き・み・り・い・び) でも<strong>グループ２</strong>の動詞がある。<br>見分け方：辞書形が「〜いる・〜える」→ グループ２</span>
+        <span data-lang="zh">※ 有些動詞雖是i-masu形（き・み・り・い・び），但仍屬於<strong>第二類</strong>動詞。<br>判斷方法：辭書形是「〜いる・〜える」→ 第二類動詞</span>
+        <span data-lang="en">※ Some verbs look like i-masu (き・み・り・い・び) but are actually <strong>Group 2</strong>.<br>How to tell: if the dictionary form ends in "〜いる/〜える" → it's Group 2</span>
       </p>
     </div>
     <div class="rule-group">
-      <div class="rule-group-title">グループ３（不規則動詞）</div>
+      <div class="rule-group-title"><span data-lang="ja">グループ３（不規則動詞）</span><span data-lang="zh">第三類動詞（不規則動詞）</span><span data-lang="en">Group 3 (Irregular verbs)</span></div>
       <div class="rule-rows">
         <div class="rule-row"><span class="rule-from">します</span><span class="rule-arrow">→</span><span class="rule-to">して</span><span class="rule-example">べんきょうします→して</span></div>
         <div class="rule-row"><span class="rule-from">きます</span><span class="rule-arrow">→</span><span class="rule-to">きて</span><span class="rule-example">きます→きて</span></div>
@@ -377,6 +396,73 @@ body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:
 </div>
 
 <script>
+// ── i18n ───────────────────────────────────────────
+function wrapJaText(root){
+  const hosts = new Set();
+  root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
+  hosts.forEach(parent => {
+    const children = Array.from(parent.childNodes);
+    let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
+    while (i < children.length) {
+      if (isBoundary(children[i])) { i++; continue; }
+      const runStart = i;
+      while (i < children.length && !isBoundary(children[i])) i++;
+      const run = children.slice(runStart, i);
+      const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
+        const span = document.createElement('span');
+        span.className = 'sub';
+        span.setAttribute('data-lang', 'ja');
+        parent.insertBefore(span, run[0]);
+        run.forEach(n => span.appendChild(n));
+      }
+    }
+  });
+}
+let secondaryLang = localStorage.getItem('classroomLang') || 'ja';
+if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'ja';
+const T = (ja, zh, en) => secondaryLang === 'zh' ? zh : (secondaryLang === 'en' ? en : ja);
+function answerPlaceholderHTML(){
+  return '<span class="answer-placeholder"><span data-lang="ja">ここに答えが並びます</span><span data-lang="zh">答案會顯示在這裡</span><span data-lang="en">Your answer will appear here</span></span>';
+}
+const CAT_MAP = {
+  '飲み物': {zh:'飲料', en:'Drinks'}, '動物': {zh:'動物', en:'Animals'}, '自然': {zh:'大自然', en:'Nature'},
+  '乗り物': {zh:'交通工具', en:'Vehicles'}, '人': {zh:'人物', en:'People'}, '場所': {zh:'場所', en:'Places'},
+  '形容詞': {zh:'形容詞', en:'Adjectives'}, '食べ物': {zh:'食物', en:'Food'},
+  '日付': {zh:'日期', en:'Dates'}, '動詞': {zh:'動詞', en:'Verbs'}
+};
+function tCat(cat){
+  if (secondaryLang === 'ja') return cat;
+  const m = CAT_MAP[cat];
+  return m ? (secondaryLang === 'zh' ? m.zh : m.en) : cat;
+}
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + lang);
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
+  const di = document.getElementById('device-input');
+  if (di) di.placeholder = T('て形を入力', 'て形を入力', 'Type te-form');
+  if (typeof updateHiraDisplay === 'function') updateHiraDisplay();
+  ['t1','t2'].forEach(id => {
+    const catEl = document.getElementById(id + '-cat');
+    if (catEl && catEl.dataset.rawCat) catEl.textContent = tCat(catEl.dataset.rawCat);
+  });
+  const hintEl = document.getElementById('t3-group-hint');
+  if (hintEl && hintEl.dataset.rawGroup) hintEl.textContent = T('グループ', '第', 'Group ') + hintEl.dataset.rawGroup + (secondaryLang==='zh' ? '類' : '');
+  if (typeof renderLoginHeader === 'function') renderLoginHeader();
+  if (typeof buildHiraGrid === 'function') buildHiraGrid();
+}
+document.body.classList.add('lang-' + secondaryLang);
+
 // ── Sound ──────────────────────────────────────────
 let _actx;
 function getACtx(){
@@ -530,11 +616,13 @@ function gLoad(id){
   s.placed=[];s.wrongCount=0;
 
   document.getElementById(id+'-prompt').textContent=w.prompt;
-  document.getElementById(id+'-cat').textContent=w.cat;
+  const catEl=document.getElementById(id+'-cat');
+  catEl.dataset.rawCat=w.cat;
+  catEl.textContent=tCat(w.cat);
   document.getElementById(id+'-reveal').classList.remove('show');
 
   const ans=document.getElementById(id+'-ans');
-  ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
+  ans.innerHTML=answerPlaceholderHTML();
   ans.className='answer-area';
 
   const wb=document.getElementById(id+'-wbadge');
@@ -581,7 +669,7 @@ function gRemove(id,tile,idx,origBtn){
   tile.remove();
   origBtn.classList.remove('used');
   const ans=document.getElementById(id+'-ans');
-  if(!ans.querySelector('.placed-tile')) ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
+  if(!ans.querySelector('.placed-tile')) ans.innerHTML=answerPlaceholderHTML();
 }
 
 function gCheck(id){
@@ -611,7 +699,7 @@ function gCheck(id){
     setTimeout(()=>{
       ans.classList.remove('wrong-state');
       s.placed=[];
-      ans.innerHTML='<span class="answer-placeholder">ここに答えが並びます</span>';
+      ans.innerHTML=answerPlaceholderHTML();
       document.querySelectorAll('#'+id+'-bank .tile').forEach(t=>t.classList.remove('used'));
       if(s.wrongCount>=3){
         s.history.push({q:w.prompt,user:'(3回ミス)',correct:correct,wrongs:3,passed:false});
@@ -634,8 +722,8 @@ function gNext(id){
   if(s.cur>=s.words.length){
     document.getElementById(id+'-game').style.display='none';
     document.getElementById(id+'-prog').style.width='100%';
-    document.getElementById(id+'-done-score').textContent='正解 '+s.correct+' / '+s.words.length+' 問';
-    document.getElementById(id+'-done-wrongs').textContent='合計ミス回数：'+s.totalWrong+'回';
+    document.getElementById(id+'-done-score').textContent=T('正解 '+s.correct+' / '+s.words.length+' 問','答對 '+s.correct+' / '+s.words.length+' 題','Correct: '+s.correct+' / '+s.words.length);
+    document.getElementById(id+'-done-wrongs').textContent=T('合計ミス回数：'+s.totalWrong+'回','總錯誤次數：'+s.totalWrong+'次','Total mistakes: '+s.totalWrong);
     buildReview(id,s.history);
     document.getElementById(id+'-done').classList.add('show');
     if(window.SuzuAuth&&SuzuAuth.isLoggedIn()) SuzuAuth.saveScore({level:id,score:s.correct,total:s.words.length,points:s.correct*10,source:'quiz'});
@@ -738,7 +826,7 @@ function updateHiraDisplay(){
     dt.style.fontSize='26px';dt.style.opacity='1';
     rb.textContent=qRomBuf?'['+qRomBuf+']':'';
   }else{
-    dt.textContent='ひらがなを入力してね';
+    dt.textContent=T('ひらがなを入力してね','請輸入平假名','Type in hiragana');
     dt.style.fontSize='12px';dt.style.opacity='0.35';
     rb.textContent='';
   }
@@ -767,7 +855,7 @@ function buildHiraGrid(){
     ['Z','X','C','V','B','N','M'],
     ['BACK','ん','ー','SEND'],
   ];
-  const labels={'BACK':'⌫','SEND':'送信 →','ん':'ん','ー':'ー'};
+  const labels={'BACK':'⌫','SEND':T('送信 →','送出 →','Send →'),'ん':'ん','ー':'ー'};
   const ids=['qwerty-r1','qwerty-r2','qwerty-r3','qwerty-r4'];
   QROWS.forEach((row,ri)=>{
     const rowEl=document.getElementById(ids[ri]);
@@ -808,11 +896,13 @@ function t3Start(){
 function t3Load(){
   const q=t3State.words[t3State.cur];
   document.getElementById('t3-masu').textContent=q.masu;
-  document.getElementById('t3-group-hint').textContent='グループ'+q.group;
+  const hintEl=document.getElementById('t3-group-hint');
+  hintEl.dataset.rawGroup=q.group;
+  hintEl.textContent=T('グループ'+q.group,'第'+q.group+'類','Group '+q.group);
   document.getElementById('t3-result').className='te-result';
   document.getElementById('t3-next').className='next-wrap';
   const wb=document.getElementById('t3-wbadge');
-  wb.textContent='ミス 0回';wb.classList.remove('show');
+  wb.textContent=T('ミス 0回','錯誤 0次','0 mistakes');wb.classList.remove('show');
   t3State.wrongCount=0;
   t3State.lastInput='';
 
@@ -846,7 +936,7 @@ function t3Submit(){
     document.getElementById('t3-score').textContent=t3State.correct+' / '+(t3State.cur+1);
     const res=document.getElementById('t3-result');
     document.getElementById('t3-result-main').textContent='✓ '+q.te;
-    document.getElementById('t3-result-rule').textContent='グループ'+q.group+'｜'+q.pattern;
+    document.getElementById('t3-result-rule').textContent=T('グループ','第','Group ')+q.group+(secondaryLang==='zh'?'類':'')+'｜'+q.pattern;
     res.className='te-result correct show';
     document.getElementById('t3-next').className='next-wrap show';
     // disable input
@@ -856,10 +946,10 @@ function t3Submit(){
     playSound('wrong');
     t3State.wrongCount++;t3State.totalWrong++;
     const wb=document.getElementById('t3-wbadge');
-    wb.textContent='ミス '+t3State.wrongCount+'回';wb.classList.add('show');
+    wb.textContent=T('ミス '+t3State.wrongCount+'回','錯誤 '+t3State.wrongCount+'次',t3State.wrongCount+' mistakes');wb.classList.add('show');
     const res=document.getElementById('t3-result');
     document.getElementById('t3-result-main').textContent='✗ '+user;
-    document.getElementById('t3-result-rule').textContent='もう一度試してね…';
+    document.getElementById('t3-result-rule').textContent=T('もう一度試してね…','再試一次看看…','Try again…');
     res.className='te-result wrong show';
     setTimeout(()=>{res.className='te-result';},900);
     // Clear input
@@ -885,8 +975,8 @@ function t3Next(){
   if(t3State.cur>=t3State.words.length){
     document.getElementById('t3-game').style.display='none';
     document.getElementById('t3-prog').style.width='100%';
-    document.getElementById('t3-done-score').textContent='正解 '+t3State.correct+' / '+t3State.words.length+' 問';
-    document.getElementById('t3-done-wrongs').textContent='合計ミス回数：'+t3State.totalWrong+'回';
+    document.getElementById('t3-done-score').textContent=T('正解 '+t3State.correct+' / '+t3State.words.length+' 問','答對 '+t3State.correct+' / '+t3State.words.length+' 題','Correct: '+t3State.correct+' / '+t3State.words.length);
+    document.getElementById('t3-done-wrongs').textContent=T('合計ミス回数：'+t3State.totalWrong+'回','總錯誤次數：'+t3State.totalWrong+'次','Total mistakes: '+t3State.totalWrong);
     buildT3Review();
     document.getElementById('t3-done').classList.add('show');
     if(window.SuzuAuth&&SuzuAuth.isLoggedIn()) SuzuAuth.saveScore({level:'t3',score:t3State.correct,total:t3State.words.length,points:t3State.correct*10,source:'quiz'});
@@ -918,9 +1008,9 @@ function escapeHtmlQ(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':
 function renderLoginHeader(){
   const el=document.getElementById('suzu-login-wrap');if(!el||!window.SuzuAuth)return;
   if(SuzuAuth.isLoggedIn()){
-    el.innerHTML='<span style="font-size:10px;color:rgba(255,255,255,.8);">👤 '+escapeHtmlQ(SuzuAuth.nickname())+' <button onclick="SuzuAuth.logout();location.reload();" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:2px 6px;font-size:9px;cursor:pointer;">ログアウト</button></span>';
+    el.innerHTML='<span style="font-size:10px;color:rgba(255,255,255,.8);">👤 '+escapeHtmlQ(SuzuAuth.nickname())+' <button onclick="SuzuAuth.logout();location.reload();" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:2px 6px;font-size:9px;cursor:pointer;">'+T('ログアウト','登出','Log Out')+'</button></span>';
   }else{
-    el.innerHTML='<button onclick="quizLogin()" style="background:#fff;color:#6B3D3D;border:none;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔑 ログインして記録</button>';
+    el.innerHTML='<button onclick="quizLogin()" style="background:#fff;color:#6B3D3D;border:none;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔑 '+T('ログインして記録','登入以記錄成績','Log In to Save Score')+'</button>';
   }
 }
 function quizLogin(){ if(window.SuzuAuth) SuzuAuth.prompt(()=>renderLoginHeader()); }
@@ -928,17 +1018,17 @@ async function openRanking(){
   const ov=document.getElementById('rank-overlay');ov.style.display='flex';
   const body=document.getElementById('rank-body');
   if(!window.SuzuAuth||!SuzuAuth.isLoggedIn()){
-    body.innerHTML='<div style="text-align:center;padding:14px;"><p style="color:#6B3D3D;margin-bottom:12px;">ログインするとランキングに参加できます🏆</p><div id="rank-login" style="display:flex;justify-content:center;"></div></div>';
+    body.innerHTML='<div style="text-align:center;padding:14px;"><p style="color:#6B3D3D;margin-bottom:12px;">'+T('ログインするとランキングに参加できます🏆','登入後即可加入排行榜🏆','Log in to join the leaderboard 🏆')+'</p><div id="rank-login" style="display:flex;justify-content:center;"></div></div>';
     SuzuAuth.initButton('rank-login',()=>{renderLoginHeader();openRanking();});
     return;
   }
-  body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">読み込み中…</p>';
+  body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">'+T('読み込み中…','載入中…','Loading…')+'</p>';
   const rows=await SuzuAuth.leaderboardWithBots(50);const myNick=SuzuAuth.nickname();
-  if(!rows.length){body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';return;}
+  if(!rows.length){body.innerHTML='<p style="text-align:center;color:#9a8080;padding:20px;">'+T('まだ記録がありません。クイズを解いてポイントを貯めよう！','還沒有記錄，快去玩測驗累積分數吧！','No records yet. Play the quiz to earn points!')+'</p>';return;}
   let h='';
   rows.forEach((r,i)=>{const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);const me=r.nickname===myNick;
-    h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:7px;border-radius:10px;'+(me?'background:var(--blush);border:1px solid var(--rose);':'background:white;border:1px solid #eee;')+'"><div style="width:30px;text-align:center;font-weight:700;color:var(--deep);">'+rk+'</div><div style="flex:1;font-weight:'+(me?'700':'400')+';">'+escapeHtmlQ(r.nickname)+(me?'（あなた）':'')+'</div><div style="color:var(--rose);font-weight:700;">'+r.total_points+' pt</div></div>';});
-  h+='<button class="next-btn" style="width:100%;margin-top:10px;" onclick="if(SuzuAuth.changeNickname()){renderLoginHeader();openRanking();}">✏️ ニックネームを変える</button>';
+    h+='<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;margin-bottom:7px;border-radius:10px;'+(me?'background:var(--blush);border:1px solid var(--rose);':'background:white;border:1px solid #eee;')+'"><div style="width:30px;text-align:center;font-weight:700;color:var(--deep);">'+rk+'</div><div style="flex:1;font-weight:'+(me?'700':'400')+';">'+escapeHtmlQ(r.nickname)+(me?T('（あなた）','（你）',' (You)'):'')+'</div><div style="color:var(--rose);font-weight:700;">'+r.total_points+' pt</div></div>';});
+  h+='<button class="next-btn" style="width:100%;margin-top:10px;" onclick="if(SuzuAuth.changeNickname()){renderLoginHeader();openRanking();}">✏️ '+T('ニックネームを変える','變更暱稱','Change Nickname')+'</button>';
   body.innerHTML=h;
 }
 function closeRanking(){document.getElementById('rank-overlay').style.display='none';}
@@ -949,6 +1039,7 @@ gStart('t1');
 gStart('t2');
 t3Start();
 renderLoginHeader();
+setLang(secondaryLang);
 
 (function(){const h=location.hash.replace('#','');const m={t1:0,t2:1,t3:2};if(h in m){switchTab(h,document.querySelectorAll('.tab-btn')[m[h]]);}})();
 </script>
@@ -957,10 +1048,10 @@ renderLoginHeader();
 <div id="rank-overlay" style="display:none;position:fixed;inset:0;background:rgba(43,31,31,.6);z-index:100;align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--cream);border-radius:14px;max-width:420px;width:100%;max-height:80vh;overflow:auto;padding:22px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-      <div style="font-family:'Noto Serif JP',serif;font-size:18px;color:var(--deep);">🏆 みんなのランキング</div>
+      <div style="font-family:'Noto Serif JP',serif;font-size:18px;color:var(--deep);">🏆 <span data-lang="ja">みんなのランキング</span><span data-lang="zh">大家的排行榜</span><span data-lang="en">Leaderboard</span></div>
       <button onclick="closeRanking()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9a8080;">✕</button>
     </div>
-    <div id="rank-body"><p style="text-align:center;color:#9a8080;padding:20px;">読み込み中…</p></div>
+    <div id="rank-body"><p style="text-align:center;color:#9a8080;padding:20px;"><span data-lang="ja">読み込み中…</span><span data-lang="zh">載入中…</span><span data-lang="en">Loading…</span></p></div>
   </div>
 </div>
 

@@ -88,7 +88,7 @@
     animation: fadeUp 0.8s ease forwards 0.4s;
   }
 
-  .hero-title span {
+  .hero-title .hl {
     color: var(--rose);
     display: block;
   }
@@ -1357,7 +1357,11 @@
     <span class="quiz-float-icon">🎴</span>
     <div class="quiz-float-text">
       <div class="quiz-float-label">PRACTICE</div>
-      <div class="quiz-float-title">クイズで<br>日本語練習！</div>
+      <div class="quiz-float-title">
+        <span data-lang="ja">クイズで<br>日本語練習！</span>
+        <span data-lang="zh">用小測驗<br>練習日文！</span>
+        <span data-lang="en">Practice Japanese<br>with a quiz!</span>
+      </div>
     </div>
   </a>
   <button class="quiz-float-close" onclick="document.getElementById('quiz-float').classList.add('hidden')" title="閉じる">✕</button>
@@ -1401,20 +1405,24 @@ function closeNav() {
   <div class="hero-left">
     <div class="kana-tag">✿ SUZU SENSEI · 日本語レッスン</div>
     <h1 class="hero-title">
-      一緒に、<br>
-      <span>自然な日本語</span>
-      を話しましょう。
+      <span data-lang="ja">一緒に、<br><span class="hl">自然な日本語</span>を話しましょう。</span>
+      <span data-lang="zh">一起，<br>自然地說出<span class="hl">日文</span>吧。</span>
+      <span data-lang="en">Let's speak<br><span class="hl">natural Japanese</span>, together.</span>
     </h1>
     <p class="hero-subtitle">
       <span data-lang="zh">一個溫暖、沒有壓力的空間，讓你自在地練習日文。<br>不需要完美，只要勇敢開口就好。</span>
       <span data-lang="en">A warm, pressure-free space where you can practise Japanese at your own pace.<br>No need to be perfect — just be brave enough to speak.</span>
     </p>
     <div class="cta-group">
-      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
-      <button class="btn-secondary" onclick="document.querySelector('.lessons-section').scrollIntoView({behavior:'smooth'})">レッスン内容を見る</button>
-      <button class="btn-secondary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで問い合わせる</button>
+      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span></button>
+      <button class="btn-secondary" onclick="document.querySelector('.lessons-section').scrollIntoView({behavior:'smooth'})"><span data-lang="ja">レッスン内容を見る</span><span data-lang="zh">查看課程內容</span><span data-lang="en">See Lesson Details</span></button>
+      <button class="btn-secondary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 <span data-lang="ja">LINEで問い合わせる</span><span data-lang="zh">用LINE詢問</span><span data-lang="en">Ask via LINE</span></button>
     </div>
-    <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">※ LINEは質問・お問い合わせのみ受付しています（体験レッスンのお申し込みは上記の予約ボタンから）</p>
+    <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">
+      <span data-lang="ja">※ LINEは質問・お問い合わせのみ受付しています（体験レッスンのお申し込みは上記の予約ボタンから）</span>
+      <span data-lang="zh">※ LINE僅接受詢問與提問（體驗課請透過上方預約按鈕申請）</span>
+      <span data-lang="en">※ LINE is for questions/inquiries only (please book your trial lesson using the button above)</span>
+    </p>
   </div>
   <div class="hero-right">
     <div class="sakura-bg" id="sakura"></div>
@@ -1426,16 +1434,15 @@ function closeNav() {
       <div class="teacher-name-en">Japanese Language Teacher</div>
       <div class="divider"></div>
       <p class="teacher-desc">
-        日本語母語者 🌸<br>
-        埼玉・神奈川・東京・タイ・台湾 居住経験<br>
-        英語・数学の教師歴4年 📚<br>
-        東南アジア・欧州4カ国を旅した旅人 ✈️
+        <span data-lang="ja">日本語母語者 🌸<br>埼玉・神奈川・東京・タイ・台湾 居住経験<br>英語・数学の教師歴4年 📚<br>東南アジア・欧州4カ国を旅した旅人 ✈️</span>
+        <span data-lang="zh">日語母語者 🌸<br>曾旅居埼玉・神奈川・東京・泰國・台灣<br>英文・數學教學經驗4年 📚<br>走訪東南亞、歐洲4國的旅人 ✈️</span>
+        <span data-lang="en">Native Japanese speaker 🌸<br>Lived in Saitama, Kanagawa, Tokyo, Thailand &amp; Taiwan<br>4 years teaching English &amp; Math 📚<br>Traveled through 4 countries across Southeast Asia &amp; Europe ✈️</span>
       </p>
       <div class="lang-badges">
-        <span class="lang-badge">🇯🇵 日本語｜母語</span>
-        <span class="lang-badge">🇬🇧 English｜Conversational</span>
-        <span class="lang-badge">🇹🇼 中文｜初級</span>
-        <span class="lang-badge">🇹🇭 ภาษาไทย｜初級</span>
+        <span class="lang-badge">🇯🇵 <span data-lang="ja">日本語｜母語</span><span data-lang="zh">日文｜母語</span><span data-lang="en">Japanese | Native</span></span>
+        <span class="lang-badge">🇬🇧 <span data-lang="ja">英語｜日常会話</span><span data-lang="zh">英文｜日常對話</span><span data-lang="en">English | Conversational</span></span>
+        <span class="lang-badge">🇹🇼 <span data-lang="ja">中国語｜初級</span><span data-lang="zh">中文｜初級</span><span data-lang="en">Mandarin | Beginner</span></span>
+        <span class="lang-badge">🇹🇭 <span data-lang="ja">タイ語｜初級</span><span data-lang="zh">泰文｜初級</span><span data-lang="en">Thai | Beginner</span></span>
       </div>
     </div>
   </div>
@@ -1444,47 +1451,51 @@ function closeNav() {
 <div class="steps-outer">
 <section class="steps-section scroll-reveal">
   <div class="steps-header">
-    <div class="section-label">学びの流れ</div>
-    <h2 class="section-title" style="font-size: clamp(22px,2.6vw,32px);">ゲームから会話実践まで、<br>楽しく続けられるステップ。</h2>
+    <div class="section-label"><span data-lang="ja">学びの流れ</span><span data-lang="zh">學習流程</span><span data-lang="en">Learning Journey</span></div>
+    <h2 class="section-title" style="font-size: clamp(22px,2.6vw,32px);">
+      <span data-lang="ja">ゲームから会話実践まで、<br>楽しく続けられるステップ。</span>
+      <span data-lang="zh">從遊戲到會話實踐，<br>輕鬆持續學習的步驟。</span>
+      <span data-lang="en">From games to real conversation —<br>steps you'll enjoy sticking with.</span>
+    </h2>
   </div>
   <div class="steps-row">
     <div class="step-item">
       <div class="step-icon">🎮</div>
       <div class="step-num">STEP 1</div>
-      <div class="step-label">ゲーム</div>
+      <div class="step-label"><span data-lang="ja">ゲーム</span><span data-lang="zh">遊戲</span><span data-lang="en">Games</span></div>
       <div class="step-desc"><span data-lang="ja">ゲーム教材から気軽にスタート</span><span data-lang="zh">從遊戲式教材開始，輕鬆入門</span><span data-lang="en">Start with game-based materials</span></div>
     </div>
     <div class="step-arrow">›</div>
     <div class="step-item">
       <div class="step-icon">🎁</div>
       <div class="step-num">STEP 2</div>
-      <div class="step-label">体験課</div>
+      <div class="step-label"><span data-lang="ja">体験課</span><span data-lang="zh">體驗課</span><span data-lang="en">Trial Lesson</span></div>
       <div class="step-desc"><span data-lang="ja">無料体験レッスンで授業の雰囲気を確認</span><span data-lang="zh">免費體驗課，確認上課風格</span><span data-lang="en">Free trial lesson</span></div>
     </div>
     <div class="step-arrow">›</div>
     <div class="step-item">
       <div class="step-icon">📋</div>
       <div class="step-num">STEP 3</div>
-      <div class="step-label">カリキュラム</div>
+      <div class="step-label"><span data-lang="ja">カリキュラム</span><span data-lang="zh">課程規劃</span><span data-lang="en">Curriculum</span></div>
       <div class="step-desc"><span data-lang="ja">目標に合わせたオーダーメイドカリキュラム</span><span data-lang="zh">依目標量身訂做課程計畫</span><span data-lang="en">Personalised curriculum</span></div>
     </div>
     <div class="step-arrow">›</div>
     <div class="step-item">
       <div class="step-icon">📝</div>
       <div class="step-num">STEP 4</div>
-      <div class="step-label">ノート</div>
+      <div class="step-label"><span data-lang="ja">ノート</span><span data-lang="zh">筆記</span><span data-lang="en">Notes</span></div>
       <div class="step-desc"><span data-lang="ja">毎回の授業後にノートをお届け</span><span data-lang="zh">每堂課後收到整理好的筆記</span><span data-lang="en">Notes shared after every lesson</span></div>
     </div>
     <div class="step-arrow">›</div>
     <div class="step-item">
       <div class="step-icon">💬</div>
       <div class="step-num">STEP 5</div>
-      <div class="step-label">会話実践</div>
+      <div class="step-label"><span data-lang="ja">会話実践</span><span data-lang="zh">會話實踐</span><span data-lang="en">Real Conversation</span></div>
       <div class="step-desc"><span data-lang="ja">実際に使って、自然に日本語を話す</span><span data-lang="zh">實際運用，自然開口說日文</span><span data-lang="en">Put it into real conversation</span></div>
     </div>
   </div>
   <div style="text-align:center; margin-top:44px;">
-    <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
+    <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span></button>
   </div>
 </section>
 </div>
@@ -1492,8 +1503,12 @@ function closeNav() {
 <div class="safe-outer">
 <section class="safe-section scroll-reveal">
   <div>
-    <div class="section-label">安心の空間</div>
-    <h2 class="section-title">間違えても<br>大丈夫。<br>ここは安全な場所。</h2>
+    <div class="section-label"><span data-lang="ja">安心の空間</span><span data-lang="zh">安心的空間</span><span data-lang="en">A Safe Space</span></div>
+    <h2 class="section-title">
+      <span data-lang="ja">間違えても<br>大丈夫。<br>ここは安全な場所。</span>
+      <span data-lang="zh">就算說錯了<br>也沒關係。<br>這裡是安全的空間。</span>
+      <span data-lang="en">Mistakes are<br>okay here.<br>This is a safe space.</span>
+    </h2>
     <p class="section-body">
       <span data-lang="ja">多くの学生にとって、日本語学習で一番の壁は文法ではなく「間違えるのが怖い」という気持ちです。<br><br>
       ここでは、間違いも学びの一部です。すず先生はいちばん優しい方法で、本当にリラックスした状態で自然に日本語を話せるように導きます。<br><br>
@@ -1509,29 +1524,29 @@ function closeNav() {
       That's exactly why every lesson is <strong>immersion time</strong>: building solid foundations while learning the authentic pronunciation and everyday vocabulary that Japanese people actually use — not just textbook phrases.</span>
     </p>
     <div style="display:flex; gap:12px; flex-wrap:wrap;">
-      <button class="btn-primary" style="background: var(--deep);" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEでまず体験してみる →</button>
-      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する →</button>
+      <button class="btn-primary" style="background: var(--deep);" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 <span data-lang="ja">LINEで質問してみる</span><span data-lang="zh">用LINE詢問看看</span><span data-lang="en">Ask a Question via LINE</span> →</button>
+      <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span> →</button>
     </div>
   </div>
   <div class="safe-cards">
     <div class="safe-card">
       <span class="safe-icon">🌸</span>
-      <div class="safe-title">優しい雰囲気</div>
+      <div class="safe-title"><span data-lang="ja">優しい雰囲気</span><span data-lang="zh">溫柔的氛圍</span><span data-lang="en">A Kind Atmosphere</span></div>
       <p class="safe-desc"><span data-lang="ja">優しく否定しない環境で、勇気を持って話せる</span><span data-lang="zh">溫柔不評判的環境，讓你勇敢開口說話</span><span data-lang="en">A kind, non-judgmental environment that lets you speak up with confidence</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">🎯</span>
-      <div class="safe-title">あなただけのカリキュラム</div>
+      <div class="safe-title"><span data-lang="ja">あなただけのカリキュラム</span><span data-lang="zh">專屬於你的課程</span><span data-lang="en">Your Own Curriculum</span></div>
       <p class="safe-desc"><span data-lang="ja">あなたの目標に合わせたオーダーメイドの学習プラン</span><span data-lang="zh">依據你的目標量身訂做學習計劃</span><span data-lang="en">A learning plan tailored entirely to your goals</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">💬</span>
-      <div class="safe-title">生きた日本語</div>
+      <div class="safe-title"><span data-lang="ja">生きた日本語</span><span data-lang="zh">活生生的日文</span><span data-lang="en">Living Japanese</span></div>
       <p class="safe-desc"><span data-lang="ja">日本人が実際に使う自然な表現を学ぶ</span><span data-lang="zh">學習日本人真正在用的自然表達方式</span><span data-lang="en">Learn the natural expressions Japanese people actually use</span></p>
     </div>
     <div class="safe-card">
       <span class="safe-icon">📝</span>
-      <div class="safe-title">授業後のメモ</div>
+      <div class="safe-title"><span data-lang="ja">授業後のメモ</span><span data-lang="zh">課後筆記</span><span data-lang="en">Post-Lesson Notes</span></div>
       <p class="safe-desc"><span data-lang="ja">毎回の授業後に整理されたノートをお届け</span><span data-lang="zh">每堂課後都會收到整理好的學習筆記</span><span data-lang="en">Receive neat, organized study notes after every lesson</span></p>
     </div>
   </div>
@@ -1541,38 +1556,42 @@ function closeNav() {
 <section class="lessons-section">
   <div class="lessons-inner">
     <div class="lessons-header scroll-reveal">
-      <div class="section-label" style="color: var(--gold);">レッスン内容</div>
-      <h2 class="lessons-title">あなたの「話したい」を、<br>一緒に叶えましょう。</h2>
+      <div class="section-label" style="color: var(--gold);"><span data-lang="ja">レッスン内容</span><span data-lang="zh">課程內容</span><span data-lang="en">Lesson Types</span></div>
+      <h2 class="lessons-title">
+        <span data-lang="ja">あなたの「話したい」を、<br>一緒に叶えましょう。</span>
+        <span data-lang="zh">讓我們一起實現<br>你「想開口說」的心願。</span>
+        <span data-lang="en">Let's make your<br>"I want to speak" come true.</span>
+      </h2>
     </div>
     <div class="lessons-grid">
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">01</div>
-        <div class="lesson-subtitle">初心者向け</div>
-        <div class="lesson-title">初級レッスン</div>
+        <div class="lesson-subtitle"><span data-lang="ja">初心者向け</span><span data-lang="zh">適合初學者</span><span data-lang="en">For Beginners</span></div>
+        <div class="lesson-title"><span data-lang="ja">初級レッスン</span><span data-lang="zh">初級課程</span><span data-lang="en">Beginner Lessons</span></div>
         <p class="lesson-desc"><span data-lang="ja">平仮名・片仮名から始めて、ゲーム感覚の教材で基礎文法を学べます。入門も飽きずに楽しく続けられます。</span><span data-lang="zh">從平假名、片假名開始，用遊戲式教材學習基礎文法，讓入門不再枯燥。</span><span data-lang="en">Start from hiragana and katakana, learning basic grammar through game-based materials — beginner-friendly and never boring.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">02</div>
-        <div class="lesson-subtitle">会話・フリートーク</div>
-        <div class="lesson-title">フリートーク</div>
+        <div class="lesson-subtitle"><span data-lang="ja">会話・フリートーク</span><span data-lang="zh">會話・自由對話</span><span data-lang="en">Conversation & Free Talk</span></div>
+        <div class="lesson-title"><span data-lang="ja">フリートーク</span><span data-lang="zh">自由對話</span><span data-lang="en">Free Talk</span></div>
         <p class="lesson-desc"><span data-lang="ja">毎回自由にテーマを選んで、自然な会話表現を練習。日本人が実際に話す生きた単語と本場の発音を学びます。</span><span data-lang="zh">每堂課自由選題，練習自然的會話表達。學習日本人真正在說的活生生單字與道地發音。</span><span data-lang="en">Choose any topic you like each lesson and practise natural conversation. Learn the real vocabulary and authentic pronunciation that Japanese people use.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">03</div>
-        <div class="lesson-subtitle">文章添削</div>
-        <div class="lesson-title">ライティング</div>
+        <div class="lesson-subtitle"><span data-lang="ja">文章添削</span><span data-lang="zh">文章批改</span><span data-lang="en">Writing Correction</span></div>
+        <div class="lesson-title"><span data-lang="ja">ライティング</span><span data-lang="zh">寫作課</span><span data-lang="en">Writing</span></div>
         <p class="lesson-desc"><span data-lang="ja">自然な日本語ライティングをサポート。間違いを恐れずに文章練習ができ、授業外でも日本語に触れ続けられます。</span><span data-lang="zh">支援自然日文寫作，不怕犯錯地練習文章，課外時間也持續接觸日文。</span><span data-lang="en">Support for natural Japanese writing — practise compositions without fear of errors and keep engaging with Japanese even outside class.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">04</div>
-        <div class="lesson-subtitle">旅行準備</div>
-        <div class="lesson-title">旅行日本語</div>
+        <div class="lesson-subtitle"><span data-lang="ja">旅行準備</span><span data-lang="zh">旅行準備</span><span data-lang="en">Travel Prep</span></div>
+        <div class="lesson-title"><span data-lang="ja">旅行日本語</span><span data-lang="zh">旅遊日文</span><span data-lang="en">Travel Japanese</span></div>
         <p class="lesson-desc"><span data-lang="ja">旅の仲間に一目置かれる、自信を持って日本へ旅立ち、日本文化を存分に体験できます。</span><span data-lang="zh">讓旅伴都佩服你，帶著自信踏上日本之旅，滿足地體驗日本文化。</span><span data-lang="en">Impress your travel companions, set off for Japan with confidence, and truly experience Japanese culture to the fullest.</span></p>
       </div>
       <div class="lesson-card scroll-reveal">
         <div class="lesson-num">05</div>
-        <div class="lesson-subtitle">オーダーメイド</div>
-        <div class="lesson-title">カスタムレッスン</div>
+        <div class="lesson-subtitle"><span data-lang="ja">オーダーメイド</span><span data-lang="zh">量身訂做</span><span data-lang="en">Fully Customized</span></div>
+        <div class="lesson-title"><span data-lang="ja">カスタムレッスン</span><span data-lang="zh">客製化課程</span><span data-lang="en">Custom Lessons</span></div>
         <p class="lesson-desc"><span data-lang="ja">特定の目標がありますか？あなたのニーズに合わせて完全オーダーメイドで授業を設計します。まずは夢について話しましょう。</span><span data-lang="zh">有特定目標？完全按照你的需求設計課程。先聊聊你的夢想吧。</span><span data-lang="en">Have a specific goal? The course is designed entirely around your needs. Let's chat about your dreams first.</span></p>
       </div>
     </div>
@@ -1589,8 +1608,12 @@ function closeNav() {
       <div class="profile-tag">SUZU 先生</div>
     </div>
     <div class="milestones">
-      <div class="section-label">先生について</div>
-      <h2 class="section-title" style="margin-bottom: 40px;">旅を愛する<br>日本語の先生</h2>
+      <div class="section-label"><span data-lang="ja">先生について</span><span data-lang="zh">關於老師</span><span data-lang="en">About the Teacher</span></div>
+      <h2 class="section-title" style="margin-bottom: 40px;">
+        <span data-lang="ja">旅を愛する<br>日本語の先生</span>
+        <span data-lang="zh">熱愛旅行的<br>日語老師</span>
+        <span data-lang="en">A Japanese Teacher<br>Who Loves to Travel</span>
+      </h2>
       <div class="milestone">
         <span class="milestone-icon">🌸</span>
         <div class="milestone-text"><strong>日本語母語者</strong>埼玉・神奈川・東京・タイ・台湾での居住経験を持つ正真正銘の日本語母語者<br><small style="color:#b09090;" data-lang="zh">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small><small style="color:#b09090" data-lang="en">Native Japanese speaker – lived in Saitama, Kanagawa, Tokyo, Thailand & Taiwan</small></div>
@@ -1627,8 +1650,12 @@ function closeNav() {
 <div class="notes-outer">
 <section class="notes-section scroll-reveal">
   <div class="notes-header">
-    <div class="section-label">授業記録</div>
-    <h2 class="section-title" style="text-align:center;">こんなノートを<br>取っています。</h2>
+    <div class="section-label"><span data-lang="ja">授業記録</span><span data-lang="zh">課堂紀錄</span><span data-lang="en">Lesson Records</span></div>
+    <h2 class="section-title" style="text-align:center;">
+      <span data-lang="ja">こんなノートを<br>取っています。</span>
+      <span data-lang="zh">我們會做<br>這樣的筆記。</span>
+      <span data-lang="en">Here's a look at<br>the notes we take.</span>
+    </h2>
     <p style="font-size:13px; color:#9a8080; font-weight:300; margin-top:12px;">
       毎回の授業内容を丁寧に記録し、生徒さんと共有しています。<br>
       <small data-lang="zh">每堂課的內容都會詳細記錄，並與學生共享筆記。</small><small data-lang="en">Every lesson is carefully documented and shared with each student.</small>
@@ -1663,7 +1690,7 @@ function closeNav() {
 <div class="reviews-outer" id="reviews">
 <section class="reviews-section scroll-reveal">
   <div class="reviews-header">
-    <div class="section-label" style="color: var(--gold);">受講生の声</div>
+    <div class="section-label" style="color: var(--gold);"><span data-lang="ja">受講生の声</span><span data-lang="zh">學生真實心聲</span><span data-lang="en">Student Reviews</span></div>
     <h2 class="lessons-title">一緒に学んだ<br>生徒さんより。<br><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300;" data-lang="zh">學生真實心聲</small><small style="font-size:14px; color:rgba(250,246,240,0.4); font-weight:300" data-lang="en">Words from Students</small></h2>
   </div>
   <div class="reviews-grid">
@@ -1742,8 +1769,12 @@ function closeNav() {
 <section class="pricing-section" id="pricing">
   <div class="pricing-inner scroll-reveal">
     <div class="pricing-header">
-      <div class="section-label">料金プラン</div>
-      <h2 class="pricing-title">まず一歩、<br>一緒に踏み出しましょう。</h2>
+      <div class="section-label"><span data-lang="ja">料金プラン</span><span data-lang="zh">價格方案</span><span data-lang="en">Pricing</span></div>
+      <h2 class="pricing-title">
+        <span data-lang="ja">まず一歩、<br>一緒に踏み出しましょう。</span>
+        <span data-lang="zh">先跨出<br>第一步吧。</span>
+        <span data-lang="en">Let's take the<br>first step together.</span>
+      </h2>
       <p class="pricing-subtitle">
         <span data-lang="ja">日本語が自分に合うか分からない？まずは無料体験レッスンで試してみましょう。<br>
         <small>プレッシャーは一切なし、SUZU先生と目標について気軽にお話しするだけです。</small></span>
@@ -1757,10 +1788,10 @@ function closeNav() {
     <div class="pricing-grid">
       <!-- 体験 -->
       <div class="price-card">
-        <div class="pc-tag">体験レッスン</div>
+        <div class="pc-tag"><span data-lang="ja">体験レッスン</span><span data-lang="zh">體驗課</span><span data-lang="en">Trial Lesson</span></div>
         <div class="pc-name">体験レッスン</div>
         <div class="pc-name-cn"><span data-lang="zh">體驗課</span><span data-lang="en">Trial Lesson</span></div>
-        <div class="pc-price">無料</div>
+        <div class="pc-price"><span data-lang="ja">無料</span><span data-lang="zh">免費</span><span data-lang="en">Free</span></div>
         <div class="pc-unit">25分 / 1回限り<br><small data-lang="zh">25分鐘・僅限一次</small><small data-lang="en">25 min · One time only</small></div>
         <div class="pc-detail">
           ✓ 自己紹介・目標ヒアリング<br>
@@ -1776,7 +1807,7 @@ function closeNav() {
 
       <!-- 通常 -->
       <div class="price-card featured">
-        <div class="pc-tag">通常レッスン</div>
+        <div class="pc-tag"><span data-lang="ja">通常レッスン</span><span data-lang="zh">一般課程</span><span data-lang="en">Regular Lessons</span></div>
         <div class="pc-name">通常レッスン</div>
         <div class="pc-name-cn"><span data-lang="zh">一般課程</span><span data-lang="en">Regular Lessons</span></div>
         <div class="pc-price">700</div>
@@ -1795,7 +1826,7 @@ function closeNav() {
 
       <!-- 20回 -->
       <div class="price-card best">
-        <div class="pc-tag gold">20回パッケージ ✦ おすすめ</div>
+        <div class="pc-tag gold"><span data-lang="ja">20回パッケージ ✦ おすすめ</span><span data-lang="zh">20堂套餐 ✦ 推薦</span><span data-lang="en">20-Lesson Pack ✦ Best Value</span></div>
         <div class="pc-name">20回パッケージ</div>
         <div class="pc-name-cn"><span data-lang="zh">20堂套餐・超值推薦</span><span data-lang="en">20-Lesson Pack · Best Value</span></div>
         <div class="pc-price">14,000</div>
@@ -1848,6 +1879,7 @@ function closeNav() {
         <span class="flow-title-cn" data-lang="zh">付款方式</span><span class="flow-title-cn" data-lang="en">Payment Methods</span>
       </div>
       <p style="font-size: 12px; color: #b09090; margin-bottom: 16px; line-height: 1.8;">
+        <span data-lang="ja">体験レッスン後、LINEにて先生の銀行口座情報をお伝えします。</span>
         <span data-lang="zh">體驗課後，老師會透過 LINE 傳送你個人銀行帳號資訊。</span>
         <span data-lang="en">After your trial lesson, SUZU will share her bank details via LINE.</span>
       </p>
@@ -1878,18 +1910,23 @@ function closeNav() {
         </div>
       </div>
       <div style="margin-top: 14px; font-size: 12px; color: #b09090; line-height: 1.8;">
-        💡 <span data-lang="zh">體驗課預約後，老師會直接分享付款帳號資訊。</span>
+        💡 <span data-lang="ja">体験レッスン予約後、先生が直接お振込先情報をお伝えします。</span>
+        <span data-lang="zh">體驗課預約後，老師會直接分享付款帳號資訊。</span>
         <span data-lang="en">Payment details will be shared privately after booking your trial lesson.</span>
       </div>
     </div>
 
     <div style="text-align:center; margin-top: 40px;">
       <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">
-        📅 無料体験レッスンを予約する ✿
+        📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span> ✿
       </button>
       <p style="margin-top: 16px; font-size: 12px; color: #b09090; font-weight:300;">
-        <small data-lang="zh">※ 免費體驗課，歡迎預約</small><small data-lang="en">※ Free trial lesson — feel free to book</small><br>
-        オンラインレッスン対応 · 完全個別対応 · 随時受付中
+        <span data-lang="ja">※ 無料体験レッスン、お気軽にご予約ください</span>
+        <span data-lang="zh">※ 免費體驗課，歡迎預約</span>
+        <span data-lang="en">※ Free trial lesson — feel free to book</span><br>
+        <span data-lang="ja">オンラインレッスン対応・完全個別対応・随時受付中</span>
+        <span data-lang="zh">支援線上上課・完全個別客製・隨時受理報名</span>
+        <span data-lang="en">Online lessons available · Fully personalized · Booking anytime</span>
       </p>
     </div>
   </div>
@@ -1898,13 +1935,18 @@ function closeNav() {
 <!-- BOOKING -->
 <div class="booking-outer">
 <section class="booking-section scroll-reveal">
-  <div class="section-label" style="justify-content:center;">オンライン予約</div>
-  <h2 class="section-title">今すぐ無料体験レッスンを<br>予約しましょう。</h2>
+  <div class="section-label" style="justify-content:center;"><span data-lang="ja">オンライン予約</span><span data-lang="zh">線上預約</span><span data-lang="en">Book Online</span></div>
+  <h2 class="section-title">
+    <span data-lang="ja">今すぐ無料体験レッスンを<br>予約しましょう。</span>
+    <span data-lang="zh">現在就預約<br>免費體驗課吧。</span>
+    <span data-lang="en">Book your free<br>trial lesson now.</span>
+  </h2>
   <p class="section-body" style="max-width:480px;margin-left:auto;margin-right:auto;">
+    <span data-lang="ja">下記からご都合の良い時間を選んで、すぐにご予約いただけます。</span>
     <span data-lang="zh">下方直接選擇方便的時間，即可完成預約。</span>
     <span data-lang="en">Pick a time that works for you below to book instantly.</span>
   </p>
-  <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
+  <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span></button>
   <div class="calendly-inline-widget" data-url="https://calendly.com/suzu-nihongo/30min" style="min-width:280px;height:650px;"></div>
 </section>
 </div>
@@ -1914,7 +1956,7 @@ function closeNav() {
 <section class="contact-section" id="contact">
   <div class="contact-inner scroll-reveal">
     <div style="text-align:center;">
-      <div class="section-label">お問い合わせ</div>
+      <div class="section-label"><span data-lang="ja">お問い合わせ</span><span data-lang="zh">聯絡我們</span><span data-lang="en">Contact</span></div>
       <h2 class="section-title">
         気軽に<br>ご連絡ください。<br>
         <small style="font-size:14px;color:#9a8080;font-weight:300;" data-lang="zh">歡迎隨時與我聯繫</small>
@@ -1947,7 +1989,7 @@ function closeNav() {
         <textarea class="form-textarea" id="cf-msg" placeholder="レッスンについての質問・体験レッスンの希望など、なんでもどうぞ。"></textarea>
       </div>
       <button class="form-submit" onclick="submitContact()">
-        送信する ✿ <span data-lang="zh">/ 送出</span><span data-lang="en">/ Send</span>
+        <span data-lang="ja">送信する ✿</span><span data-lang="zh">送出 ✿</span><span data-lang="en">Send ✿</span>
       </button>
       <p class="form-note">
         ※ <span data-lang="ja">営業日3日以内にご返信します</span><span data-lang="zh">營業日3日以內回覆</span><span data-lang="en">Reply within 3 business days</span><br>
@@ -2005,17 +2047,19 @@ function closeNav() {
 function wrapJaText(root){
   const hosts = new Set();
   root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
   hosts.forEach(parent => {
     const children = Array.from(parent.childNodes);
     let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
     while (i < children.length) {
-      const isLangEl = (n) => n.nodeType === 1 && n.hasAttribute && n.hasAttribute('data-lang');
-      if (isLangEl(children[i])) { i++; continue; }
+      if (isBoundary(children[i])) { i++; continue; }
       const runStart = i;
-      while (i < children.length && !isLangEl(children[i])) i++;
+      while (i < children.length && !isBoundary(children[i])) i++;
       const run = children.slice(runStart, i);
       const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
-      if (hasContent && i < children.length) {
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
         const span = document.createElement('span');
         span.className = 'sub';
         span.setAttribute('data-lang', 'ja');
