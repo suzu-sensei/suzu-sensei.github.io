@@ -855,6 +855,25 @@
     color: rgba(250,246,240,0.2);
     font-weight: 300;
   }
+  .review-actions {
+    display: none;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  body.lang-zh .review-actions, body.lang-en .review-actions { display: flex; }
+  .review-translate-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(250,246,240,0.25);
+    color: rgba(250,246,240,0.7);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .review-translate-btn:hover { background: rgba(255,255,255,0.18); }
+  .review-translate-btn.active { background: var(--rose); border-color: var(--rose); color: #fff; }
   @media (max-width: 768px) {
     .reviews-grid { grid-template-columns: 1fr; }
     .review-card.wide { grid-column: span 1; }
@@ -1392,8 +1411,8 @@ function closeNav() {
 </div>
 
 <div class="quick-links-bar">
-  <a class="quick-link-btn" href="site/classroom/student.html">🏫 学生専用ページ</a>
-  <a class="quick-link-btn alt" href="site/classroom/enroll.html">📝 入会申込</a>
+  <a class="quick-link-btn" href="site/classroom/student.html">🏫 <span data-lang="ja">学生専用ページ</span><span data-lang="zh">學生專用頁面</span><span data-lang="en">Student Portal</span></a>
+  <a class="quick-link-btn alt" href="site/classroom/enroll.html">📝 <span data-lang="ja">入会申込</span><span data-lang="zh">入班申請</span><span data-lang="en">Enroll Now</span></a>
 </div>
 
 <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:10px 20px;">
@@ -1704,7 +1723,8 @@ function closeNav() {
         </div>
         <div class="review-stars">★★★★★</div>
       </div>
-      <p class="review-body">優しい先生ですよ。25分の体験で、楽しかったです。もう一度会いましょう〜</p>
+      <p class="review-body" data-ja="優しい先生ですよ。25分の体験で、楽しかったです。もう一度会いましょう〜" data-zh="老師人很好。25分鐘的體驗課很開心。希望能再見面〜" data-en="She's a kind teacher. I really enjoyed the 25-minute trial lesson. Hope to meet again~">優しい先生ですよ。25分の体験で、楽しかったです。もう一度会いましょう〜</p>
+      <div class="review-actions"><button class="review-translate-btn" onclick="toggleReviewTranslation(this)">🌐 <span data-lang="zh">翻譯</span><span data-lang="en">Translate</span></button></div>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1717,7 +1737,8 @@ function closeNav() {
         </div>
         <div class="review-stars">★★★★★</div>
       </div>
-      <p class="review-body">話しやすくて、丁寧なノートもありがたいです。出会えてよかったです。</p>
+      <p class="review-body" data-ja="話しやすくて、丁寧なノートもありがたいです。出会えてよかったです。" data-zh="很好聊，用心整理的筆記也很感謝。很慶幸能遇見她。" data-en="Easy to talk to, and I really appreciate the careful notes. So glad I found her.">話しやすくて、丁寧なノートもありがたいです。出会えてよかったです。</p>
+      <div class="review-actions"><button class="review-translate-btn" onclick="toggleReviewTranslation(this)">🌐 <span data-lang="zh">翻譯</span><span data-lang="en">Translate</span></button></div>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1730,7 +1751,8 @@ function closeNav() {
         </div>
         <div class="review-stars">★★★★★</div>
       </div>
-      <p class="review-body">今日は授業とても楽しかったです。SUZU先生、ありがとうございました！</p>
+      <p class="review-body" data-ja="今日は授業とても楽しかったです。SUZU先生、ありがとうございました！" data-zh="今天的課非常開心。SUZU老師，謝謝你！" data-en="Today's lesson was so much fun. Thank you, SUZU sensei!">今日は授業とても楽しかったです。SUZU先生、ありがとうございました！</p>
+      <div class="review-actions"><button class="review-translate-btn" onclick="toggleReviewTranslation(this)">🌐 <span data-lang="zh">翻譯</span><span data-lang="en">Translate</span></button></div>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1744,7 +1766,14 @@ function closeNav() {
         </div>
         <div class="review-stars">★★★★★</div>
       </div>
-      <p class="review-body">授業が終わってから送ってくださるノートが本当に有用で役に立ちます。🙏<br><br>いつもお世話になっています。私に必要な会話を授業時間に知らせてくれます。私は嬉しいです ♪♪</p>
+      <p class="review-body" data-ja="授業が終わってから送ってくださるノートが本当に有用で役に立ちます。🙏
+
+いつもお世話になっています。私に必要な会話を授業時間に知らせてくれます。私は嬉しいです ♪♪" data-zh="課後傳來的筆記真的很有用、幫助很大。🙏
+
+一直以來都很照顧我。她會在上課時間告訴我需要的會話內容，我很開心 ♪♪" data-en="The notes she sends after each lesson are genuinely useful and helpful. 🙏
+
+She always takes great care of me, teaching me the conversations I need during lesson time. I'm so happy about it ♪♪">授業が終わってから送ってくださるノートが本当に有用で役に立ちます。🙏<br><br>いつもお世話になっています。私に必要な会話を授業時間に知らせてくれます。私は嬉しいです ♪♪</p>
+      <div class="review-actions"><button class="review-translate-btn" onclick="toggleReviewTranslation(this)">🌐 <span data-lang="zh">翻譯</span><span data-lang="en">Translate</span></button></div>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1757,7 +1786,8 @@ function closeNav() {
         </div>
         <div class="review-stars">★★★★★</div>
       </div>
-      <p class="review-body">今日はSUZU先生が作った教材を使ってくれて、それが本当にすごかったです！内容は新幹線の切符の買い方で、窓口で使える言葉をたくさん学べました🚄 そしてロールプレイも楽しかったです。私が切符を買う人、SUZU先生が切符売り場の人になって練習できたので、実際の旅行でも使えそうです😊 ちなみに私は指定席を何回も言い間違えてしまいましたが、しっかり覚えられました🤣 旅行で本当に使う日本語を学べるのが嬉しいです！今日の授業は新しいスタイルで新鮮でとても勉強になりました。SUZU先生いつも楽しくて分かりやすい授業をありがとうございます ✨ 次回も楽しみにしています😊</p>
+      <p class="review-body" data-ja="今日はSUZU先生が作った教材を使ってくれて、それが本当にすごかったです！内容は新幹線の切符の買い方で、窓口で使える言葉をたくさん学べました🚄 そしてロールプレイも楽しかったです。私が切符を買う人、SUZU先生が切符売り場の人になって練習できたので、実際の旅行でも使えそうです😊 ちなみに私は指定席を何回も言い間違えてしまいましたが、しっかり覚えられました🤣 旅行で本当に使う日本語を学べるのが嬉しいです！今日の授業は新しいスタイルで新鮮でとても勉強になりました。SUZU先生いつも楽しくて分かりやすい授業をありがとうございます ✨ 次回も楽しみにしています😊" data-zh="今天用了SUZU老師自製的教材，真的太棒了！內容是如何買新幹線車票，學到很多在窗口能用的說法🚄 角色扮演也很好玩。我當買票的人，SUZU老師當售票員，實際練習了一次，感覺旅行時真的能用上😊 順帶一提，我把「指定席」講錯了好幾次，不過總算牢牢記住了🤣 很開心能學到旅行中真正用得到的日文！今天的課是全新的形式，很新鮮也學到很多。謝謝SUZU老師總是上得那麼開心又易懂的課✨ 很期待下一次！😊" data-en="Today SUZU sensei used materials she made herself, and it was amazing! The topic was how to buy shinkansen tickets, and I learned a lot of phrases I can actually use at the counter 🚄 The roleplay was fun too — I played the customer and SUZU sensei played the ticket clerk, so it felt like something I could really use while traveling 😊 By the way, I mispronounced &quot;reserved seat&quot; several times, but I finally got it down 🤣 I'm so happy to learn Japanese I can actually use while traveling! Today's lesson had a fresh new style and I learned a lot. Thank you, SUZU sensei, for always making lessons fun and easy to understand ✨ Looking forward to next time! 😊">今日はSUZU先生が作った教材を使ってくれて、それが本当にすごかったです！内容は新幹線の切符の買い方で、窓口で使える言葉をたくさん学べました🚄 そしてロールプレイも楽しかったです。私が切符を買う人、SUZU先生が切符売り場の人になって練習できたので、実際の旅行でも使えそうです😊 ちなみに私は指定席を何回も言い間違えてしまいましたが、しっかり覚えられました🤣 旅行で本当に使う日本語を学べるのが嬉しいです！今日の授業は新しいスタイルで新鮮でとても勉強になりました。SUZU先生いつも楽しくて分かりやすい授業をありがとうございます ✨ 次回も楽しみにしています😊</p>
+      <div class="review-actions"><button class="review-translate-btn" onclick="toggleReviewTranslation(this)">🌐 <span data-lang="zh">翻譯</span><span data-lang="en">Translate</span></button></div>
       <div class="review-note">※ 匿名にて掲載 / 已匿名刊載</div>
     </div>
 
@@ -1789,7 +1819,7 @@ function closeNav() {
       <!-- 体験 -->
       <div class="price-card">
         <div class="pc-tag"><span data-lang="ja">体験レッスン</span><span data-lang="zh">體驗課</span><span data-lang="en">Trial Lesson</span></div>
-        <div class="pc-name">体験レッスン</div>
+        <div class="pc-name" data-lang="ja">体験レッスン</div>
         <div class="pc-name-cn"><span data-lang="zh">體驗課</span><span data-lang="en">Trial Lesson</span></div>
         <div class="pc-price"><span data-lang="ja">無料</span><span data-lang="zh">免費</span><span data-lang="en">Free</span></div>
         <div class="pc-unit">25分 / 1回限り<br><small data-lang="zh">25分鐘・僅限一次</small><small data-lang="en">25 min · One time only</small></div>
@@ -1808,7 +1838,7 @@ function closeNav() {
       <!-- 通常 -->
       <div class="price-card featured">
         <div class="pc-tag"><span data-lang="ja">通常レッスン</span><span data-lang="zh">一般課程</span><span data-lang="en">Regular Lessons</span></div>
-        <div class="pc-name">通常レッスン</div>
+        <div class="pc-name" data-lang="ja">通常レッスン</div>
         <div class="pc-name-cn"><span data-lang="zh">一般課程</span><span data-lang="en">Regular Lessons</span></div>
         <div class="pc-price">700</div>
         <div class="pc-unit">TWD or THB / 50分<br><small data-lang="zh">台幣 或 泰銖・每堂50分鐘</small><small data-lang="en">TWD or THB · 50 min/lesson</small><br><small style="font-size:10px;">USD $22 でのお支払いも可能です</small><small style="font-size:10px;color:#b09090;" data-lang="zh">亦可用美金 $22 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $22</small></div>
@@ -1827,7 +1857,7 @@ function closeNav() {
       <!-- 20回 -->
       <div class="price-card best">
         <div class="pc-tag gold"><span data-lang="ja">20回パッケージ ✦ おすすめ</span><span data-lang="zh">20堂套餐 ✦ 推薦</span><span data-lang="en">20-Lesson Pack ✦ Best Value</span></div>
-        <div class="pc-name">20回パッケージ</div>
+        <div class="pc-name" data-lang="ja">20回パッケージ</div>
         <div class="pc-name-cn"><span data-lang="zh">20堂套餐・超值推薦</span><span data-lang="en">20-Lesson Pack · Best Value</span></div>
         <div class="pc-price">14,000</div>
         <div class="pc-unit">TWD or THB / 20回<br><small data-lang="zh">台幣 或 泰銖・共20堂</small><small data-lang="en">TWD or THB · 20 lessons total</small><br><small style="font-size:10px;">USD $440 でのお支払いも可能です</small><small style="font-size:10px;color:#b09090;" data-lang="zh">亦可用美金 $440 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $440</small></div>
@@ -1885,24 +1915,27 @@ function closeNav() {
       </p>
       <div style="display: grid; gap: 12px;">
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
-          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🌍 Wise（国際送金）
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">國際轉帳</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">International Transfer</small></div>
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
+            <span data-lang="ja">🌍 Wise（国際送金）</span>
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🌍 Wise（國際轉帳）</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🌍 Wise (International Transfer)</small></div>
           <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
             海外学生の送金に便利です（手数料は学生負担）<br>
             <span style="color:#b09090;" data-lang="zh">方便國際學生跨境匯款（手續費由學生負擔）</span><span style="color:#b09090" data-lang="en">Convenient for international transfers (transfer fee paid by student)</span>
           </div>
         </div>
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
-          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🇹🇭 開泰銀行（タイ）
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">泰國開泰銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">Kasikorn Bank, Thailand</small></div>
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
+            <span data-lang="ja">🇹🇭 開泰銀行（タイ）</span>
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🇹🇭 泰國開泰銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🇹🇭 Kasikorn Bank, Thailand</small></div>
           <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
             口座をお持ちの方はどなたでもご利用いただけます<br>
             <span style="color:#b09090;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#b09090" data-lang="en">Anyone with an account</span>
           </div>
         </div>
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
-          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">🇹🇼 中華銀行（台湾）
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">台灣銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">Taiwan Banking</small></div>
+          <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
+            <span data-lang="ja">🇹🇼 中華銀行（台湾）</span>
+            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🇹🇼 台灣銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🇹🇼 Taiwan Banking</small></div>
           <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
             口座をお持ちの方はどなたでもご利用いただけます<br>
             <span style="color:#b09090;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#b09090" data-lang="en">Anyone with an account</span>
@@ -2091,6 +2124,32 @@ function setLang(lang) {
   });
   const cfMsg = document.getElementById('cf-msg');
   if (cfMsg) cfMsg.placeholder = CF_MSG_PLACEHOLDER[lang] || CF_MSG_PLACEHOLDER.ja;
+  resetReviewTranslations();
+}
+
+function resetReviewTranslations() {
+  document.querySelectorAll('.review-body[data-ja]').forEach(body => {
+    body.innerHTML = body.dataset.ja.replace(/\n/g, '<br>');
+    body.dataset.showingTranslation = '0';
+    const btn = body.closest('.review-card') && body.closest('.review-card').querySelector('.review-translate-btn');
+    if (btn) btn.classList.remove('active');
+  });
+}
+
+function toggleReviewTranslation(btn) {
+  const body = btn.closest('.review-card').querySelector('.review-body');
+  if (!body || !body.dataset.ja) return;
+  const showing = body.dataset.showingTranslation === '1';
+  if (showing) {
+    body.innerHTML = body.dataset.ja.replace(/\n/g, '<br>');
+    body.dataset.showingTranslation = '0';
+    btn.classList.remove('active');
+  } else {
+    const target = _siteLang === 'zh' ? body.dataset.zh : (_siteLang === 'en' ? body.dataset.en : body.dataset.ja);
+    body.innerHTML = (target || body.dataset.ja).replace(/\n/g, '<br>');
+    body.dataset.showingTranslation = '1';
+    btn.classList.add('active');
+  }
 }
 
 setLang(_siteLang);
