@@ -34,13 +34,15 @@
   .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:8px;}
   .success{display:none;background:#eaf4ea;border:1px solid var(--sage,#8B9E8A);border-radius:10px;padding:16px;font-size:0.9rem;color:#2e5c2e;margin-top:12px;line-height:1.8;}
   .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
-  [data-lang="en"]{display:none;}
-  body.lang-en [data-lang="zh"]{display:none;}
+  [data-lang]{display:none;}
+  body.lang-ja [data-lang="ja"]{display:inline;}
+  body.lang-zh [data-lang="zh"]{display:inline;}
   body.lang-en [data-lang="en"]{display:inline;}
   .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
   .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
   .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
   .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn:not(:first-child){border-left:none;}
   .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
 </style>
 </head>
@@ -48,8 +50,9 @@
 <div class="wrap">
 
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <a class="back" href="../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <a class="back" href="../../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
     <div class="lang-switcher">
+      <button class="lang-sw-btn" id="ls-ja" onclick="setLang('ja')">🇯🇵 日本語</button>
       <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
       <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
     </div>
@@ -147,24 +150,52 @@
       <span class="sub" data-lang="en">Feel free to use the contact form on the homepage, or reach out via LINE.</span>
     </p>
     <div class="cta-row">
-      <a class="btn-outline" href="../index.html#contact">✉️ お問い合わせフォームへ<span class="sub" data-lang="zh">前往聯絡表單</span><span class="sub" data-lang="en">Go to Contact Form</span></a>
+      <a class="btn-outline" href="../../index.html#contact">✉️ お問い合わせフォームへ<span class="sub" data-lang="zh">前往聯絡表單</span><span class="sub" data-lang="en">Go to Contact Form</span></a>
       <a class="btn-outline" href="https://lin.ee/u3ojW9D" target="_blank">💬 LINEで質問する<span class="sub" data-lang="zh">用LINE發問</span><span class="sub" data-lang="en">Ask via LINE</span></a>
     </div>
   </div>
 
 </div>
 <script>
+function wrapJaText(root){
+  const hosts = new Set();
+  root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  hosts.forEach(parent => {
+    const children = Array.from(parent.childNodes);
+    let i = 0;
+    while (i < children.length) {
+      const isLangEl = (n) => n.nodeType === 1 && n.hasAttribute && n.hasAttribute('data-lang');
+      if (isLangEl(children[i])) { i++; continue; }
+      const runStart = i;
+      while (i < children.length && !isLangEl(children[i])) i++;
+      const run = children.slice(runStart, i);
+      const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
+      if (hasContent && i < children.length) {
+        const span = document.createElement('span');
+        span.className = 'sub';
+        span.setAttribute('data-lang', 'ja');
+        parent.insertBefore(span, run[0]);
+        run.forEach(n => span.appendChild(n));
+      }
+    }
+  });
+}
+
 let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
+
 function setLang(lang){
   secondaryLang = lang;
   localStorage.setItem('classroomLang', lang);
-  document.body.classList.toggle('lang-en', lang === 'en');
-  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
-  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + lang);
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
 }
-document.getElementById('ls-' + secondaryLang).classList.add('active');
-document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
-document.body.classList.toggle('lang-en', secondaryLang === 'en');
+setLang(secondaryLang);
 
 const TZ_LIST = [
   { zone: 'Asia/Taipei',    label: '台湾（UTC+8）',       labelZh: '台灣（UTC+8）',      labelEn: 'Taiwan (UTC+8)' },
@@ -218,10 +249,12 @@ async function submitEnrollment(){
   const statusEl = document.getElementById('ef-status');
   const btn = document.getElementById('ef-submit');
 
-  if (!name || !email){ statusEl.textContent = 'お名前とメールアドレスを入力してください。'; return; }
+  const tMsg = (ja, zh, en) => secondaryLang === 'zh' ? zh : (secondaryLang === 'en' ? en : ja);
+
+  if (!name || !email){ statusEl.textContent = tMsg('お名前とメールアドレスを入力してください。', '請輸入姓名與Email。', 'Please enter your name and email.'); return; }
 
   btn.disabled = true;
-  statusEl.textContent = '送信中...';
+  statusEl.textContent = tMsg('送信中...', '傳送中...', 'Sending...');
   try {
     const res = await fetch('https://formsubmit.co/ajax/suzu.nihongo@gmail.com', {
       method: 'POST',
@@ -248,7 +281,7 @@ async function submitEnrollment(){
       document.getElementById('ef-email').value = '';
       document.getElementById('ef-msg').value = '';
     } else {
-      statusEl.textContent = '送信に失敗しました。LINEからご連絡ください。';
+      statusEl.textContent = tMsg('送信に失敗しました。LINEからご連絡ください。', '傳送失敗，請透過LINE聯繫。', 'Send failed. Please contact via LINE.');
     }
   } catch (e) {
     console.error(e);

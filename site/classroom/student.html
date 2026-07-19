@@ -69,7 +69,7 @@
 <div class="wrap">
 
   <div style="display:flex;justify-content:space-between;align-items:center;">
-    <a class="back" href="../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <a class="back" href="../../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
     <div class="lang-switcher">
       <button class="lang-sw-btn" id="ls-ja" onclick="setLang('ja')">🇯🇵 日本語</button>
       <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
@@ -343,6 +343,19 @@
 <script src="classroom-auth.js"></script>
 <script>
 const WEEKDAYS_JP = ['日','月','火','水','木','金','土'];
+const WEEKDAYS_ZH = ['日','一','二','三','四','五','六'];
+const WEEKDAYS_EN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+function fmtDateShort(date){
+  const wd = secondaryLang === 'zh' ? WEEKDAYS_ZH[date.getDay()] : (secondaryLang === 'en' ? WEEKDAYS_EN[date.getDay()] : WEEKDAYS_JP[date.getDay()]);
+  return (date.getMonth() + 1) + '/' + date.getDate() + '(' + wd + ')';
+}
+
+function weeklySlotLabel(day, time){
+  if (secondaryLang === 'zh') return `每週${WEEKDAYS_ZH[day]} ${time}`;
+  if (secondaryLang === 'en') return `Every ${WEEKDAYS_EN[day]} ${time}`;
+  return `毎週${WEEKDAYS_JP[day]}曜日 ${time}`;
+}
 
 // 日本語の素のテキスト（<span data-lang="zh/en">の直前にある無印のテキスト）を
 // 自動的に <span data-lang="ja"> で包み、3言語を排他表示できるようにする。
@@ -387,34 +400,52 @@ function setLang(lang){
 const CHANGE_CUTOFF_MS = 12 * 60 * 60 * 1000; // 授業開始12時間前を過ぎると変更申請不可
 
 const STR = {
-  noRequests: {zh:'尚無申請', en:'No requests yet'},
-  noRecords: {zh:'尚無記錄', en:'No records yet'},
-  statusPending: {zh:'審核中', en:'Pending'},
-  statusApproved: {zh:'已同意', en:'Approved'},
-  statusRejected: {zh:'已退回', en:'Rejected'},
-  statusPaymentApproved: {zh:'已確認', en:'Confirmed'},
-  adjusted: {zh:'已調整', en:'Adjusted'},
-  adjustedParen: {zh:'（已調整過）', en:'（adjusted）'},
-  noDateOptions: {zh:'尚無可選擇的上課日', en:'No available dates'},
-  noScheduleSet: {zh:'尚未設定固定時間。', en:'No fixed schedule set yet.'},
-  noRemaining: {zh:'目前沒有剩餘堂數，繳費後會自動顯示上課日。', en:'No remaining lessons — dates will appear after payment.'},
-  scheduleUnset: {zh:'尚未設定（請聯絡老師）', en:'Not set (please contact teacher)'},
-  materialsIntro: {zh:'這裡是老師為你準備的學習筆記資料夾。', en:"This is the notes folder your teacher prepared for you."},
-  openNewTab: {zh:'在新分頁開啟 →', en:'Open in new tab →'},
-  lesson: {zh:'堂', en:''},
-  statusActive: {zh:'在籍中', en:'Active'},
-  statusPaused: {zh:'暫停中', en:'Paused'},
-  statusInactive: {zh:'已停用', en:'Inactive'},
-  statusPausedNote: {zh:'目前帳號為暫停狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently paused. Please contact the teacher via LINE with any questions.'},
-  statusInactiveNote: {zh:'目前帳號為停用狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently inactive. Please contact the teacher via LINE with any questions.'},
-  packExpiredNote: {zh:'＊本期10堂效期已過（自第一次上課起3個月），如需使用剩餘堂數請聯絡老師處理。目前無法送出改期／加開申請。', en:"＊This lesson pack has expired (3 months from your first lesson). Please contact the teacher to use any remaining lessons — change and extra-lesson requests can't be submitted right now."},
-  typeNormal: {zh:'改期・請假', en:'Change/Leave'},
-  typeExtra: {zh:'加開一堂', en:'Extra Lesson'},
-  viewSlip: {zh:'查看截圖', en:'View'},
-  extraNeedDateTime: {zh:'請選擇日期與時間。', en:'Please select a date and time.'},
-  packExpiredCantSubmit: {zh:'本期堂數效期已過，無法送出申請，請聯絡老師。', en:"This pack has expired — requests can't be submitted. Please contact the teacher."},
+  noRequests: {ja:'申請はありません', zh:'尚無申請', en:'No requests yet'},
+  noRecords: {ja:'記録はありません', zh:'尚無記錄', en:'No records yet'},
+  statusPending: {ja:'審査中', zh:'審核中', en:'Pending'},
+  statusApproved: {ja:'承認済み', zh:'已同意', en:'Approved'},
+  statusRejected: {ja:'却下', zh:'已退回', en:'Rejected'},
+  statusPaymentApproved: {ja:'承認済み', zh:'已確認', en:'Confirmed'},
+  adjusted: {ja:'変更済み', zh:'已調整', en:'Adjusted'},
+  adjustedParen: {ja:'（変更済み）', zh:'（已調整過）', en:'（adjusted）'},
+  noDateOptions: {ja:'選択できる授業日がありません', zh:'尚無可選擇的上課日', en:'No available dates'},
+  noScheduleSet: {ja:'まだ固定の時間が設定されていません。', zh:'尚未設定固定時間。', en:'No fixed schedule set yet.'},
+  noRemaining: {ja:'現在残り回数がありません。お支払い後に授業日が表示されます。', zh:'目前沒有剩餘堂數，繳費後會自動顯示上課日。', en:'No remaining lessons — dates will appear after payment.'},
+  scheduleUnset: {ja:'未設定（先生にご連絡ください）', zh:'尚未設定（請聯絡老師）', en:'Not set (please contact teacher)'},
+  materialsIntro: {ja:'こちらは先生が用意した学習ノートのフォルダです。', zh:'這裡是老師為你準備的學習筆記資料夾。', en:"This is the notes folder your teacher prepared for you."},
+  openNewTab: {ja:'新しいタブで開く →', zh:'在新分頁開啟 →', en:'Open in new tab →'},
+  lesson: {ja:'回', zh:'堂', en:''},
+  statusActive: {ja:'在籍中', zh:'在籍中', en:'Active'},
+  statusPaused: {ja:'休止中', zh:'暫停中', en:'Paused'},
+  statusInactive: {ja:'停止中', zh:'已停用', en:'Inactive'},
+  statusPausedNote: {ja:'現在アカウントは休止中です。ご質問があればLINEで先生にご連絡ください。', zh:'目前帳號為暫停狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently paused. Please contact the teacher via LINE with any questions.'},
+  statusInactiveNote: {ja:'現在アカウントは停止中です。ご質問があればLINEで先生にご連絡ください。', zh:'目前帳號為停用狀態。如有疑問請透過 LINE 聯絡老師。', en:'Your account is currently inactive. Please contact the teacher via LINE with any questions.'},
+  packExpiredNote: {ja:'＊今期10回パックの利用期限（初回授業から3ヶ月）が過ぎています。残り回数の利用については先生にご連絡ください。現在、変更・追加申請は送信できません。', zh:'＊本期10堂效期已過（自第一次上課起3個月），如需使用剩餘堂數請聯絡老師處理。目前無法送出改期／加開申請。', en:"＊This lesson pack has expired (3 months from your first lesson). Please contact the teacher to use any remaining lessons — change and extra-lesson requests can't be submitted right now."},
+  typeNormal: {ja:'変更・お休み', zh:'改期・請假', en:'Change/Leave'},
+  typeExtra: {ja:'追加レッスン', zh:'加開一堂', en:'Extra Lesson'},
+  viewSlip: {ja:'スクショを見る', zh:'查看截圖', en:'View'},
+  extraNeedDateTime: {ja:'日付と時間を選択してください。', zh:'請選擇日期與時間。', en:'Please select a date and time.'},
+  packExpiredCantSubmit: {ja:'今期の利用期限が過ぎているため申請できません。先生にご連絡ください。', zh:'本期堂數效期已過，無法送出申請，請聯絡老師。', en:"This pack has expired — requests can't be submitted. Please contact the teacher."},
+  lineLinked: {ja:'✅ 連携済み・授業の24時間前と1時間前にLINEでリマインドをお届けします。', zh:'✅ 已連結・將於課程開始前24小時與1小時透過LINE發送提醒。', en:"✅ Linked — you'll receive LINE reminders 24 hours and 1 hour before each lesson."},
+  lineLinkIntro: {ja:'授業の24時間前・1時間前にLINEでリマインドを受け取れます。以下の手順で連携してください。', zh:'課程開始前24小時、1小時可透過LINE收到提醒。請依照以下步驟連結帳號。', en:'You can receive LINE reminders 24 hours and 1 hour before each lesson. Please follow the steps below to link your account.'},
+  lineLinkStep1: {ja:'先生の公式LINEアカウントを友だち追加する', zh:'將老師的LINE官方帳號加為好友', en:"Add the teacher's official LINE account as a friend"},
+  lineLinkStep2: {ja:'下の連携コードを、そのトーク画面に「LINK ＋コード」の形で送る（例：LINK ', zh:'將下方的連結代碼以「LINK ＋代碼」的形式傳送到該對話視窗（例如：LINK ', en:'Send the code below to that chat in the format "LINK code" (e.g. LINK '},
+  lineLinkBtn: {ja:'💬 LINE友だち追加はこちら', zh:'💬 點此加LINE好友', en:'💬 Add LINE Friend'},
+  sendingEllipsis: {ja:'送信中...', zh:'傳送中...', en:'Sending...'},
+  requestSubmitted: {ja:'送信しました。先生が確認後にお知らせします。', zh:'已送出，老師確認後將會通知您。', en:"Submitted. We'll let you know once the teacher reviews it."},
+  submitFailed: {ja:'送信に失敗しました。しばらくしてからもう一度お試しください。', zh:'傳送失敗，請稍後再試一次。', en:'Failed to submit. Please try again later.'},
+  pleaseSelectChangeDate: {ja:'変更したい授業日を選んでください。', zh:'請選擇想調整的上課日。', en:'Please select the lesson date to change.'},
+  cannotChangeWithin12h: {ja:'授業開始の12時間以内は変更申請できません。返金もできませんのでご了承ください。', zh:'課程開始前12小時內無法送出變更申請，恕無法退款，敬請見諒。', en:"Changes can't be requested within 12 hours of the lesson start time, and no refund will be issued in that case."},
+  pleaseSelectSlip: {ja:'振込スクリーンショットを選んでください。', zh:'請選擇轉帳截圖。', en:'Please choose a transfer screenshot.'},
+  pleaseEnterLessons: {ja:'購入回数を入力してください。', zh:'請輸入購買堂數。', en:'Please enter the number of lessons purchased.'},
+  uploadingEllipsis: {ja:'アップロード中...', zh:'上傳中...', en:'Uploading...'},
+  paymentSubmitted: {ja:'送信しました。先生の確認後、残り回数に加算されます。', zh:'已送出，老師確認後將會加入剩餘堂數。', en:"Submitted. Your remaining lessons will update once the teacher confirms."},
+  recStop: {ja:'⏹ 録画停止', zh:'⏹ 停止錄影', en:'⏹ Stop Recording'},
+  recRecording: {ja:'🔴 録画中...', zh:'🔴 錄影中...', en:'🔴 Recording...'},
+  recStart: {ja:'🔴 録画開始', zh:'🔴 開始錄影', en:'🔴 Start Recording'},
+  recSaved: {ja:'PCに保存しました。', zh:'已儲存到您的電腦。', en:'Saved to your computer.'},
 };
-function t(key){ return STR[key] ? STR[key][secondaryLang] : ''; }
+function t(key){ return STR[key] ? (STR[key][secondaryLang] || STR[key].ja || '') : ''; }
 
 function driveFolderId(url){
   if (!url) return null;
@@ -470,28 +501,29 @@ async function refresh(){
 
   window._student = student;
 
-  document.getElementById('hero-sub').textContent = (student.nickname || student.name || email) + ' さん、こんにちは';
+  const _displayName = student.nickname || student.name || email;
+  document.getElementById('hero-sub').textContent = secondaryLang === 'zh' ? (_displayName + ' 同學，你好') : (secondaryLang === 'en' ? ('Hello, ' + _displayName) : (_displayName + ' さん、こんにちは'));
 
   const slots = await Classroom.getStudentSlots(student);
   window._studentSlots = slots;
   document.getElementById('s-schedule').innerHTML = slots.length
-    ? slots.map(s => `毎週${WEEKDAYS_JP[s.day]}曜日 ${s.time}`).join('<br>')
+    ? slots.map(s => weeklySlotLabel(s.day, s.time)).join('<br>')
     : t('scheduleUnset');
   document.getElementById('s-remaining').textContent = student.remaining_lessons ?? 0;
 
   const lineLinkEl = document.getElementById('s-line-link');
   const LINE_OA_URL = 'https://lin.ee/7xHz67c';
   if (student.line_user_id){
-    lineLinkEl.innerHTML = `<p class="note" style="margin-top:0;color:#2e7d4f;font-weight:700;">✅ 連携済み・授業の24時間前と1時間前にLINEでリマインドをお届けします。</p>`;
+    lineLinkEl.innerHTML = `<p class="note" style="margin-top:0;color:#2e7d4f;font-weight:700;">${t('lineLinked')}</p>`;
   } else {
     lineLinkEl.innerHTML = `
-      <p class="note" style="margin-top:0;">授業の24時間前・1時間前にLINEでリマインドを受け取れます。以下の手順で連携してください。</p>
+      <p class="note" style="margin-top:0;">${t('lineLinkIntro')}</p>
       <ol class="note" style="margin:8px 0 0 18px;padding:0;">
-        <li>先生の公式LINEアカウントを友だち追加する</li>
-        <li>下の連携コードを、そのトーク画面に「LINK ＋コード」の形で送る（例：LINK ${student.line_link_code || ''}）</li>
+        <li>${t('lineLinkStep1')}</li>
+        <li>${t('lineLinkStep2')}${student.line_link_code || ''}）</li>
       </ol>
       <div class="link-code">${student.line_link_code || '—'}</div>
-      <a class="btn-main" href="${LINE_OA_URL}" target="_blank">💬 LINE友だち追加はこちら</a>
+      <a class="btn-main" href="${LINE_OA_URL}" target="_blank">${t('lineLinkBtn')}</a>
     `;
   }
 
@@ -556,12 +588,12 @@ async function refresh(){
     upcomingList = await Classroom.upcomingScheduleForSlots(email, slots, Math.min(remaining, 10));
     window._upcomingList = upcomingList;
     upcomingEl.innerHTML = upcomingList.map((entry, i) => {
-      const mainLabel = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time;
+      const mainLabel = fmtDateShort(entry.date) + ' ' + entry.time;
       let historyLine = '';
       if (entry.overridden) {
         const origDate = new Date(entry.originalDate + 'T00:00:00');
         const origSlot = slots.find(s => s.day === origDate.getDay()) || slots[0];
-        const origLabel = origDate.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + (origSlot ? origSlot.time : '');
+        const origLabel = fmtDateShort(origDate) + ' ' + (origSlot ? origSlot.time : '');
         historyLine = `<div class="note" style="margin-top:2px;width:100%;text-align:right;">${origLabel} → ${mainLabel}</div>`;
         if (entry.note) historyLine += `<div class="note" style="margin-top:2px;width:100%;text-align:right;">💬 ${entry.note}</div>`;
       }
@@ -584,7 +616,7 @@ async function refresh(){
   if (history && history.length > 0) {
     pastCard.style.display = '';
     pastEl.innerHTML = history.map(h => {
-      const label = new Date(h.lesson_date + 'T00:00:00').toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + (h.lesson_time ? ' ' + h.lesson_time : '');
+      const label = fmtDateShort(new Date(h.lesson_date + 'T00:00:00')) + (h.lesson_time ? ' ' + h.lesson_time : '');
       return `<div class="row"><span class="value">${label}</span></div>`;
     }).join('');
   } else {
@@ -600,7 +632,7 @@ async function refresh(){
   } else {
     dateSelect.disabled = false;
     dateSelect.innerHTML = changeableList.map(entry => {
-      const label = entry.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' }) + ' ' + entry.time + (entry.overridden ? t('adjustedParen') : '');
+      const label = fmtDateShort(entry.date) + ' ' + entry.time + (entry.overridden ? t('adjustedParen') : '');
       return `<option value="${entry.originalDate}">${label}</option>`;
     }).join('');
   }
@@ -668,6 +700,10 @@ function applyLang(){
     const btn = document.getElementById('ls-' + l);
     if (btn) btn.classList.toggle('active', l === secondaryLang);
   });
+  if (typeof _recording !== 'undefined' && !_recording){
+    const recBtn = document.getElementById('rec-btn');
+    if (recBtn) recBtn.textContent = t('recStart');
+  }
 }
 
 function toggleAccountInfo(){
@@ -711,21 +747,21 @@ async function submitExtraRequest(){
 
   const student_name = student.nickname || student.name || null;
   btn.disabled = true;
-  statusEl.textContent = '送信中...';
+  statusEl.textContent = t('sendingEllipsis');
   try {
     const { error } = await Classroom.client.from('classroom_change_requests').insert({
       student_email: email, requested_date: date, requested_time: time, student_name, reason,
       status: 'pending', request_type: 'extra'
     });
     if (error) throw error;
-    statusEl.textContent = '送信しました。先生が確認後にお知らせします。';
+    statusEl.textContent = t('requestSubmitted');
     document.getElementById('rx-date').value = '';
     document.getElementById('rx-time').value = '';
     document.getElementById('rx-reason').value = '';
     refresh();
   } catch (e) {
     console.error(e);
-    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
+    statusEl.textContent = t('submitFailed') + '（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
   }
@@ -746,28 +782,28 @@ async function submitRequest(){
   const statusEl = document.getElementById('r-status');
   const btn = document.getElementById('r-submit');
 
-  if (!requested_date){ statusEl.textContent = '変更したい授業日を選んでください。'; return; }
+  if (!requested_date){ statusEl.textContent = t('pleaseSelectChangeDate'); return; }
 
   const student = window._student || {};
   const matchedEntry = (window._changeableList || []).find(e => e.originalDate === requested_date);
-  if (!matchedEntry){ statusEl.textContent = '授業開始の12時間以内は変更申請できません。返金もできませんのでご了承ください。'; return; }
+  if (!matchedEntry){ statusEl.textContent = t('cannotChangeWithin12h'); return; }
   const requested_time = matchedEntry.time;
   const student_name = student.nickname || student.name || null;
 
   btn.disabled = true;
-  statusEl.textContent = '送信中...';
+  statusEl.textContent = t('sendingEllipsis');
   try {
     const { error } = await Classroom.client.from('classroom_change_requests').insert({
       student_email: email, requested_date, requested_time, student_name, preferred_alternative, reason, status: 'pending'
     });
     if (error) throw error;
-    statusEl.textContent = '送信しました。先生が確認後にお知らせします。';
+    statusEl.textContent = t('requestSubmitted');
     document.getElementById('r-alt').value = '';
     document.getElementById('r-reason').value = '';
     refresh();
   } catch (e) {
     console.error(e);
-    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
+    statusEl.textContent = t('submitFailed') + '（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
   }
@@ -785,11 +821,11 @@ async function submitPayment(){
   const statusEl = document.getElementById('p-status');
   const btn = document.getElementById('p-submit');
 
-  if (!fileInput.files[0]){ statusEl.textContent = '振込スクリーンショットを選んでください。'; return; }
-  if (!lessons){ statusEl.textContent = '購入回数を入力してください。'; return; }
+  if (!fileInput.files[0]){ statusEl.textContent = t('pleaseSelectSlip'); return; }
+  if (!lessons){ statusEl.textContent = t('pleaseEnterLessons'); return; }
 
   btn.disabled = true;
-  statusEl.textContent = 'アップロード中...';
+  statusEl.textContent = t('uploadingEllipsis');
 
   try {
     const file = fileInput.files[0];
@@ -803,14 +839,14 @@ async function submitPayment(){
     });
     if (insErr) throw insErr;
 
-    statusEl.textContent = '送信しました。先生の確認後、残り回数に加算されます。';
+    statusEl.textContent = t('paymentSubmitted');
     document.getElementById('p-amount').value = '';
     document.getElementById('p-lessons').value = '';
     fileInput.value = '';
     refresh();
   } catch (e) {
     console.error(e);
-    statusEl.textContent = '送信に失敗しました。しばらくしてからもう一度お試しください。（' + (e.message || '') + '）';
+    statusEl.textContent = t('submitFailed') + '（' + (e.message || '') + '）';
   } finally {
     btn.disabled = false;
   }
@@ -825,14 +861,14 @@ async function toggleRecording(){
     await Classroom.startRecording((state) => {
       if (state === 'recording'){
         _recording = true;
-        btn.textContent = '⏹ 録画停止';
+        btn.textContent = t('recStop');
         btn.disabled = false;
-        status.textContent = '🔴 録画中...';
+        status.textContent = t('recRecording');
       } else if (state === 'stopped'){
         _recording = false;
-        btn.textContent = '🔴 録画開始';
+        btn.textContent = t('recStart');
         btn.disabled = false;
-        status.textContent = 'PCに保存しました。';
+        status.textContent = t('recSaved');
       } else {
         btn.disabled = false;
       }
