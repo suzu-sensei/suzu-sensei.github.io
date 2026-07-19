@@ -45,13 +45,15 @@
   #login-btn{display:flex;justify-content:center;margin:16px 0;}
   .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
   .row .sub{margin-top:1px;}
-  [data-lang="en"]{display:none;}
-  body.lang-en [data-lang="zh"]{display:none;}
+  [data-lang]{display:none;}
+  body.lang-ja [data-lang="ja"]{display:inline;}
+  body.lang-zh [data-lang="zh"]{display:inline;}
   body.lang-en [data-lang="en"]{display:inline;}
   .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
   .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
   .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
   .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn:not(:first-child){border-left:none;}
   .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
   .acct-tabs{display:flex;gap:6px;margin-bottom:14px;}
   .acct-tab-btn{flex:1;padding:8px 4px;border:1px solid var(--border2);background:var(--bg);border-radius:8px;font-size:0.78rem;cursor:pointer;color:var(--ink-mid);}
@@ -69,6 +71,7 @@
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <a class="back" href="../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
     <div class="lang-switcher">
+      <button class="lang-sw-btn" id="ls-ja" onclick="setLang('ja')">🇯🇵 日本語</button>
       <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
       <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
     </div>
@@ -341,14 +344,43 @@
 <script>
 const WEEKDAYS_JP = ['日','月','火','水','木','金','土'];
 
+// 日本語の素のテキスト（<span data-lang="zh/en">の直前にある無印のテキスト）を
+// 自動的に <span data-lang="ja"> で包み、3言語を排他表示できるようにする。
+// 動的に再描画される部分（innerHTML更新後）にも毎回かけ直せるよう、applyLang()から呼ぶ。
+function wrapJaText(root){
+  const hosts = new Set();
+  root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  hosts.forEach(parent => {
+    if (parent.querySelector(':scope > [data-lang="ja"]')) return;
+    const toWrap = [];
+    let node = parent.firstChild;
+    while (node) {
+      if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('data-lang')) break;
+      toWrap.push(node);
+      node = node.nextSibling;
+    }
+    if (!toWrap.length) return;
+    const span = document.createElement('span');
+    span.className = 'sub';
+    span.setAttribute('data-lang', 'ja');
+    toWrap.forEach(n => span.appendChild(n));
+    parent.insertBefore(span, parent.firstChild);
+  });
+}
+
 let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
 
 function setLang(lang){
   secondaryLang = lang;
   localStorage.setItem('classroomLang', lang);
-  document.body.classList.toggle('lang-en', lang === 'en');
-  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
-  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + secondaryLang);
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === secondaryLang);
+  });
   refresh();
 }
 
@@ -626,9 +658,16 @@ async function refresh(){
 }
 
 function applyLang(){
-  document.body.classList.toggle('lang-en', secondaryLang === 'en');
-  document.querySelectorAll('[data-lang="zh"]').forEach(el => { el.style.display = secondaryLang === 'en' ? 'none' : ''; });
-  document.querySelectorAll('[data-lang="en"]').forEach(el => { el.style.display = secondaryLang === 'en' ? '' : 'none'; });
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + secondaryLang);
+  ['ja','zh','en'].forEach(l => {
+    document.querySelectorAll('[data-lang="' + l + '"]').forEach(el => { el.style.display = (l === secondaryLang) ? '' : 'none'; });
+  });
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === secondaryLang);
+  });
 }
 
 function toggleAccountInfo(){
@@ -803,9 +842,8 @@ async function toggleRecording(){
   }
 }
 
-document.getElementById('ls-' + secondaryLang).classList.add('active');
-document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
-document.body.classList.toggle('lang-en', secondaryLang === 'en');
+wrapJaText(document);
+document.body.classList.add('lang-' + secondaryLang);
 refresh();
 </script>
 </body>

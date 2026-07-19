@@ -1220,6 +1220,22 @@
   .lang-sw-btn:last-child  { border-radius: 0 4px 4px 0; border-left: none; }
   .lang-sw-btn.active { background: var(--deep); color: white; border-color: var(--deep); }
 
+  .quick-links-bar{
+    display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:10px 72px 10px 20px;background:rgba(107,61,61,0.03);border-bottom:1px solid rgba(107,61,61,0.08);
+  }
+  .quick-link-btn{
+    display:inline-flex;align-items:center;gap:6px;background:var(--deep);color:#fff;
+    text-decoration:none;font-size:12px;letter-spacing:0.5px;padding:7px 16px;border-radius:20px;
+    transition:opacity .2s;white-space:nowrap;
+  }
+  .quick-link-btn:hover{opacity:0.85;}
+  .quick-link-btn.alt{background:var(--gold);color:#3a2a10;}
+  @media (max-width:600px){
+    .quick-links-bar{padding:8px 60px 8px 12px;gap:6px;}
+    .quick-link-btn{font-size:11px;padding:6px 12px;}
+  }
+
   /* Language-specific content */
   [data-lang="en"] { display: none; }
   body.lang-en [data-lang="zh"] { display: none; }
@@ -1371,6 +1387,11 @@ function closeNav() {
   <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
 </div>
 
+<div class="quick-links-bar">
+  <a class="quick-link-btn" href="site/classroom/student.html">🏫 学生専用ページ</a>
+  <a class="quick-link-btn alt" href="site/classroom/enroll.html">📝 入会申込</a>
+</div>
+
 <section class="hero">
   <div class="hero-left">
     <div class="kana-tag">✿ SUZU SENSEI · 日本語レッスン</div>
@@ -1384,11 +1405,11 @@ function closeNav() {
       <span data-lang="en" style="display:none">A warm, pressure-free space where you can practise Japanese at your own pace.<br>No need to be perfect — just be brave enough to speak.</span>
     </p>
     <div class="cta-group">
-      <button class="btn-primary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで体験レッスンを申し込む</button>
       <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 無料体験レッスンを予約する</button>
       <button class="btn-secondary" onclick="document.querySelector('.lessons-section').scrollIntoView({behavior:'smooth'})">レッスン内容を見る</button>
+      <button class="btn-secondary" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">💬 LINEで問い合わせる</button>
     </div>
-    <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">※ LINEビジネスアカウントに繋がります</p>
+    <p style="margin-top: 14px; font-size: 11px; color: rgba(250,246,240,0.35); font-weight:300;">※ LINEは質問・お問い合わせのみ受付しています（体験レッスンのお申し込みは上記の予約ボタンから）</p>
   </div>
   <div class="hero-right">
     <div class="sakura-bg" id="sakura"></div>
@@ -1790,7 +1811,7 @@ function closeNav() {
       <div class="flow-steps">
         <div class="flow-step">
           <div class="flow-num">1</div>
-          <div class="flow-text"><strong>LINEで申し込む</strong>LINEビジネスアカウントへ<br><small data-lang="zh">透過LINE商業帳號報名</small><small data-lang="en" style="display:none">Sign up via LINE Business</small></div>
+          <div class="flow-text"><strong>体験授業を予約・受講</strong>予約フォームから日時を選ぶだけ<br><small data-lang="zh">從預約表單選擇時間，體驗一堂課</small><small data-lang="en" style="display:none">Pick a time from the booking form and take a trial lesson</small></div>
         </div>
         <div class="flow-arrow">›</div>
         <div class="flow-step">
@@ -1800,7 +1821,7 @@ function closeNav() {
         <div class="flow-arrow">›</div>
         <div class="flow-step">
           <div class="flow-num">3</div>
-          <div class="flow-text"><strong>授業スタート</strong>毎回の授業記録を共有<br><small data-lang="zh">每堂課後共享學習記錄</small><small data-lang="en" style="display:none">Lesson notes shared every time</small></div>
+          <div class="flow-text"><strong>学生専用ページへご案内</strong>（平仮名なぞり書きボード特典あり🎁）<br><small data-lang="zh">登入查看上課記錄與教材（贈送平假名描寫板特典🎁）</small><small data-lang="en" style="display:none">Log in for lesson notes & materials (bonus: hiragana tracing board 🎁)</small></div>
         </div>
         <div class="flow-arrow">›</div>
         <div class="flow-step">
@@ -1852,12 +1873,11 @@ function closeNav() {
     </div>
 
     <div style="text-align:center; margin-top: 40px;">
-      <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: #06C755;" onclick="window.open('https://lin.ee/u3ojW9D','_blank')">
-        💬 LINEで申し込む ✿
+      <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">
+        📅 無料体験レッスンを予約する ✿
       </button>
       <p style="margin-top: 16px; font-size: 12px; color: #b09090; font-weight:300;">
-        ※ LINEビジネスアカウントに繋がります（個人LINEではありません）<br>
-        <small data-lang="zh">※ 連結至LINE商業帳號（非個人LINE）</small><small data-lang="en" style="display:none">※ Links to LINE Business account (not personal LINE)</small><br>
+        <small data-lang="zh">※ 免費體驗課，歡迎預約</small><small data-lang="en" style="display:none">※ Free trial lesson — feel free to book</small><br>
         オンラインレッスン対応 · 完全個別対応 · 随時受付中
       </p>
     </div>

@@ -49,19 +49,22 @@
 
   .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
   .t .sub, .hero h1 .sub{margin-top:1px;}
-  [data-lang="en"]{display:none;}
-  body.lang-en [data-lang="zh"]{display:none;}
+  [data-lang]{display:none;}
+  body.lang-ja [data-lang="ja"]{display:inline;}
+  body.lang-zh [data-lang="zh"]{display:inline;}
   body.lang-en [data-lang="en"]{display:inline;}
   .lang-switcher{display:flex;justify-content:flex-end;gap:0;padding:16px 20px 0;}
   .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
   .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
   .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn:not(:first-child){border-left:none;}
   .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
 </style>
 </head>
 <body>
 
 <div class="lang-switcher">
+  <button class="lang-sw-btn" id="ls-ja" onclick="setLang('ja')">🇯🇵 日本語</button>
   <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
   <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
 </div>
@@ -93,6 +96,10 @@
         <span class="sub" style="color:rgba(255,255,255,0.7);" data-lang="zh">登入查看上課時間、剩餘堂數、繳費記錄</span>
         <span class="sub" style="color:rgba(255,255,255,0.7);" data-lang="en">Log in to view your schedule, remaining lessons, and payment history</span>
       </div>
+      <div class="d" style="color:#fff;font-weight:700;margin-top:4px;">※ 登録済みの学生専用です
+        <span class="sub" style="color:rgba(255,255,255,0.85);" data-lang="zh">※ 僅限已登記的學生使用</span>
+        <span class="sub" style="color:rgba(255,255,255,0.85);" data-lang="en">※ For registered students only</span>
+      </div>
     </div>
   </a>
 
@@ -118,38 +125,6 @@
     </div>
   </a>
 
-  <p class="section-label">学習<span class="sub" data-lang="zh">學習</span><span class="sub" data-lang="en">Learning</span></p>
-  <a class="card-link" href="../quiz.html">
-    <div class="ico">🎴</div>
-    <div>
-      <div class="t">クイズで練習<span class="sub" data-lang="zh">小測驗練習</span><span class="sub" data-lang="en">Practice Quiz</span></div>
-      <div class="d">遊び感覚で日本語力をチェック
-        <span class="sub" data-lang="zh">用遊戲方式測試你的日文能力</span>
-        <span class="sub" data-lang="en">Check your Japanese level with a fun quiz</span>
-      </div>
-    </div>
-  </a>
-  <a class="card-link" href="../平仮名書き順.pdf" target="_blank">
-    <div class="ico">📖</div>
-    <div>
-      <div class="t">ひらがな書き順</div>
-      <div class="d">書き順を確認しながら練習できます
-        <span class="sub" data-lang="zh">平假名筆順練習表（PDF）</span>
-        <span class="sub" data-lang="en">Hiragana stroke order worksheet (PDF)</span>
-      </div>
-    </div>
-  </a>
-  <a class="card-link" href="../片仮名書き順.pdf" target="_blank">
-    <div class="ico">📖</div>
-    <div>
-      <div class="t">カタカナ書き順</div>
-      <div class="d">書き順を確認しながら練習できます
-        <span class="sub" data-lang="zh">片假名筆順練習表（PDF）</span>
-        <span class="sub" data-lang="en">Katakana stroke order worksheet (PDF)</span>
-      </div>
-    </div>
-  </a>
-
 </div>
 
 <footer>純香先生の暖かい日本語教室<span class="sub" data-lang="zh">純香老師的暖心日語</span><span class="sub" data-lang="en">Junko's Warm Japanese Classroom</span> © <span id="y"></span><br>
@@ -157,17 +132,49 @@
 <script>
 document.getElementById('y').textContent = new Date().getFullYear();
 
+// 日本語の素のテキスト（<span data-lang="zh/en">の直前にある無印のテキスト）を
+// 自動的に <span data-lang="ja"> で包み、3言語を排他表示できるようにする。
+function wrapJaText(root){
+  const hosts = new Set();
+  root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  hosts.forEach(parent => {
+    if (parent.querySelector(':scope > [data-lang="ja"]')) return;
+    const toWrap = [];
+    let node = parent.firstChild;
+    while (node) {
+      if (node.nodeType === 1 && node.hasAttribute && node.hasAttribute('data-lang')) break;
+      toWrap.push(node);
+      node = node.nextSibling;
+    }
+    if (!toWrap.length) return;
+    const span = document.createElement('span');
+    span.className = 'sub';
+    span.setAttribute('data-lang', 'ja');
+    toWrap.forEach(n => span.appendChild(n));
+    parent.insertBefore(span, parent.firstChild);
+  });
+}
+
 let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
+
+function applyLangUI(){
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + secondaryLang);
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === secondaryLang);
+  });
+}
+
 function setLang(lang){
   secondaryLang = lang;
   localStorage.setItem('classroomLang', lang);
-  document.body.classList.toggle('lang-en', lang === 'en');
-  document.getElementById('ls-zh').classList.toggle('active', lang === 'zh');
-  document.getElementById('ls-en').classList.toggle('active', lang === 'en');
+  applyLangUI();
 }
-document.getElementById('ls-' + secondaryLang).classList.add('active');
-document.getElementById('ls-' + (secondaryLang === 'zh' ? 'en' : 'zh')).classList.remove('active');
-document.body.classList.toggle('lang-en', secondaryLang === 'en');
+
+applyLangUI();
 </script>
 </body>
 </html>

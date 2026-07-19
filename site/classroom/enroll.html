@@ -29,8 +29,8 @@
   .form-field label{display:block;font-size:0.82rem;color:var(--ink-mid);margin-bottom:5px;}
   .form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:var(--bg);color:var(--ink);font-family:inherit;}
   .form-field textarea{resize:vertical;min-height:80px;}
-  .radio-row{display:flex;gap:16px;font-size:0.9rem;}
-  .radio-row label{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:400;}
+  .radio-row{display:flex;flex-wrap:wrap;gap:16px;font-size:0.9rem;}
+  .radio-row label{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:400;white-space:nowrap;}
   .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:8px;}
   .success{display:none;background:#eaf4ea;border:1px solid var(--sage,#8B9E8A);border-radius:10px;padding:16px;font-size:0.9rem;color:#2e5c2e;margin-top:12px;line-height:1.8;}
   .sub{display:block;font-size:0.72rem;font-weight:400;color:var(--ink-light);margin-top:2px;}
@@ -128,7 +128,7 @@
     </div>
     <div class="form-field">
       <label>ご質問・伝えたいこと（任意）<span class="sub" data-lang="zh">問題或想說的話（選填）</span><span class="sub" data-lang="en">Questions or notes (optional)</span></label>
-      <textarea id="ef-msg" placeholder="例：夜21時以降が希望です／子どもと一緒に受けたいです、など"></textarea>
+      <textarea id="ef-msg" placeholder="例：水曜と金曜の夜21時以降希望です。週末午前9〜12時でいつが空いていますか？"></textarea>
     </div>
     <button class="btn-main" id="ef-submit" onclick="submitEnrollment()">申し込む<small data-lang="zh">送出申請</small><small data-lang="en">Submit Application</small></button>
     <div class="note" id="ef-status"></div>
