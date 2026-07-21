@@ -25,9 +25,12 @@ header{width:100%;background:var(--hdr);padding:12px 16px 10px;display:flex;alig
 .h-title{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;}
 .h-title em{color:#F2CFA5;font-style:normal;}
 .h-sub{font-size:10px;color:rgba(255,255,255,.65);margin-top:1px;}
-.lang-pill{display:flex;background:rgba(255,255,255,.15);border-radius:20px;padding:3px;gap:2px;}
-.lang-btn{border:none;border-radius:16px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:rgba(255,255,255,.6);transition:all .2s;}
-.lang-btn.active{background:#fff;color:var(--hdr);}
+.jlpt-lang-switcher{display:flex;gap:0;flex-shrink:0;}
+.jlpt-lang-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);padding:3px 9px;font-size:10px;letter-spacing:0.5px;color:rgba(255,255,255,0.75);cursor:pointer;}
+.jlpt-lang-btn:first-child{border-radius:6px 0 0 6px;}
+.jlpt-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+.jlpt-lang-btn:not(:first-child){border-left:none;}
+.jlpt-lang-btn.active{background:#fff;color:var(--hdr);border-color:#fff;}
 .tabs{width:100%;display:flex;background:var(--sumi-mid);border-bottom:1px solid rgba(255,255,255,.1);}
 .tab{flex:1;padding:10px 2px;font-size:11px;font-weight:800;color:rgba(255,255,255,.65);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;text-align:center;}
 .tab.n4.active{color:var(--n4-l);border-bottom-color:var(--n4-l);}
@@ -192,10 +195,10 @@ nav button .icon{font-size:18px;}
     <div class="h-sub">Daily conversation · 日常会話</div>
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-    <div class="lang-pill">
-      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
-      <button class="lang-btn" onclick="setLang('zh',this)">繁中</button>
-      <button class="lang-btn" onclick="setLang('both',this)">Both</button>
+    <div class="jlpt-lang-switcher">
+      <button class="jlpt-lang-btn active" id="jl-en" onclick="setLang('en',this)">EN</button>
+      <button class="jlpt-lang-btn" id="jl-zh" onclick="setLang('zh',this)">繁中</button>
+      <button class="jlpt-lang-btn" id="jl-both" onclick="setLang('both',this)">Both</button>
     </div>
     <div class="counter-badge" id="card-counter">— words</div>
     <div class="gam-badge"><span>🔥 <span id="streak-d">0</span>日</span><span>⭐ <span id="pts-d">0</span>pt</span></div>
@@ -203,11 +206,11 @@ nav button .icon{font-size:18px;}
   </div>
 </header>
 <div style="width:100%;display:flex;background:#F2E0D5;border-bottom:1px solid rgba(107,61,61,.12);">
-  <a href="quiz.html#t1" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">漢字クイズ</a>
-  <a href="quiz.html#t2" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">日付・動詞</a>
-  <a href="quiz.html#t3" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">て形クイズ</a>
-  <a href="#" onclick="setView('league');return false;" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">🏆 ランキング</a>
-  <span style="flex:1;padding:8px 2px 11px;font-size:11px;text-align:center;color:#6B3D3D;font-weight:700;border-bottom:3px solid #C9897A;white-space:nowrap;">📖 JLPT単語</span>
+  <a href="quiz.html#t1" id="nl-t1" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">漢字クイズ</a>
+  <a href="quiz.html#t2" id="nl-t2" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">日付・動詞</a>
+  <a href="quiz.html#t3" id="nl-t3" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">て形クイズ</a>
+  <a href="#" onclick="setView('league');return false;" id="nl-rank" style="flex:1;padding:11px 2px;font-size:11px;text-align:center;color:#2C1F1F;text-decoration:none;letter-spacing:1px;white-space:nowrap;">🏆 ランキング</a>
+  <span id="nl-jlpt" style="flex:1;padding:8px 2px 11px;font-size:11px;text-align:center;color:#6B3D3D;font-weight:700;border-bottom:3px solid #C9897A;white-space:nowrap;">📖 JLPT単語</span>
 </div>
 <div class="tabs">
   <button class="tab all active" onclick="setLevel('all',this)">ALL</button>
@@ -221,9 +224,9 @@ nav button .icon{font-size:18px;}
 <nav>
   <button class="active" onclick="setView('cards')" id="nav-cards"><span class="icon">📖</span>CARDS</button>
   <button onclick="setView('quiz')" id="nav-quiz"><span class="icon">🎯</span>QUIZ</button>
-  <button onclick="setView('trap')" id="nav-trap"><span class="icon">🪤</span>罠漢字</button>
-  <button onclick="setView('kata')" id="nav-kata"><span class="icon">🍔</span>カタカナ</button>
-  <button onclick="setView('versus')" id="nav-versus"><span class="icon">⚔️</span>対戦</button>
+  <button onclick="setView('trap')" id="nav-trap"><span class="icon">🪤</span><span id="nl-trap">罠漢字</span></button>
+  <button onclick="setView('kata')" id="nav-kata"><span class="icon">🍔</span><span id="nl-kata">カタカナ</span></button>
+  <button onclick="setView('versus')" id="nav-versus"><span class="icon">⚔️</span><span id="nl-versus">対戦</span></button>
   <button onclick="setView('list')" id="nav-list"><span class="icon">📋</span>LIST</button>
 </nav>
 
@@ -722,6 +725,20 @@ const W=[
 // ════════════════════════════════════════════════
 let curLevel='all',curView='cards',curLang='en';
 let revealed=new Set(),blankShown=new Set();
+// T(ja,zh,en): UI chrome translation helper. 'both' mode uses Japanese UI (matches original design intent).
+function T(ja,zh,en){ return curLang==='zh'?zh:(curLang==='en'?en:ja); }
+// langPair(en,zh): for content that has both an EN and ZH version (e.g. quiz answer options).
+// Shows only the selected language; in 'both' mode, stacks both on separate lines.
+function langPair(en,zh){
+  if(curLang==='en') return en;
+  if(curLang==='zh') return zh;
+  return en+'<br>'+zh;
+}
+// splitEnZh('english／chinese') -> {en, zh}
+function splitEnZh(s){
+  const parts=s.split('／');
+  return { en: parts[0]||s, zh: parts[1]||s };
+}
 let jpVoice=null;
 let quizSession=[],quizQueue=[],qState=null;
 
@@ -751,7 +768,7 @@ function filtered(){return curLevel==='all'?W:W.filter(w=>w.level===curLevel);}
 function safe(s){return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 function badge(w){return '<span class="lvl-badge '+w.level.toLowerCase()+'">'+w.level+'</span><span class="cat-tag">'+w.cat+'</span>';}
 function stripe(w){return '<div class="lvl-stripe '+w.level.toLowerCase()+'"></div>';}
-function abtn(text,id){return '<button class="audio-btn" id="'+id+'" onclick="event.stopPropagation();speak(\''+safe(text)+'\',document.getElementById(\''+id+'\'))">▶ 発音</button>';}
+function abtn(text,id){return '<button class="audio-btn" id="'+id+'" onclick="event.stopPropagation();speak(\''+safe(text)+'\',document.getElementById(\''+id+'\'))">▶ '+T('発音','發音','Play')+'</button>';}
 
 function meaningHtml(w){
   let h='';
@@ -770,7 +787,8 @@ function fitbHtml(w,idx,shown){
   let trans='';
   if(curLang==='en'||curLang==='both') trans+='<div>'+w.ex_en+'</div>';
   if(curLang==='zh'||curLang==='both') trans+='<div style="font-family:PingFang TC,sans-serif">'+w.ex_zh+'</div>';
-  return '<div class="fitb-wrap"><div class="fitb-label">📝 填空練習 · Fill in the blank</div><div class="fitb-sent">'+blanked+'</div>'+(shown?'<div class="fitb-trans">'+trans+'</div>':'')+'</div>';
+  const fitbLabel=curLang==='both'?'📝 填空練習 · Fill in the blank':'📝 '+T('穴埋め練習','填空練習','Fill in the blank');
+  return '<div class="fitb-wrap"><div class="fitb-label">'+fitbLabel+'</div><div class="fitb-sent">'+blanked+'</div>'+(shown?'<div class="fitb-trans">'+trans+'</div>':'')+'</div>';
 }
 
 function tipHtml(w){
@@ -783,32 +801,32 @@ function tipHtml(w){
 // N4専用：長音・促音ガイドボックス
 function phonicsGuideHtml(){
   return '<div class="phonics-box">'
-    +'<div class="phonics-title">🎵 発音ガイド：長音・促音・拗音</div>'
+    +'<div class="phonics-title">🎵 '+T('発音ガイド：長音・促音・拗音','發音指南：長音・促音・拗音','Pronunciation Guide: Long, Glottal & Contracted Sounds')+'</div>'
     +'<div class="phonics-rule">'
-    +'<div class="phonics-rule-title">① 長音（のばす音） ー・う・い</div>'
+    +'<div class="phonics-rule-title">① '+T('長音（のばす音） ー・う・い','長音（拉長的音） ー・う・い','Long Vowels (ー・う・い)')+'</div>'
     +'<div class="phonics-rule-body">'
-    +'母音を1拍分のばします。のばさないと意味が変わります！<br>'
-    +'<span class="phonics-ex">おかあさん（母）</span> okā → 2拍分の「あ」<br>'
+    +T('母音を1拍分のばします。のばさないと意味が変わります！','母音要拉長一拍。不拉長的話意思會不一樣！','Vowels are held for one extra beat. Skipping the length changes the meaning!')+'<br>'
+    +'<span class="phonics-ex">おかあさん（母）</span> okā → '+T('2拍分の「あ」','拉長兩拍的「あ」','the "a" held for 2 beats')+'<br>'
     +'<span class="phonics-ex">おじさん（叔父）</span> vs <span class="phonics-ex">おじいさん（祖父）</span><br>'
     +'<span class="phonics-ex">ゆき（雪）</span> vs <span class="phonics-ex">ゆうき（勇気）</span><br>'
-    +'カタカナでは「ー」 <span class="phonics-ex">コーヒー</span>（珈琲）<span class="phonics-ex">スーパー</span>'
+    +T('カタカナでは「ー」','片假名則用「ー」','In katakana it\'s written with "ー"')+' <span class="phonics-ex">コーヒー</span>（珈琲）<span class="phonics-ex">スーパー</span>'
     +'</div></div>'
     +'<div class="phonics-rule">'
-    +'<div class="phonics-rule-title">② 促音（つまる音） っ・ッ</div>'
+    +'<div class="phonics-rule-title">② '+T('促音（つまる音） っ・ッ','促音（停頓的音） っ・ッ','Glottal Stop (っ・ッ)')+'</div>'
     +'<div class="phonics-rule-body">'
-    +'次の子音の前で息をとめて「1拍」つまります。<br>'
-    +'<span class="phonics-ex">きって（切手）</span> ki-t-te ← tの前で止める<br>'
-    +'<span class="phonics-ex">ざっし（雑誌）</span> za-ss-i ← sの前で止める<br>'
-    +'<span class="phonics-wrong">きて（着て）</span> → つまらないと意味が変わる！'
+    +T('次の子音の前で息をとめて「1拍」つまります。','在下一個子音前停頓一拍，屏住呼吸。','Hold your breath for one beat right before the next consonant.')+'<br>'
+    +'<span class="phonics-ex">きって（切手）</span> ki-t-te ← '+T('tの前で止める','在t前面停頓','pause before the "t"')+'<br>'
+    +'<span class="phonics-ex">ざっし（雑誌）</span> za-ss-i ← '+T('sの前で止める','在s前面停頓','pause before the "s"')+'<br>'
+    +'<span class="phonics-wrong">きて（着て）</span> → '+T('つまらないと意味が変わる！','不停頓的話意思會不一樣！','Without the pause, the meaning changes!')
     +'</div></div>'
     +'<div class="phonics-rule">'
-    +'<div class="phonics-rule-title">③ 拗音（ゃゅょ）は前の仮名と1拍</div>'
+    +'<div class="phonics-rule-title">③ '+T('拗音（ゃゅょ）は前の仮名と1拍','拗音（ゃゅょ）跟前面的假名合為1拍','Contracted Sounds (ゃゅょ) Count as 1 Beat with the Previous Kana')+'</div>'
     +'<div class="phonics-rule-body">'
-    +'小さい「ゃゅょ」は前のひらがなと合わせて1拍として数えます。<br>'
-    +'<span class="phonics-ex">きゃ</span>は「き」+「や」ではなく <b>kya</b> で1拍<br>'
-    +'<span class="phonics-ex">しゃしん（写真）</span> sha-shi-n = 3拍<br>'
-    +'<span class="phonics-ex">ちょっと</span> cho-tt-o = 3拍（促音あり）<br>'
-    +'<span class="phonics-wrong">「きやく」≠「きゃく」</span>　前者2拍、後者1拍'
+    +T('小さい「ゃゅょ」は前のひらがなと合わせて1拍として数えます。','小寫的「ゃゅょ」跟前面的平假名合起來算作1拍。','A small "ゃゅょ" combines with the kana before it to count as a single beat.')+'<br>'
+    +'<span class="phonics-ex">きゃ</span>'+T('は「き」+「や」ではなく','不是「き」+「や」，而是','is not "ki" + "ya" — it\'s')+' <b>kya</b> '+T('で1拍','算1拍','as one beat')+'<br>'
+    +'<span class="phonics-ex">しゃしん（写真）</span> sha-shi-n = '+T('3拍','3拍','3 beats')+'<br>'
+    +'<span class="phonics-ex">ちょっと</span> cho-tt-o = '+T('3拍（促音あり）','3拍（含促音）','3 beats (includes a glottal stop)')+'<br>'
+    +'<span class="phonics-wrong">「きやく」≠「きゃく」</span>　'+T('前者2拍、後者1拍','前者2拍，後者1拍','the former is 2 beats, the latter is 1 beat')
     +'</div></div>'
     +'</div>';
 }
@@ -819,7 +837,7 @@ function phonicsGuideHtml(){
 function renderCards(){
   const words=filtered();
   updateCounter(words);
-  let html='<div style="color:#A28B7E;font-size:11px;text-align:center;padding:5px 0 10px;">カードをタップ → 意味表示　／　＿＿ タップ → 答え</div>';
+  let html='<div style="color:#A28B7E;font-size:11px;text-align:center;padding:5px 0 10px;">'+T('カードをタップ → 意味表示　／　＿＿ タップ → 答え','點擊卡片 → 顯示意思　／　點擊＿＿ → 顯示答案','Tap card → show meaning  /  tap ＿＿ → show answer')+'</div>';
   // N4フィルター時に発音ガイドを先頭に追加
   if(curLevel==='N4') html+=phonicsGuideHtml();
 
@@ -833,7 +851,7 @@ function renderCards(){
       +'<div class="card-top">'+badge(w)+wordDisp+'<div class="pos-tag">'+w.pos+'</div><br>'+abtn(w.kanji,aid)+'</div>'
       +'<div class="card-divider"></div>'
       +'<div class="card-bottom">'
-      +(rev?meaningHtml(w)+fitbHtml(w,i,blk)+tipHtml(w):'<div class="tap-hint">タップして読み方・意味を確認 👆</div>')
+      +(rev?meaningHtml(w)+fitbHtml(w,i,blk)+tipHtml(w):'<div class="tap-hint">'+T('タップして読み方・意味を確認 👆','點擊查看讀音與意思 👆','Tap to reveal reading & meaning 👆')+'</div>')
       +'</div></div>';
   });
   document.getElementById('main').innerHTML=html;
@@ -879,7 +897,7 @@ function splitKana(s){
 
 function startNewSession(){
   const words=filtered();
-  if(words.length<2){document.getElementById('main').innerHTML='<div style="color:#3B2424;text-align:center;padding:40px;font-size:14px;background:rgba(255,255,255,.6);border-radius:16px;margin:20px;">単語が少なすぎます。</div>';return;}
+  if(words.length<2){document.getElementById('main').innerHTML='<div style="color:#3B2424;text-align:center;padding:40px;font-size:14px;background:rgba(255,255,255,.6);border-radius:16px;margin:20px;">'+T('単語が少なすぎます。','單字太少了。','Not enough words.')+'</div>';return;}
   quizSession=[];quizQueue=shuffle(words).slice(0,Math.min(10,words.length));qState=null;
   loadNextQuestion();
 }
@@ -913,21 +931,21 @@ function renderQuiz(){
   const pct=Math.round((doneCount/sessionTotal)*100);
   let fbSection='';
   if(done){
-    fbSection=(correct?'<div class="quiz-feedback ok">✅ 正解！ 読み：'+word.kana+'</div>':'<div class="quiz-feedback ng">❌ 正解は… '+word.kana+'</div>')
-      +'<button class="next-btn" onclick="goNextQuestion()">次の問題へ →</button>';
+    fbSection=(correct?'<div class="quiz-feedback ok">✅ '+T('正解！ 読み：','答對了！讀音：','Correct! Reading: ')+word.kana+'</div>':'<div class="quiz-feedback ng">❌ '+T('正解は… ','正確答案是… ','The answer is… ')+word.kana+'</div>')
+      +'<button class="next-btn" onclick="goNextQuestion()">'+T('次の問題へ →','下一題 →','Next question →')+'</button>';
   }else{
-    fbSection='<div class="quiz-feedback" id="q-fb"></div><div class="quiz-hint-row"><button class="quiz-hint-btn" onclick="hintQuiz()">💡 ヒント</button><button class="quiz-hint-btn" onclick="skipQuizQ()">⏭ スキップ</button></div>';
+    fbSection='<div class="quiz-feedback" id="q-fb"></div><div class="quiz-hint-row"><button class="quiz-hint-btn" onclick="hintQuiz()">💡 '+T('ヒント','提示','Hint')+'</button><button class="quiz-hint-btn" onclick="skipQuizQ()">⏭ '+T('スキップ','跳過','Skip')+'</button></div>';
   }
   const qi='qa'+Date.now();
   document.getElementById('main').innerHTML=
     '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div>'
-    +'<div class="quiz-score">問題 '+questionNum+' / '+sessionTotal+' ｜ ✅ '+correctCount+'問正解</div>'
+    +'<div class="quiz-score">'+T('問題','問題','Question')+' '+questionNum+' / '+sessionTotal+' ｜ ✅ '+T(correctCount+'問正解',correctCount+'題正確',correctCount+' correct')+'</div>'
     +'<div class="quiz-card">'+stripe(word)
     +'<div class="quiz-card-body">'+badge(word)
     +'<div class="quiz-kanji">'+word.kanji+'</div>'
     +'<div class="quiz-meaning">'+mLine+'</div>'
     +'<div class="quiz-pos">'+word.pos+'</div>'
-    +'<button class="audio-btn" id="'+qi+'" style="margin-bottom:16px;" onclick="speak(\''+safe(word.kana)+'\',document.getElementById(\''+qi+'\'))">▶ 発音</button>'
+    +'<button class="audio-btn" id="'+qi+'" style="margin-bottom:16px;" onclick="speak(\''+safe(word.kana)+'\',document.getElementById(\''+qi+'\'))">▶ '+T('発音','發音','Play')+'</button>'
     +sHtml+fbSection+pHtml+'</div></div>';
 }
 
@@ -972,11 +990,11 @@ function hintQuiz(){
 
 function getCheerMsg(s,t){
   const p=s/t;
-  if(p===1) return{emoji:'🏆',title:'パーフェクト！',msg:'全問正解！本物の実力ですね。この調子で上を目指しましょう！継続は力なり🌟'};
-  if(p>=0.8) return{emoji:'🎉',title:'すごい！',msg:'よくできました！もう少しで完璧。間違えた問題を確認して次は満点を！💪'};
-  if(p>=0.6) return{emoji:'👍',title:'なかなかいいね！',msg:'半分以上正解！少しずつ上達しています。苦手語を重点練習してみて📚'};
-  if(p>=0.4) return{emoji:'💡',title:'まだまだこれから！',msg:'練習あるのみ！繰り返しが日本語上達の近道。焦らず続けて🌱'};
-  return{emoji:'🌸',title:'一緒にがんばろう！',msg:'難しかったかな？でも大丈夫！諦めなければ必ず上達します。応援してる❤️'};
+  if(p===1) return{emoji:'🏆',title:T('パーフェクト！','完美！','Perfect!'),msg:T('全問正解！本物の実力ですね。この調子で上を目指しましょう！継続は力なり🌟','全部答對！這是真本事。保持這個狀態繼續加油！堅持就是力量🌟','All correct! That\'s real skill. Keep this up — consistency is the key to progress 🌟')};
+  if(p>=0.8) return{emoji:'🎉',title:T('すごい！','太厲害了！','Amazing!'),msg:T('よくできました！もう少しで完璧。間違えた問題を確認して次は満点を！💪','做得很好！只差一點就完美了。檢查錯的題目，下次拿滿分！💪','Great job! So close to perfect. Review what you missed and aim for full marks next time! 💪')};
+  if(p>=0.6) return{emoji:'👍',title:T('なかなかいいね！','還不錯喔！','Not bad!'),msg:T('半分以上正解！少しずつ上達しています。苦手語を重点練習してみて📚','答對一半以上！正在慢慢進步。試著加強練習不擅長的單字📚','More than half correct! You\'re improving little by little. Focus extra practice on your weak words 📚')};
+  if(p>=0.4) return{emoji:'💡',title:T('まだまだこれから！','還有進步空間！','Room to grow!'),msg:T('練習あるのみ！繰り返しが日本語上達の近道。焦らず続けて🌱','就是要多練習！反覆練習是進步日語的捷徑。別著急，繼續加油🌱','Practice is everything! Repetition is the shortcut to improving your Japanese. Take your time and keep going 🌱')};
+  return{emoji:'🌸',title:T('一緒にがんばろう！','一起加油吧！','Let\'s keep at it together!'),msg:T('難しかったかな？でも大丈夫！諦めなければ必ず上達します。応援してる❤️','覺得有點難嗎？沒關係！只要不放棄，一定會進步的。我會一直支持你❤️','Was that tough? No worries! As long as you don\'t give up, you\'ll improve. Cheering for you ❤️')};
 }
 
 function showResult(){
@@ -984,16 +1002,16 @@ function showResult(){
   const wrong=quizSession.filter(r=>!r.correct),right=quizSession.filter(r=>r.correct);
   const c=getCheerMsg(correct,total);addPoints(correct*10);
   let wHtml='',rHtml='';
-  wrong.forEach(r=>{wHtml+='<div class="result-item"><div class="result-item-icon">❌</div><div class="result-item-kanji">'+r.word.kanji+'</div><div class="result-item-info"><div class="result-item-kana">正解：'+r.rightAnswer+'</div><div class="result-item-en">'+r.word.en+'</div></div></div>';});
+  wrong.forEach(r=>{wHtml+='<div class="result-item"><div class="result-item-icon">❌</div><div class="result-item-kanji">'+r.word.kanji+'</div><div class="result-item-info"><div class="result-item-kana">'+T('正解：','正確答案：','Correct: ')+r.rightAnswer+'</div><div class="result-item-en">'+r.word.en+'</div></div></div>';});
   right.forEach(r=>{rHtml+='<div class="result-item"><div class="result-item-icon">✅</div><div class="result-item-kanji">'+r.word.kanji+'</div><div class="result-item-info"><div class="result-item-kana">'+r.rightAnswer+'</div><div class="result-item-en">'+r.word.en+'</div></div></div>';});
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+c.emoji+'</div><div class="result-title">'+c.title+'</div>'
     +'<div class="result-score-big">'+correct+' / '+total+'</div>'
-    +'<div class="result-score-label">正解率 '+Math.round(correct/total*100)+'% ｜ +'+(correct*10)+'pt獲得</div>'
+    +'<div class="result-score-label">'+T('正解率','正確率','Accuracy')+' '+Math.round(correct/total*100)+'% ｜ +'+(correct*10)+T('pt獲得','pt獲得','pt earned')+'</div>'
     +'<div class="result-cheer">'+c.msg+'</div>'
-    +(wrong.length?'<div class="result-section"><div class="result-section-title">❌ 間違えた単語（'+wrong.length+'問）</div>'+wHtml+'</div>':'')
-    +(right.length?'<div class="result-section"><div class="result-section-title">✅ 正解した単語（'+right.length+'問）</div>'+rHtml+'</div>':'')
-    +'<button class="result-retry-btn" onclick="startNewSession()">🔄 もう一度10問チャレンジ！</button></div>';
+    +(wrong.length?'<div class="result-section"><div class="result-section-title">❌ '+T('間違えた単語（'+wrong.length+'問）','答錯的單字（'+wrong.length+'題）','Missed words ('+wrong.length+')')+'</div>'+wHtml+'</div>':'')
+    +(right.length?'<div class="result-section"><div class="result-section-title">✅ '+T('正解した単語（'+right.length+'問）','答對的單字（'+right.length+'題）','Correct words ('+right.length+')')+'</div>'+rHtml+'</div>':'')
+    +'<button class="result-retry-btn" onclick="startNewSession()">🔄 '+T('もう一度10問チャレンジ！','再挑戰10題！','Try 10 more!')+'</button></div>';
   qState=null;
 }
 
@@ -1031,9 +1049,27 @@ function setLevel(l,el){
   if(el) el.classList.add('active');
   renderView();
 }
+function updateNavLabels(){
+  const set=(id,txt)=>{const e=document.getElementById(id);if(e)e.textContent=txt;};
+  set('nl-t1',T('漢字クイズ','漢字測驗','Kanji Quiz'));
+  set('nl-t2',T('日付・動詞','日期・動詞','Dates & Verbs'));
+  set('nl-t3',T('て形クイズ','て形測驗','Te-Form Quiz'));
+  set('nl-rank','🏆 '+T('ランキング','排行榜','Ranking'));
+  set('nl-jlpt','📖 '+T('JLPT単語','JLPT單字','JLPT Words'));
+  set('nl-trap',T('罠漢字','陷阱漢字','Trap Kanji'));
+  set('nl-kata',T('カタカナ','片假名','Katakana'));
+  set('nl-versus',T('対戦','對戰','Versus'));
+}
 function setLang(l,el){
-  curLang=l;document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');renderView();
+  curLang=l;document.querySelectorAll('.jlpt-lang-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else { const b=document.getElementById('jl-'+l); if(b) b.classList.add('active'); }
+  updateNavLabels();
+  renderLoginHeader();
+  if(curView==='league') renderLeague();
+  else if(curView==='trap'||curView==='kata') { if(cq) renderChoiceQ(); else renderChoiceIntro(curView); }
+  else if(curView==='versus') renderVersus();
+  else renderView();
 }
 function setView(v){
   if(typeof stopVsTimer==='function')stopVsTimer();
@@ -1056,52 +1092,132 @@ function renderView(){
 //  偽の友達（日台で意味が違う漢字語）20語
 // ════════════════════════════════════════════════
 const FF=[
-{w:'勉強',kana:'べんきょう',jp:'学ぶこと・study',jz:'學習、讀書',tw:'無理強いする・しぶしぶ（勉強）',tip:'台湾華語の「勉強」は「無理をする」！日本語では毎日する良いこと😂'},
-{w:'手紙',kana:'てがみ',jp:'letter・便り',jz:'信件',tw:'トイレットペーパー（衛生紙）',tip:'日本人に「手紙ある？」と聞かれてもトイレに案内しないで！📮'},
-{w:'愛人',kana:'あいじん',jp:'不倫相手',jz:'情婦／情夫（外遇對象）',tw:'配偶者・恋人（愛人）',tip:'日本で「私の愛人です」と紹介すると大事件に…💦'},
-{w:'大丈夫',kana:'だいじょうぶ',jp:'OK・問題ない',jz:'沒問題、沒事',tw:'立派な男（男子漢大丈夫）',tip:'日本語では性別関係なく「OK」の意味。日本で一番使う言葉！'},
-{w:'老婆',kana:'ろうば',jp:'おばあさん・老女',jz:'老太太',tw:'妻・奥さん（老婆）',tip:'日本で奥さんを「老婆」と呼んだら大変失礼です😱'},
-{w:'娘',kana:'むすめ',jp:'自分の女の子ども・daughter',jz:'女兒',tw:'お母さん（娘＝媽媽）',tip:'中国語の「娘」は母！世代がひっくり返る有名な罠。'},
-{w:'汽車',kana:'きしゃ',jp:'蒸気機関車・列車',jz:'火車',tw:'自動車（汽車）',tip:'台湾の「汽車」は車🚗、日本の「汽車」はSL🚂'},
-{w:'新聞',kana:'しんぶん',jp:'newspaper・新聞紙',jz:'報紙',tw:'ニュース（新聞）',tip:'日本語でnewsは「ニュース」、紙のほうが「新聞」📰'},
-{w:'湯',kana:'ゆ',jp:'お湯・hot water',jz:'熱水',tw:'スープ（湯）',tip:'日本の銭湯の「湯」はスープではありません🍲🚫'},
-{w:'床',kana:'ゆか',jp:'floor・床面',jz:'地板',tw:'ベッド（床）',tip:'「床で寝る」＝日本では床の上、台湾ではベッドの上！'},
-{w:'猪',kana:'いのしし',jp:'イノシシ（野生の豚）',jz:'山豬',tw:'豚（豬）',tip:'干支の猪年、日本ではイノシシ🐗、中華圏では豚🐷'},
-{w:'高校',kana:'こうこう',jp:'高等学校',jz:'高中',tw:'大学（高校＝高等院校）',tip:'台湾華語で「高校」は大学のこと！学歴が変わる罠。'},
-{w:'結束',kana:'けっそく',jp:'団結すること',jz:'團結',tw:'終わること（結束）',tip:'「チームの結束」＝日本では団結、台湾では解散!?'},
-{w:'心中',kana:'しんじゅう',jp:'一緒に死ぬこと',jz:'殉情',tw:'心の中（心中）',tip:'日本語で「心中」は重い言葉。読みは「しんじゅう」。'},
-{w:'怪我',kana:'けが',jp:'injury・ケガ',jz:'受傷',tw:'私を責める（怪我）',tip:'「怪我した」＝日本ではケガ、中国語では「私のせいにして」。'},
-{w:'大家',kana:'おおや',jp:'家主・landlord',jz:'房東',tw:'みんな・皆さん（大家）',tip:'日本で「大家好！」と言っても家主さんは喜びません🏠'},
-{w:'先生',kana:'せんせい',jp:'教師・teacher',jz:'老師',tw:'男性への敬称・夫（先生）',tip:'台湾の「王先生」はただの王さん。日本では教える人だけ！'},
-{w:'丈夫',kana:'じょうぶ',jp:'sturdy・壊れにくい',jz:'堅固、結實',tw:'夫・旦那（丈夫）',tip:'「丈夫なカバン」＝夫のカバンではありません👜'},
-{w:'人参',kana:'にんじん',jp:'carrot',jz:'紅蘿蔔',tw:'朝鮮人参・高麗人参（人參）',tip:'日本のカレーに入っているのはginsengではないよ🥕'},
-{w:'春雨',kana:'はるさめ',jp:'細い透明の麺／春の雨',jz:'冬粉',tw:'春の雨だけ（春雨）',tip:'日本のスーパーで「春雨」を買うと麺が出てくる🍜'}
+{w:'勉強',kana:'べんきょう',jp:'学ぶこと・study',jz:'學習、讀書',en:'to study / learn',tw:'無理強いする・しぶしぶ（勉強）',tip:'台湾華語の「勉強」は「無理をする」！日本語では毎日する良いこと😂',
+ tip_en:'Taiwanese Mandarin "勉強" means "to force yourself / do reluctantly"! In Japanese it\'s something good you do every day 😂',
+ tip_zh:'台灣華語的「勉強」是「勉為其難、不情願」的意思！但日語裡卻是每天都要做的好事😂'},
+{w:'手紙',kana:'てがみ',jp:'letter・便り',jz:'信件',en:'a letter',tw:'トイレットペーパー（衛生紙）',tip:'日本人に「手紙ある？」と聞かれてもトイレに案内しないで！📮',
+ tip_en:'If a Japanese person asks "手紙ある？" don\'t point them to the toilet — they mean "do you have a letter?" 📮',
+ tip_zh:'如果日本人問你「手紙ある？」，可別帶他去廁所——他是在問「有信嗎？」📮'},
+{w:'愛人',kana:'あいじん',jp:'不倫相手',jz:'情婦／情夫（外遇對象）',en:'a mistress / affair partner',tw:'配偶者・恋人（愛人）',tip:'日本で「私の愛人です」と紹介すると大事件に…💦',
+ tip_en:'Introducing someone as "私の愛人です" in Japan would cause a huge scandal — it means "my mistress/lover (affair partner)" 💦',
+ tip_zh:'在日本說「私の愛人です」介紹某人，會引發大風波——意思是「我的外遇對象」💦'},
+{w:'大丈夫',kana:'だいじょうぶ',jp:'OK・問題ない',jz:'沒問題、沒事',en:'OK / no problem',tw:'立派な男（男子漢大丈夫）',tip:'日本語では性別関係なく「OK」の意味。日本で一番使う言葉！',
+ tip_en:'In Japanese this means "OK / no problem," regardless of gender. It\'s one of the most-used words in Japan!',
+ tip_zh:'日語裡不分性別，意思就是「沒問題、還好」。是日本最常用的詞之一！'},
+{w:'老婆',kana:'ろうば',jp:'おばあさん・老女',jz:'老太太',en:'an old woman',tw:'妻・奥さん（老婆）',tip:'日本で奥さんを「老婆」と呼んだら大変失礼です😱',
+ tip_en:'Calling someone\'s wife "老婆" in Japanese would be very rude — in Japanese it means "old woman/grandma" 😱',
+ tip_zh:'在日語裡把太太稱作「老婆」會非常失禮——日語的「老婆」是指「老太太」😱'},
+{w:'娘',kana:'むすめ',jp:'自分の女の子ども・daughter',jz:'女兒',en:'daughter',tw:'お母さん（娘＝媽媽）',tip:'中国語の「娘」は母！世代がひっくり返る有名な罠。',
+ tip_en:'In Chinese, "娘" means mother — a famous trap where the generations flip!',
+ tip_zh:'中文的「娘」是媽媽的意思！這是世代顛倒的知名陷阱。'},
+{w:'汽車',kana:'きしゃ',jp:'蒸気機関車・列車',jz:'火車',en:'a steam locomotive',tw:'自動車（汽車）',tip:'台湾の「汽車」は車🚗、日本の「汽車」はSL🚂',
+ tip_en:'Taiwan\'s "汽車" is a car 🚗, but Japan\'s "汽車" is a steam locomotive 🚂',
+ tip_zh:'台灣的「汽車」是car🚗，但日本的「汽車」是蒸汽火車🚂'},
+{w:'新聞',kana:'しんぶん',jp:'newspaper・新聞紙',jz:'報紙',en:'a newspaper',tw:'ニュース（新聞）',tip:'日本語でnewsは「ニュース」、紙のほうが「新聞」📰',
+ tip_en:'In Japanese, "news" is ニュース — the paper itself is called 新聞 📰',
+ tip_zh:'日語中的「news」是ニュース，紙本才叫做「新聞」📰'},
+{w:'湯',kana:'ゆ',jp:'お湯・hot water',jz:'熱水',en:'hot water',tw:'スープ（湯）',tip:'日本の銭湯の「湯」はスープではありません🍲🚫',
+ tip_en:'The "湯" in a Japanese bathhouse (銭湯) isn\'t soup — it\'s hot water 🍲🚫',
+ tip_zh:'日本澡堂（銭湯）的「湯」不是湯品，是熱水🍲🚫'},
+{w:'床',kana:'ゆか',jp:'floor・床面',jz:'地板',en:'the floor',tw:'ベッド（床）',tip:'「床で寝る」＝日本では床の上、台湾ではベッドの上！',
+ tip_en:'"Sleeping on the 床" means the floor in Japanese, but the bed in Taiwanese Mandarin!',
+ tip_zh:'「床で寝る」在日語是睡地板，在台灣華語卻是睡床上！'},
+{w:'猪',kana:'いのしし',jp:'イノシシ（野生の豚）',jz:'山豬',en:'a wild boar',tw:'豚（豬）',tip:'干支の猪年、日本ではイノシシ🐗、中華圏では豚🐷',
+ tip_en:'In the Year of the Boar, Japan pictures a wild boar 🐗, while Chinese-speaking regions picture a pig 🐷',
+ tip_zh:'豬年（猪年），日本想到的是野豬🐗，中文圈想到的是家豬🐷'},
+{w:'高校',kana:'こうこう',jp:'高等学校',jz:'高中',en:'high school',tw:'大学（高校＝高等院校）',tip:'台湾華語で「高校」は大学のこと！学歴が変わる罠。',
+ tip_en:'In Taiwanese Mandarin, "高校" refers to university! A trap that changes your entire education level.',
+ tip_zh:'台灣華語的「高校」是指大學！一個會讓學歷整個改變的陷阱。'},
+{w:'結束',kana:'けっそく',jp:'団結すること',jz:'團結',en:'unity / solidarity',tw:'終わること（結束）',tip:'「チームの結束」＝日本では団結、台湾では解散!?',
+ tip_en:'"Team 結束" means the team came together in Japanese, but could sound like the team disbanded/ended in Chinese!?',
+ tip_zh:'「チームの結束」在日語是團隊團結，但在華語卻可能被理解成「結束、解散」！？'},
+{w:'心中',kana:'しんじゅう',jp:'一緒に死ぬこと',jz:'殉情',en:'a double suicide (lovers dying together)',tw:'心の中（心中）',tip:'日本語で「心中」は重い言葉。読みは「しんじゅう」。',
+ tip_en:'"心中" is a heavy word in Japanese — it means a double suicide (lovers dying together). Read as "shinjū."',
+ tip_zh:'「心中」在日語是很沉重的詞——意思是殉情（雙雙自殺）。念作shinjū。'},
+{w:'怪我',kana:'けが',jp:'injury・ケガ',jz:'受傷',en:'an injury',tw:'私を責める（怪我）',tip:'「怪我した」＝日本ではケガ、中国語では「私のせいにして」。',
+ tip_en:'"怪我した" means "I got injured" in Japanese, while in Chinese "怪我" means "blame me."',
+ tip_zh:'「怪我した」在日語是「我受傷了」，中文的「怪我」卻是「責怪我」的意思。'},
+{w:'大家',kana:'おおや',jp:'家主・landlord',jz:'房東',en:'landlord',tw:'みんな・皆さん（大家）',tip:'日本で「大家好！」と言っても家主さんは喜びません🏠',
+ tip_en:'Saying "大家好！" in Japan won\'t make your landlord happy — in Japanese, 大家 means "landlord" 🏠',
+ tip_zh:'在日本說「大家好！」房東可不會開心——日語的「大家」是指「房東」🏠'},
+{w:'先生',kana:'せんせい',jp:'教師・teacher',jz:'老師',en:'a teacher',tw:'男性への敬称・夫（先生）',tip:'台湾の「王先生」はただの王さん。日本では教える人だけ！',
+ tip_en:'Taiwan\'s "王先生" is just Mr. Wang. In Japanese, 先生 is reserved for teachers (and similar roles)!',
+ tip_zh:'台灣的「王先生」只是王先生。日語的「先生」專指老師（及類似角色）！'},
+{w:'丈夫',kana:'じょうぶ',jp:'sturdy・壊れにくい',jz:'堅固、結實',en:'sturdy / durable',tw:'夫・旦那（丈夫）',tip:'「丈夫なカバン」＝夫のカバンではありません👜',
+ tip_en:'"丈夫なカバン" isn\'t "my husband\'s bag" — it means "a sturdy bag" 👜',
+ tip_zh:'「丈夫なカバン」不是「先生的包包」——意思是「堅固的包包」👜'},
+{w:'人参',kana:'にんじん',jp:'carrot',jz:'紅蘿蔔',en:'a carrot',tw:'朝鮮人参・高麗人参（人參）',tip:'日本のカレーに入っているのはginsengではないよ🥕',
+ tip_en:'What\'s in Japanese curry isn\'t ginseng — it\'s just a carrot 🥕',
+ tip_zh:'日本咖哩裡放的不是人參，只是紅蘿蔔而已🥕'},
+{w:'春雨',kana:'はるさめ',jp:'細い透明の麺／春の雨',jz:'冬粉',en:'clear glass noodles',tw:'春の雨だけ（春雨）',tip:'日本のスーパーで「春雨」を買うと麺が出てくる🍜',
+ tip_en:'Buy "春雨" at a Japanese supermarket and you\'ll get clear glass noodles, not spring rain 🍜',
+ tip_zh:'在日本超市買「春雨」，買到的會是冬粉，不是春天的雨🍜'}
 ];
 
 // ════════════════════════════════════════════════
 //  カタカナ語（和製英語トラップ）20語
 // ════════════════════════════════════════════════
 const KATA=[
-{w:'アルバイト',m:'part-time job／打工',o:'ドイツ語 Arbeit（労働）から。英語の part-time job。'},
-{w:'コンセント',m:'electrical outlet／插座',o:'英語の consent（同意）ではない！英語では outlet / socket。'},
-{w:'ホッチキス',m:'stapler／釘書機',o:'発明者の会社名 Hotchkiss から。英語では stapler。'},
-{w:'サラリーマン',m:'office worker／上班族',o:'和製英語 salary + man。英語では office worker。'},
-{w:'マンション',m:'apartment building／公寓大樓',o:'英語の mansion（豪邸）ではない！ただの集合住宅。'},
-{w:'ワイシャツ',m:'dress shirt／襯衫',o:'white shirt がなまった和製英語。色付きでもワイシャツ。'},
-{w:'テンション',m:'excitement, mood／情緒高漲',o:'英語の tension（緊張）とほぼ逆！「テンション高い」＝ハイな気分。'},
-{w:'クレーム',m:'complaint／客訴、抱怨',o:'英語の claim（主張）ではなく苦情のこと。'},
-{w:'カンニング',m:'cheating on a test／作弊',o:'英語の cunning（ずる賢い）から。英語では cheating。'},
-{w:'リストラ',m:'layoff／裁員',o:'restructuring の略。実際は「クビ」の意味で使われる。'},
-{w:'バイキング',m:'all-you-can-eat buffet／吃到飽',o:'Viking（海賊）から！英語では buffet。'},
-{w:'ペットボトル',m:'plastic bottle／寶特瓶',o:'PET（素材名）+ bottle。英語では plastic bottle。'},
-{w:'シャーペン',m:'mechanical pencil／自動鉛筆',o:'シャープペンシルの略。英語では mechanical pencil。'},
-{w:'ガソリンスタンド',m:'gas station／加油站',o:'和製英語。英語では gas station / petrol station。'},
-{w:'フライドポテト',m:'french fries／薯條',o:'和製英語。英語では fries（米）/ chips（英）。'},
-{w:'ノートパソコン',m:'laptop／筆電',o:'notebook + personal computer の略。英語では laptop。'},
-{w:'マイペース',m:'doing things at one\'s own pace／我行我素',o:'my + pace の和製英語。褒め言葉にも皮肉にもなる。'},
-{w:'スキンシップ',m:'physical affection／肢體親密接觸',o:'skin + ship の和製英語。英語では physical contact。'},
-{w:'ドライヤー',m:'hair dryer／吹風機',o:'英語で dryer だけだと乾燥機。hair dryer と言おう。'},
-{w:'モーニングコール',m:'wake-up call／叫醒服務',o:'和製英語。ホテルでは wake-up call と言わないと通じない。'}
+{w:'アルバイト',m:'part-time job／打工',o:'ドイツ語 Arbeit（労働）から。英語の part-time job。',
+ o_en:'From German "Arbeit" (labor). In English it\'s a "part-time job."',
+ o_zh:'源自德語Arbeit（勞動）。英語稱為part-time job。'},
+{w:'コンセント',m:'electrical outlet／插座',o:'英語の consent（同意）ではない！英語では outlet / socket。',
+ o_en:'Not English "consent" (agreement)! In English it\'s an "outlet" or "socket."',
+ o_zh:'不是英語的consent（同意）！英語稱為outlet或socket。'},
+{w:'ホッチキス',m:'stapler／釘書機',o:'発明者の会社名 Hotchkiss から。英語では stapler。',
+ o_en:'Named after the inventor\'s company, Hotchkiss. In English it\'s a "stapler."',
+ o_zh:'源自發明者的公司名Hotchkiss。英語稱為stapler。'},
+{w:'サラリーマン',m:'office worker／上班族',o:'和製英語 salary + man。英語では office worker。',
+ o_en:'Japanese-made English: salary + man. In English it\'s an "office worker."',
+ o_zh:'和製英語：salary + man。英語稱為office worker。'},
+{w:'マンション',m:'apartment building／公寓大樓',o:'英語の mansion（豪邸）ではない！ただの集合住宅。',
+ o_en:'Not English "mansion" (a luxury estate)! It just means an apartment building.',
+ o_zh:'不是英語的mansion（豪宅）！只是一般的集合住宅。'},
+{w:'ワイシャツ',m:'dress shirt／襯衫',o:'white shirt がなまった和製英語。色付きでもワイシャツ。',
+ o_en:'A corruption of "white shirt." Still called ワイシャツ even in other colors.',
+ o_zh:'是white shirt的音變。就算是別的顏色也叫ワイシャツ。'},
+{w:'テンション',m:'excitement, mood／情緒高漲',o:'英語の tension（緊張）とほぼ逆！「テンション高い」＝ハイな気分。',
+ o_en:'Nearly opposite of English "tension" (stress)! "テンション高い" means being in a high, excited mood.',
+ o_zh:'幾乎跟英語的tension（緊張）相反！「テンション高い」是指情緒高漲、興奮。'},
+{w:'クレーム',m:'complaint／客訴、抱怨',o:'英語の claim（主張）ではなく苦情のこと。',
+ o_en:'Not English "claim" (an assertion) — it means a complaint.',
+ o_zh:'不是英語的claim（主張）——是指客訴、抱怨。'},
+{w:'カンニング',m:'cheating on a test／作弊',o:'英語の cunning（ずる賢い）から。英語では cheating。',
+ o_en:'From English "cunning" (sly). In English it\'s called "cheating."',
+ o_zh:'源自英語cunning（狡猾）。英語稱為cheating。'},
+{w:'リストラ',m:'layoff／裁員',o:'restructuring の略。実際は「クビ」の意味で使われる。',
+ o_en:'Short for "restructuring," but in practice it\'s used to mean "getting fired."',
+ o_zh:'restructuring的縮寫，但實際上多用來指「被解僱」。'},
+{w:'バイキング',m:'all-you-can-eat buffet／吃到飽',o:'Viking（海賊）から！英語では buffet。',
+ o_en:'From "Viking" (the pirates)! In English it\'s a "buffet."',
+ o_zh:'源自Viking（海盜）！英語稱為buffet。'},
+{w:'ペットボトル',m:'plastic bottle／寶特瓶',o:'PET（素材名）+ bottle。英語では plastic bottle。',
+ o_en:'PET (the material) + bottle. In English it\'s a "plastic bottle."',
+ o_zh:'PET（材質名）+ bottle。英語稱為plastic bottle。'},
+{w:'シャーペン',m:'mechanical pencil／自動鉛筆',o:'シャープペンシルの略。英語では mechanical pencil。',
+ o_en:'Short for "sharp pencil." In English it\'s a "mechanical pencil."',
+ o_zh:'シャープペンシル的縮寫。英語稱為mechanical pencil。'},
+{w:'ガソリンスタンド',m:'gas station／加油站',o:'和製英語。英語では gas station / petrol station。',
+ o_en:'Japanese-made English. In English it\'s a "gas station" or "petrol station."',
+ o_zh:'和製英語。英語稱為gas station / petrol station。'},
+{w:'フライドポテト',m:'french fries／薯條',o:'和製英語。英語では fries（米）/ chips（英）。',
+ o_en:'Japanese-made English. In English: "fries" (US) or "chips" (UK).',
+ o_zh:'和製英語。英語稱為fries（美）/ chips（英）。'},
+{w:'ノートパソコン',m:'laptop／筆電',o:'notebook + personal computer の略。英語では laptop。',
+ o_en:'Short for "notebook" + "personal computer." In English it\'s a "laptop."',
+ o_zh:'notebook + personal computer的縮寫。英語稱為laptop。'},
+{w:'マイペース',m:'doing things at one\'s own pace／我行我素',o:'my + pace の和製英語。褒め言葉にも皮肉にもなる。',
+ o_en:'Japanese-made English: my + pace. Can be a compliment or a subtle jab.',
+ o_zh:'和製英語：my + pace。可以是稱讚，也可能帶點諷刺。'},
+{w:'スキンシップ',m:'physical affection／肢體親密接觸',o:'skin + ship の和製英語。英語では physical contact。',
+ o_en:'Japanese-made English: skin + ship. In English it\'s "physical contact."',
+ o_zh:'和製英語：skin + ship。英語稱為physical contact。'},
+{w:'ドライヤー',m:'hair dryer／吹風機',o:'英語で dryer だけだと乾燥機。hair dryer と言おう。',
+ o_en:'In English, "dryer" alone usually means a clothes dryer — say "hair dryer" to be clear.',
+ o_zh:'英語單講dryer通常指烘衣機，要講hair dryer才清楚。'},
+{w:'モーニングコール',m:'wake-up call／叫醒服務',o:'和製英語。ホテルでは wake-up call と言わないと通じない。',
+ o_en:'Japanese-made English. At hotels abroad, say "wake-up call" instead.',
+ o_zh:'和製英語。在國外飯店要說wake-up call才通。'}
 ];
 
 // ════════════════════════════════════════════════
@@ -1120,9 +1236,9 @@ function addPoints(n){const g=gload();const k=dkey();g.days[k]=(g.days[k]||0)+n;
 function renderLoginHeader(){
   const el=document.getElementById('suzu-login-wrap');if(!el||!window.SuzuAuth)return;
   if(SuzuAuth.isLoggedIn()){
-    el.innerHTML='<span style="font-size:10px;color:rgba(255,255,255,.75);">👤 '+escapeHtmlJ(SuzuAuth.nickname())+' <button onclick="SuzuAuth.logout();location.reload();" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:2px 6px;font-size:9px;cursor:pointer;margin-left:3px;">ログアウト</button></span>';
+    el.innerHTML='<span style="font-size:10px;color:rgba(255,255,255,.75);">👤 '+escapeHtmlJ(SuzuAuth.nickname())+' <button onclick="SuzuAuth.logout();location.reload();" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:2px 6px;font-size:9px;cursor:pointer;margin-left:3px;">'+T('ログアウト','登出','Log Out')+'</button></span>';
   }else{
-    el.innerHTML='<button onclick="jlptLogin()" style="background:#fff;color:#6B3D3D;border:none;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔑 ログインして記録</button>';
+    el.innerHTML='<button onclick="jlptLogin()" style="background:#fff;color:#6B3D3D;border:none;border-radius:8px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;">🔑 '+T('ログインして記録','登入以記錄成績','Log In to Save Score')+'</button>';
   }
 }
 function jlptLogin(){ if(window.SuzuAuth) SuzuAuth.prompt(()=>{ renderLoginHeader(); if(curView==='league') renderLeague(); }); }
@@ -1168,25 +1284,25 @@ function renderLeague(){
   const loggedIn=window.SuzuAuth&&SuzuAuth.isLoggedIn();
   let h='<div class="result-wrap" style="padding:18px 16px;margin-bottom:14px;">'
     +'<div class="result-emoji" style="font-size:40px;">🏆</div>'
-    +'<div class="result-title" style="font-size:18px;">みんなのランキング</div>'
-    +'<div style="font-size:11px;color:#A28B7E;">クイズでポイントを稼ごう！</div></div>';
+    +'<div class="result-title" style="font-size:18px;">'+T('みんなのランキング','大家的排行榜','Leaderboard')+'</div>'
+    +'<div style="font-size:11px;color:#A28B7E;">'+T('クイズでポイントを稼ごう！','用測驗賺取分數吧！','Earn points by taking quizzes!')+'</div></div>';
   if(!loggedIn){
     h+='<div class="result-wrap" style="padding:20px 16px;text-align:center;">'
-      +'<div style="font-size:13px;color:#6B3D3D;margin-bottom:12px;">ログインするとランキングに参加できます🏆</div>'
+      +'<div style="font-size:13px;color:#6B3D3D;margin-bottom:12px;">'+T('ログインするとランキングに参加できます🏆','登入後即可加入排行榜🏆','Log in to join the leaderboard 🏆')+'</div>'
       +'<div id="league-login-btn" style="display:flex;justify-content:center;"></div></div>';
   }else{
-    h+='<div id="league-rows"><p style="text-align:center;color:#A28B7E;padding:20px;">読み込み中…</p></div>'
-      +'<button class="quiz-hint-btn" style="width:100%;margin-top:8px;" onclick="if(SuzuAuth.changeNickname())renderLeague();">✏️ ニックネームを変える</button>';
+    h+='<div id="league-rows"><p style="text-align:center;color:#A28B7E;padding:20px;">'+T('読み込み中…','載入中…','Loading…')+'</p></div>'
+      +'<button class="quiz-hint-btn" style="width:100%;margin-top:8px;" onclick="if(SuzuAuth.changeNickname())renderLeague();">✏️ '+T('ニックネームを変える','變更暱稱','Change Nickname')+'</button>';
   }
   const st=getStreak();const g=gload();
-  h+='<div class="sec-title">🔥 連続学習記録</div>'
+  h+='<div class="sec-title">🔥 '+T('連続学習記録','連續學習紀錄','Study Streak')+'</div>'
     +'<div class="result-wrap" style="padding:16px;">'
-    +'<div style="font-size:34px;font-weight:900;color:#6B3D3D;">🔥 '+st+'日連続</div>'
-    +'<div style="font-size:11px;color:#A28B7E;margin-top:4px;">毎日どれかのクイズをやると記録が続くよ。続けるほどグルメメダルGET！</div></div>';
-  h+='<div class="sec-title">🎖️ グルメメダル（'+g.earned.length+'/20）</div><div class="medal-grid">';
+    +'<div style="font-size:34px;font-weight:900;color:#6B3D3D;">🔥 '+T(st+'日連続',st+'天連續',st+'-day streak')+'</div>'
+    +'<div style="font-size:11px;color:#A28B7E;margin-top:4px;">'+T('毎日どれかのクイズをやると記録が続くよ。続けるほどグルメメダルGET！','每天完成任一項測驗，紀錄就會持續累積。堅持越久，就能獲得更多美食獎牌！','Take any quiz each day to keep your streak going. The longer you keep it up, the more foodie medals you\'ll earn!')+'</div></div>';
+  h+='<div class="sec-title">🎖️ '+T('グルメメダル','美食獎牌','Foodie Medals')+'（'+g.earned.length+'/20）</div><div class="medal-grid">';
   MEDALS.forEach((m,i)=>{
     const got=g.earned.indexOf(i)!==-1;
-    h+='<div class="medal'+(got?'':' locked')+'"><div class="medal-e">'+m.e+'</div><div class="medal-n">'+m.n+'</div><div class="medal-d">'+(got?'GET!':m.d+'日連続')+'</div></div>';
+    h+='<div class="medal'+(got?'':' locked')+'"><div class="medal-e">'+m.e+'</div><div class="medal-n">'+m.n+'</div><div class="medal-d">'+(got?T('GET!','GET!','Earned!'):T(m.d+'日連続',m.d+'天連續',m.d+'-day streak'))+'</div></div>';
   });
   h+='</div>';
   document.getElementById('main').innerHTML=h;
@@ -1197,14 +1313,14 @@ async function fillLeagueRows(){
   const el=document.getElementById('league-rows');if(!el)return;
   const rows=await SuzuAuth.leaderboardWithBots(50);
   const myNick=SuzuAuth.nickname();
-  if(!rows.length){el.innerHTML='<p style="text-align:center;color:#A28B7E;padding:20px;">まだ記録がありません。クイズを解いてポイントを貯めよう！</p>';return;}
+  if(!rows.length){el.innerHTML='<p style="text-align:center;color:#A28B7E;padding:20px;">'+T('まだ記録がありません。クイズを解いてポイントを貯めよう！','還沒有記錄，快去玩測驗累積分數吧！','No records yet. Play the quizzes to earn points!')+'</p>';return;}
   let h='';
   rows.forEach((r,i)=>{
     const rk=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
     const me=r.nickname===myNick;
     h+='<div class="league-row'+(me?' me':'')+'"><div class="league-rank">'+rk+'</div>'
       +'<div style="font-size:18px;">🧑‍🎓</div>'
-      +'<div class="league-name">'+escapeHtmlJ(r.nickname)+(me?'（あなた）':'')+'</div>'
+      +'<div class="league-name">'+escapeHtmlJ(r.nickname)+(me?T('（あなた）','（你）',' (You)'):'')+'</div>'
       +'<div class="league-pts">'+r.total_points+' pt</div></div>';
   });
   el.innerHTML=h;
@@ -1216,13 +1332,13 @@ async function fillLeagueRows(){
 let cq=null;
 function renderChoiceIntro(mode){
   const t=mode==='trap'
-    ?{e:'🪤',t:'罠漢字クイズ',d:'日本語と台湾華語で<b>意味が違う</b>漢字語！<br>「勉強」「手紙」「愛人」…引っかからないでね😏'}
-    :{e:'🍔',t:'カタカナ語クイズ',d:'アルバイト？コンセント？マンション？<br>英語だと思ったら大間違いのカタカナ語10問！'};
+    ?{e:'🪤',t:T('罠漢字クイズ','陷阱漢字測驗','Trap Kanji Quiz'),d:T('日本語と台湾華語で<b>意味が違う</b>漢字語！<br>「勉強」「手紙」「愛人」…引っかからないでね😏','日語和台灣華語<b>意思不同</b>的漢字詞！<br>「勉強」「手紙」「愛人」…可別上當了😏','Kanji words that mean <b>something different</b> in Japanese vs. Taiwanese Mandarin!<br>勉強, 手紙, 愛人… don\'t fall for the trap 😏')}
+    :{e:'🍔',t:T('カタカナ語クイズ','片假名外來語測驗','Katakana Word Quiz'),d:T('アルバイト？コンセント？マンション？<br>英語だと思ったら大間違いのカタカナ語10問！','アルバイト？コンセント？マンション？<br>10題你以為是英語，其實完全不是的片假名詞！','Arubaito? Consento? Manshon?<br>10 katakana words that look like English but definitely aren\'t!')};
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+t.e+'</div><div class="result-title">'+t.t+'</div>'
     +'<div class="result-cheer">'+t.d+'</div>'
-    +'<div style="font-size:12px;color:#A28B7E;">全10問 ｜ 1問正解＝10pt（ランキングに加算）</div>'
-    +'<button class="big-start-btn" onclick="startChoiceQuiz(\''+mode+'\')">挑戦する！</button></div>';
+    +'<div style="font-size:12px;color:#A28B7E;">'+T('全10問 ｜ 1問正解＝10pt（ランキングに加算）','共10題 ｜ 每答對1題＝10pt（計入排行榜）','10 questions total | 10pt per correct answer (counts toward ranking)')+'</div>'
+    +'<button class="big-start-btn" onclick="startChoiceQuiz(\''+mode+'\')">'+T('挑戦する！','開始挑戰！','Start Challenge!')+'</button></div>';
 }
 function startChoiceQuiz(mode){
   const src=mode==='trap'?FF:KATA;
@@ -1234,11 +1350,12 @@ function buildChoices(c){
   const item=c.qs[c.i];const src=c.mode==='trap'?FF:KATA;
   let opts;
   if(c.mode==='trap'){
-    opts=[{t:item.jp+'（'+item.jz+'）',ok:1},{t:item.tw,ok:0}];
-    shuffle(src.filter(x=>x!==item)).slice(0,2).forEach(o=>opts.push({t:o.jp+'（'+o.jz+'）',ok:0}));
+    opts=[{t:langPair(item.en,item.jz),ok:1},{t:item.tw,ok:0}];
+    shuffle(src.filter(x=>x!==item)).slice(0,2).forEach(o=>opts.push({t:langPair(o.en,o.jz),ok:0}));
   }else{
-    opts=[{t:item.m,ok:1}];
-    shuffle(src.filter(x=>x!==item)).slice(0,3).forEach(o=>opts.push({t:o.m,ok:0}));
+    const mk=splitEnZh(item.m);
+    opts=[{t:langPair(mk.en,mk.zh),ok:1}];
+    shuffle(src.filter(x=>x!==item)).slice(0,3).forEach(o=>{const ok=splitEnZh(o.m);opts.push({t:langPair(ok.en,ok.zh),ok:0});});
   }
   return shuffle(opts);
 }
@@ -1255,17 +1372,17 @@ function renderChoiceQ(){
   let ex='';
   if(c.answered){
     ex=c.mode==='trap'
-      ?'<div class="ff-explain">📖 読み：<b>'+item.kana+'</b><br>🇯🇵 日本語：<b>'+item.jp+'</b>（'+item.jz+'）<br>🇹🇼 台湾華語：'+item.tw+'<br>💡 '+item.tip+'</div>'
-      :'<div class="ff-explain">✅ 意味：<b>'+item.m+'</b><br>🔤 '+item.o+'</div>';
-    ex+='<button class="next-btn" onclick="nextChoice()">'+(c.i===c.qs.length-1?'結果を見る →':'次の問題へ →')+'</button>';
+      ?'<div class="ff-explain">📖 '+T('読み：','讀音：','Reading: ')+'<b>'+item.kana+'</b><br>🇯🇵 '+T('日本語：','日語：','Japanese: ')+'<b>'+item.jp+'</b>（'+item.jz+'）<br>🇹🇼 '+T('台湾華語：','台灣華語：','Taiwanese Mandarin: ')+item.tw+'<br>💡 '+T(item.tip,item.tip_zh||item.tip,item.tip_en||item.tip)+'</div>'
+      :'<div class="ff-explain">✅ '+T('意味：','意思：','Meaning: ')+'<b>'+item.m+'</b><br>🔤 '+T(item.o,item.o_zh||item.o,item.o_en||item.o)+'</div>';
+    ex+='<button class="next-btn" onclick="nextChoice()">'+(c.i===c.qs.length-1?T('結果を見る →','查看結果 →','See results →'):T('次の問題へ →','下一題 →','Next question →'))+'</button>';
   }
   const pct=Math.round(((c.i+(c.answered?1:0))/c.qs.length)*100);
   document.getElementById('main').innerHTML=
     '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:'+pct+'%"></div></div>'
-    +'<div class="quiz-score">問題 '+(c.i+1)+' / '+c.qs.length+' ｜ ✅ '+c.correct+'問正解</div>'
+    +'<div class="quiz-score">'+T('問題','問題','Question')+' '+(c.i+1)+' / '+c.qs.length+' ｜ ✅ '+T(c.correct+'問正解',c.correct+'題正確',c.correct+' correct')+'</div>'
     +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#C9897A,#E8604C);"></div>'
     +'<div class="quiz-card-body">'
-    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">'+(c.mode==='trap'?'🪤 日本語での意味は？':'🍔 このカタカナ語の意味は？')+'</div>'
+    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">'+(c.mode==='trap'?'🪤 '+T('日本語での意味は？','日語裡的意思是？','What does this mean in Japanese?'):'🍔 '+T('このカタカナ語の意味は？','這個片假名詞的意思是？','What does this katakana word mean?'))+'</div>'
     +'<div class="quiz-kanji" style="font-size:'+fs+';">'+word+'</div>'
     +'<div style="margin-top:10px;">'+ch+'</div>'+ex+'</div></div>';
 }
@@ -1287,10 +1404,10 @@ function showChoiceResult(){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
     +'<div class="result-emoji">'+ch.emoji+'</div><div class="result-title">'+ch.title+'</div>'
     +'<div class="result-score-big">'+c.correct+' / '+total+'</div>'
-    +'<div class="result-score-label">獲得ポイント +'+(c.correct*10)+'pt（ランキングに加算）</div>'
+    +'<div class="result-score-label">'+T('獲得ポイント','獲得分數','Points earned')+' +'+(c.correct*10)+T('pt（ランキングに加算）','pt（計入排行榜）','pt (counts toward ranking)')+'</div>'
     +'<div class="result-cheer">'+ch.msg+'</div>'
-    +'<button class="result-retry-btn" onclick="startChoiceQuiz(\''+c.mode+'\')">🔄 もう一度挑戦！</button>'
-    +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
+    +'<button class="result-retry-btn" onclick="startChoiceQuiz(\''+c.mode+'\')">🔄 '+T('もう一度挑戦！','再挑戰一次！','Try again!')+'</button>'
+    +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 '+T('リーグを見る','查看排行榜','View leaderboard')+'</button></div>';
 }
 
 // ════════════════════════════════════════════════
@@ -1298,16 +1415,16 @@ function showChoiceResult(){
 // ════════════════════════════════════════════════
 let vs=null;
 function vsPool(){
-  return W.map(w=>({d:w.kanji,s:w.kana,m:w.en+'／'+w.zh}))
-    .concat(FF.map(f=>({d:f.w,s:f.kana,m:f.jp+'（'+f.jz+'）'})))
-    .concat(KATA.map(k=>({d:k.w,s:'',m:k.m})));
+  return W.map(w=>({d:w.kanji,s:w.kana,m:langPair(w.en,w.zh)}))
+    .concat(FF.map(f=>({d:f.w,s:f.kana,m:langPair(f.en,f.jz)})))
+    .concat(KATA.map(k=>{const mk=splitEnZh(k.m);return {d:k.w,s:'',m:langPair(mk.en,mk.zh)};}));
 }
 function renderVersusIntro(){
   document.getElementById('main').innerHTML='<div class="result-wrap">'
-    +'<div class="result-emoji">⚔️</div><div class="result-title">タイムアタック対戦</div>'
-    +'<div class="result-cheer">🌸 <b>さくらさん</b>と同じ10問で真剣勝負！<br>得点＝正解×スピード（1問最大120pt）。<br>速く、正確に！</div>'
-    +'<div style="font-size:12px;color:#A28B7E;margin-bottom:4px;">さくらさん：日本語ガチ勢のライバル🌸 かなり強いよ…</div>'
-    +'<button class="big-start-btn" onclick="startVersus()">対戦スタート！</button></div>';
+    +'<div class="result-emoji">⚔️</div><div class="result-title">'+T('タイムアタック対戦','限時對戰','Time Attack Battle')+'</div>'
+    +'<div class="result-cheer">🌸 '+T('<b>さくらさん</b>と同じ10問で真剣勝負！<br>得点＝正解×スピード（1問最大120pt）。<br>速く、正確に！','和<b>櫻花小姐</b>用同樣的10題一決勝負！<br>得分＝正確率×速度（每題最高120pt）。<br>又快又準！','A serious 10-question showdown against <b>Sakura</b>!<br>Score = correctness × speed (up to 120pt per question).<br>Be fast and accurate!')+'</div>'
+    +'<div style="font-size:12px;color:#A28B7E;margin-bottom:4px;">'+T('さくらさん：日本語ガチ勢のライバル🌸 かなり強いよ…','櫻花小姐：日語超強的勁敵🌸 相當厲害喔…','Sakura: a serious Japanese-language rival 🌸 She\'s pretty strong…')+'</div>'
+    +'<button class="big-start-btn" onclick="startVersus()">'+T('対戦スタート！','開始對戰！','Start the Battle!')+'</button></div>';
 }
 function startVersus(){
   const pool=shuffle(vsPool());
@@ -1349,11 +1466,11 @@ function renderVersus(){
     const win=v.my>v.bot,draw=v.my===v.bot;
     document.getElementById('main').innerHTML='<div class="result-wrap">'
       +'<div class="result-emoji">'+(win?'🏆':draw?'🤝':'😢')+'</div>'
-      +'<div class="result-title">'+(win?'勝利！さくらさんに勝った！':draw?'引き分け！':'惜敗…さくらさん強い！')+'</div>'
-      +'<div class="vs-scorebar" style="margin-top:12px;"><span>🧑‍🎓 あなた<br><b style="font-size:22px;">'+v.my+'pt</b><br>'+v.myC+'/10問</span><span style="font-size:20px;">VS</span><span>🌸 さくら<br><b style="font-size:22px;">'+v.bot+'pt</b><br>'+v.botC+'/10問</span></div>'
-      +'<div class="result-score-label" style="margin-top:10px;">ポイント +'+(Math.round(v.my/10)+(win?50:10))+'pt 獲得</div>'
-      +'<button class="result-retry-btn" onclick="startVersus()">⚔️ 再戦する！</button>'
-      +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 リーグを見る</button></div>';
+      +'<div class="result-title">'+(win?T('勝利！さくらさんに勝った！','勝利！贏過櫻花小姐了！','Victory! You beat Sakura!'):draw?T('引き分け！','平手！','A draw!'):T('惜敗…さくらさん強い！','惜敗…櫻花小姐好強！','So close… Sakura is strong!'))+'</div>'
+      +'<div class="vs-scorebar" style="margin-top:12px;"><span>🧑‍🎓 '+T('あなた','你','You')+'<br><b style="font-size:22px;">'+v.my+'pt</b><br>'+v.myC+'/10'+T('問','題','')+'</span><span style="font-size:20px;">VS</span><span>🌸 '+T('さくら','櫻花','Sakura')+'<br><b style="font-size:22px;">'+v.bot+'pt</b><br>'+v.botC+'/10'+T('問','題','')+'</span></div>'
+      +'<div class="result-score-label" style="margin-top:10px;">'+T('ポイント','分數','Points')+' +'+(Math.round(v.my/10)+(win?50:10))+'pt '+T('獲得','獲得','earned')+'</div>'
+      +'<button class="result-retry-btn" onclick="startVersus()">⚔️ '+T('再戦する！','再戰一次！','Rematch!')+'</button>'
+      +'<button class="result-retry-btn" style="background:#fff;color:#6B3D3D;margin-top:8px;box-shadow:none;border:2px solid #C9897A;" onclick="setView(\'league\')">🏆 '+T('リーグを見る','查看排行榜','View leaderboard')+'</button></div>';
     return;
   }
   const q=v.qs[v.i];const item=q.item;
@@ -1366,20 +1483,20 @@ function renderVersus(){
   });
   let mid='';
   if(v.phase==='q'){
-    mid='<div class="vs-timer">⏱ <span id="vs-timer">0.0</span> 秒</div>';
+    mid='<div class="vs-timer">⏱ <span id="vs-timer">0.0</span> '+T('秒','秒','sec')+'</div>';
   }else{
     const L=v.last;
-    mid='<div class="ff-explain" style="text-align:center;">🧑‍🎓 '+(L.ok?'✅ +'+L.gain+'pt':'❌ +0pt')+'（'+L.el.toFixed(1)+'秒）　🌸 '+(L.bok?'✅ +'+L.bgain+'pt':'❌ +0pt')+'（'+L.bt.toFixed(1)+'秒）</div>'
-      +'<button class="next-btn" onclick="vsNext()">'+(v.i===v.qs.length-1?'結果発表 →':'次の問題へ →')+'</button>';
+    mid='<div class="ff-explain" style="text-align:center;">🧑‍🎓 '+(L.ok?'✅ +'+L.gain+'pt':'❌ +0pt')+'（'+L.el.toFixed(1)+T('秒','秒','s')+'）　🌸 '+(L.bok?'✅ +'+L.bgain+'pt':'❌ +0pt')+'（'+L.bt.toFixed(1)+T('秒','秒','s')+'）</div>'
+      +'<button class="next-btn" onclick="vsNext()">'+(v.i===v.qs.length-1?T('結果発表 →','公布結果 →','See results →'):T('次の問題へ →','下一題 →','Next question →'))+'</button>';
   }
   document.getElementById('main').innerHTML=
     '<div class="vs-scorebar"><span>🧑‍🎓 '+v.my+'pt</span><span>Q'+(v.i+1)+'/10</span><span>🌸 '+v.bot+'pt</span></div>'
     +(v.phase==='q'?mid:'')
     +'<div class="quiz-card"><div class="lvl-stripe" style="background:linear-gradient(90deg,#E8604C,#C9897A);"></div>'
     +'<div class="quiz-card-body">'
-    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">意味はどれ？</div>'
+    +'<div style="font-size:11px;font-weight:800;color:#A28B7E;letter-spacing:1px;margin-bottom:4px;">'+T('意味はどれ？','哪個是正確意思？','Which one is the meaning?')+'</div>'
     +'<div class="quiz-kanji" style="font-size:'+fs+';">'+item.d+'</div>'
-    +(v.phase==='r'&&item.s?'<div style="font-size:13px;color:#6B3D3D;font-weight:700;margin-bottom:8px;">読み：'+item.s+'</div>':'')
+    +(v.phase==='r'&&item.s?'<div style="font-size:13px;color:#6B3D3D;font-weight:700;margin-bottom:8px;">'+T('読み：','讀音：','Reading: ')+item.s+'</div>':'')
     +'<div style="margin-top:10px;">'+ch+'</div>'
     +(v.phase==='r'?mid:'')+'</div></div>';
 }
@@ -1388,6 +1505,7 @@ initSpeech();
 renderCards();
 updateGamBadges();
 renderLoginHeader();
+updateNavLabels();
 </script>
 </body>
 </html>

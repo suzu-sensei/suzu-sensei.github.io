@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「みたい」「らしい」「っぽい」の違いを徹底解説</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#9a8080;
+    --line:#E4D5C8;
+    --mitai:#C4A46B;
+    --mitai-bg:#F3ECDC;
+    --rashii:#6B3D3D;
+    --rashii-bg:#F1E4E0;
+    --ppoi:#C9897A;
+    --ppoi-bg:#FBEEE9;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--rashii);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1.1rem,2.2vw,1.5rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--mitai-bg); color:var(--mitai);}
+  .terms .t2{background:var(--rashii-bg); color:var(--rashii);}
+  .terms .t3{background:var(--ppoi-bg); color:var(--ppoi);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--rashii);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 3-card layout ---------- */
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.mitai .stamp{color:var(--mitai); background:var(--mitai-bg);}
+  .card.rashii .stamp{color:var(--rashii); background:var(--rashii-bg);}
+  .card.ppoi .stamp{color:var(--ppoi); background:var(--ppoi-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.mitai .sentence mark{--mark:#dbe4ee;}
+  .card.rashii .sentence mark{--mark:#efd9d3;}
+  .card.ppoi .sentence mark{--mark:#dde6d6;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+  .card .flag{font-size:.8rem; font-weight:700; color:var(--warn); display:flex; gap:.4em; align-items:center;}
+  .card .note-box{font-size:.82rem; background:#FBF2DC; border:1px dashed #D8B25C; padding:.6em .7em; border-radius:8px; color:#5c4a12;}
+
+  /* ---------- core triad ---------- */
+  .triad{display:grid; grid-template-columns:repeat(3,1fr); gap:3vw; margin-top:2vh;}
+  .triad .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad .col.mitai{background:var(--mitai-bg);}
+  .triad .col.rashii{background:var(--rashii-bg);}
+  .triad .col.ppoi{background:var(--ppoi-bg);}
+  .triad .term{font-family:var(--jp); font-weight:900; font-size:1.7rem;}
+  .triad .col.mitai .term{color:var(--mitai);}
+  .triad .col.rashii .term{color:var(--rashii);}
+  .triad .col.ppoi .term{color:var(--ppoi);}
+  .triad .icon{font-size:1.6rem;}
+  .triad .def-jp{font-weight:700; font-size:1rem;}
+  .triad .def-en, .triad .def-zh{font-size:.85rem;}
+  .triad .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad .col.mitai .axis{color:var(--mitai);}
+  .triad .col.rashii .axis{color:var(--rashii);}
+  .triad .col.ppoi .axis{color:var(--ppoi);}
+
+  /* ---------- conjugation section ---------- */
+  .conj-list{display:flex; flex-direction:column; gap:1.4em; margin-top:2vh;}
+  .conj-item{border:1px solid var(--line); border-radius:12px; padding:1.3em 1.4em; background:#fff;}
+  .conj-item .head{display:flex; align-items:center; gap:.6em; margin-bottom:.6em;}
+  .conj-item .head .term{font-family:var(--jp); font-weight:900; font-size:1.25rem; padding:.15em .7em; border-radius:999px;}
+  .conj-item.mitai .head .term{background:var(--mitai-bg); color:var(--mitai);}
+  .conj-item.rashii .head .term{background:var(--rashii-bg); color:var(--rashii);}
+  .conj-item.ppoi .head .term{background:var(--ppoi-bg); color:var(--ppoi);}
+  .conj-rule{font-size:.95rem; margin:.3em 0; padding-left:.2em;}
+  .conj-rule b{font-family:var(--jp);}
+  .conj-annot{
+    margin-top:.7em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+
+  /* ---------- っぽい special ---------- */
+  .ppoi-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .ppoi-item{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em;}
+  .ppoi-item .sentence{font-family:var(--jp); font-weight:700; font-size:1.08rem; margin-bottom:.35em;}
+  .ppoi-item .why{font-size:.85rem; display:block;}
+  .compare-box{background:var(--paper-deep); border-radius:10px; padding:1.1em 1.3em; font-size:.9rem; line-height:1.7; margin-top:1.4em;}
+  .compare-box b{font-family:var(--jp);}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); text-align:center;}
+  .quiz .opts{display:flex; gap:.5em;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+  .quiz .deco-fruit{display:inline-block; margin-left:.4em; font-size:1.2rem; cursor:help;}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.15rem,2.4vw,1.6rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--mitai-bg); color:var(--mitai);}
+  .mini-triad .m2{background:var(--rashii-bg); color:var(--rashii);}
+  .mini-triad .m3{background:var(--ppoi-bg); color:var(--ppoi);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards, .triad{grid-template-columns:1fr;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--rashii);color:#fff;border-color:var(--rashii);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「みたい」「らしい」「っぽい」<br>似ているようで、全然違う3つの表現</h1>
+    <span class="sub-en en">They look similar — but mean something completely different.</span>
+    <span class="sub-zh zh">看起來很像，意思卻完全不同的三個表現。</span>
+    <div class="terms">
+      <span class="t1">みたい</span>
+      <span class="t2">らしい</span>
+      <span class="t3">っぽい</span>
+    </div>
+  </header>
+
+  <!-- 導入：春の例 -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">INTRODUCTION</span> <span class="zh">導入</span></div>
+    <h2>同じ「春」なのに、意味はこんなに違う</h2>
+    <span class="lead-en en">Same noun "spring (春)" — three completely different meanings.</span>
+    <span class="lead-zh zh">同樣是「春」這個名詞，意思卻大不相同。</span>
+
+    <div class="cards">
+      <div class="card mitai">
+        <span class="stamp">A｜春<mark>みたい</mark></span>
+        <div class="sentence">今日は暖かくて<mark>春みたい</mark>な日だ。</div>
+        <div class="meaning-jp">実際には春ではないが、春の気候に似ている。（例：冬の暖かい日）</div>
+        <div class="meaning-en en">It's not actually spring, but today's weather resembles spring (e.g. a warm day in winter).</div>
+        <div class="meaning-zh zh">其實並不是春天，但氣候很像春天（例如冬天裡溫暖的一天）。</div>
+      </div>
+      <div class="card rashii">
+        <span class="stamp">B｜春<mark>らしい</mark></span>
+        <div class="sentence">今日は暖かくて<mark>春らしい</mark>日だ。</div>
+        <div class="meaning-jp">本物の春の日。暖かい春という一般的なイメージ通り。</div>
+        <div class="meaning-en en">It genuinely is spring, and today matches the typical image of a warm spring day.</div>
+        <div class="meaning-zh zh">真的是春天，而且完全符合大家對「溫暖春天」的典型印象。</div>
+      </div>
+      <div class="card ppoi">
+        <span class="stamp">C｜春<mark>っぽい</mark></span>
+        <div class="sentence">今日は暖かくて<mark>春っぽい</mark>日だ。</div>
+        <div class="flag">⚠️ 不自然な文</div>
+        <div class="meaning-jp">春の日から「春の印象」を受ける、という当たり前の内容になり不自然。</div>
+        <div class="meaning-en en">Odd: if it really is spring, saying it "gives a spring impression" is redundant.</div>
+        <div class="meaning-zh zh">不自然：本來就是春天，卻說「給人春天的印象」，顯得多餘。</div>
+        <div class="note-box">✅ 正しい「春っぽい」の例：「今日のシャツは春っぽいですね」「さくらさんの名前は春っぽい」＝<b>春以外の何か</b>から春を連想する時に使う。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>3つの違いを一枚で整理する</h2>
+    <div class="triad">
+      <div class="col mitai">
+        <div class="icon">🎭</div>
+        <div class="term">みたい</div>
+        <div class="def-jp">実際は違うものだが、〜に似ている</div>
+        <div class="def-en en">It's NOT actually X — but resembles X (simile).</div>
+        <div class="def-zh zh">實際上並不是X，但很像X（比喻）。</div>
+        <div class="axis">現実 ＝ ✕（偽物・比喩）</div>
+      </div>
+      <div class="col rashii">
+        <div class="icon">✅</div>
+        <div class="term">らしい</div>
+        <div class="def-jp">あるものが、一般的なイメージ通り（そのものズバリ）</div>
+        <div class="def-en en">It genuinely IS X — matching the typical image of X.</div>
+        <div class="def-zh zh">確實就是X本身，完全符合典型印象。</div>
+        <div class="axis">現実 ＝ ◯（本物・典型）</div>
+      </div>
+      <div class="col ppoi">
+        <div class="icon">💭</div>
+        <div class="term">っぽい</div>
+        <div class="def-jp">ものから、〜という印象を受ける</div>
+        <div class="def-en en">Something gives off an impression of X (real or not doesn't matter).</div>
+        <div class="def-zh zh">從某事物感受到「像X」的印象（不強調真假）。</div>
+        <div class="axis">現実 ＝ △（印象のみ・真偽は無関係）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 接続ルール -->
+  <section>
+    <div class="eyebrow">形の作り方 <span class="en">CONJUGATION</span> <span class="zh">接續方法</span></div>
+    <h2>それぞれ、どう接続する？</h2>
+
+    <div class="conj-list">
+      <div class="conj-item mitai">
+        <div class="head"><span class="term">みたい</span></div>
+        <div class="conj-rule"><b>名詞</b> ＋ みたい　例：子供<mark style="background:none;">みたい</mark></div>
+        <div class="conj-rule"><b>な形容詞（語幹）</b> ＋ みたい　例：きれい<mark style="background:none;">みたい</mark>（「きれいだ」の「だ」を取る）</div>
+        <div class="conj-rule"><b>い形容詞（普通形）</b> ＋ みたい　例：暑い<mark style="background:none;">みたい</mark></div>
+        <div class="conj-rule"><b>動詞（普通形）</b> ＋ みたい　例：雨が降る<mark style="background:none;">みたい</mark></div>
+      </div>
+
+      <div class="conj-item rashii">
+        <div class="head"><span class="term">らしい</span></div>
+        <div class="conj-rule"><b>名詞</b> ＋ らしい（このコラムで扱う「典型」の意味）　例：子供<mark style="background:none;">らしい</mark>、先生<mark style="background:none;">らしい</mark></div>
+        <div class="conj-annot">
+          📌 <b>注意：伝聞の「らしい」との違い</b><br>
+          動詞・い形容詞の普通形＋らしいは、今回学んだ「典型のらしい」とは<b>別の用法（伝聞・推量）</b>です。<br>
+          例：「彼は忙しいらしい」＝人から聞いた話では、彼は忙しいそうだ。（自分で確認したわけではない情報）<br>
+          <span class="en">Note: "verb/adjective + rashii" is a separate hearsay usage ("I heard that…"), different from the "typical image" rashii taught here.</span><br>
+          <span class="zh">注意：「動詞・形容詞普通形＋らしい」是「傳聞」用法（聽說⋯），與本文所教的「典型的らしい」意義不同。</span>
+        </div>
+      </div>
+
+      <div class="conj-item ppoi">
+        <div class="head"><span class="term">っぽい</span></div>
+        <div class="conj-rule"><b>名詞</b> ＋ っぽい　例：子供<mark style="background:none;">っぽい</mark>、水<mark style="background:none;">っぽい</mark></div>
+        <div class="conj-rule"><b>い形容詞（語幹）</b> ＋ っぽい　例：安い→安<mark style="background:none;">っぽい</mark></div>
+        <div class="conj-rule"><b>動詞（ます形の語幹）</b> ＋ っぽい　例：忘れる→忘れ<mark style="background:none;">っぽい</mark>、怒る→怒り<mark style="background:none;">っぽい</mark></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 応用①子供 -->
+  <section>
+    <div class="eyebrow">応用① <span class="en">APPLIED PRACTICE</span> <span class="zh">應用練習</span></div>
+    <h2>「子供」でもう一度確認しよう</h2>
+    <div class="cards">
+      <div class="card mitai">
+        <span class="stamp">A｜子供<mark>みたい</mark></span>
+        <div class="sentence">その服、<mark>子供みたい</mark>だね。</div>
+        <div class="meaning-jp">大人用の服だが、着ているとまるで子供のように見える。</div>
+        <div class="meaning-en en">Adult clothing, but wearing it makes you look like a child.</div>
+        <div class="meaning-zh zh">是成人的衣服，但穿起來很像小孩子的樣子。</div>
+      </div>
+      <div class="card rashii">
+        <span class="stamp">B｜子供<mark>らしい</mark></span>
+        <div class="sentence">その服、<mark>子供らしい</mark>ね。</div>
+        <div class="meaning-jp">まさに子供服。子供服のイメージ通りのデザイン。</div>
+        <div class="meaning-en en">Genuine children's wear, matching the typical image perfectly.</div>
+        <div class="meaning-zh zh">真的就是童裝，完全符合大家對兒童服的印象。</div>
+      </div>
+      <div class="card ppoi">
+        <span class="stamp">C｜子供<mark>っぽい</mark></span>
+        <div class="sentence">その服、<mark>子供っぽい</mark>ね。</div>
+        <div class="meaning-jp">大人用でも、デザインが子供服のような印象。または着ている人が幼く見える。</div>
+        <div class="meaning-en en">Even if it's adult clothing, the design (or wearer) gives a childish impression.</div>
+        <div class="meaning-zh zh">即使是成人服裝，設計卻給人孩子氣的印象；或穿的人顯得幼稚。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 応用②先生 -->
+  <section>
+    <div class="eyebrow">応用② <span class="en">APPLIED PRACTICE</span> <span class="zh">應用練習</span></div>
+    <h2>「先生」でも同じルールが使える</h2>
+    <div class="cards">
+      <div class="card mitai">
+        <span class="stamp">A｜先生<mark>みたい</mark></span>
+        <div class="sentence">彼は<mark>先生みたい</mark>だ。</div>
+        <div class="meaning-jp">実際は先生ではないが、話し方や態度が先生に似ている。</div>
+        <div class="meaning-en en">He's not actually a teacher, but acts / speaks like one.</div>
+        <div class="meaning-zh zh">他其實不是老師，但說話、態度很像老師。</div>
+      </div>
+      <div class="card rashii">
+        <span class="stamp">B｜先生<mark>らしい</mark></span>
+        <div class="sentence">彼は<mark>先生らしい</mark>。</div>
+        <div class="meaning-jp">本当に先生であり、先生というイメージ通りの態度。</div>
+        <div class="meaning-en en">He really is a teacher, and behaves exactly as one typically would.</div>
+        <div class="meaning-zh zh">他真的是老師，而且完全符合一般人對老師的印象。</div>
+      </div>
+      <div class="card ppoi">
+        <span class="stamp">C｜先生<mark>っぽい</mark></span>
+        <div class="sentence">彼、<mark>先生っぽい</mark>ね。</div>
+        <div class="meaning-jp">実際に先生かどうかは関係なく、雰囲気や話し方から先生という印象を受ける。</div>
+        <div class="meaning-en en">Regardless of whether he's actually a teacher, his vibe/tone gives that impression.</div>
+        <div class="meaning-zh zh">不論他是不是老師，他的氛圍或說話方式給人一種像老師的印象。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- っぽい特集 -->
+  <section>
+    <div class="eyebrow">深掘り <span class="en">SPOTLIGHT: PPOI</span> <span class="zh">專題：PPOI</span></div>
+    <h2>「っぽい」はいつ自然に使える？</h2>
+    <div class="ppoi-list">
+      <div class="ppoi-item">
+        <div class="sentence">彼の話し方、関西<mark style="background:none;box-shadow:inset 0 -0.4em 0 #dde6d6;">っぽい</mark>ね。</div>
+        <span class="why en">Whether or not he's actually from Kansai, his way of speaking gives that impression.</span>
+        <span class="why zh">不論他是不是關西人，他的說話方式給人關西的印象。</span>
+      </div>
+      <div class="ppoi-item">
+        <div class="sentence">この味、コーヒー<mark style="background:none;box-shadow:inset 0 -0.4em 0 #dde6d6;">っぽい</mark>味がする。</div>
+        <span class="why en">The taste gives a coffee-like impression, without claiming it's exactly coffee.</span>
+        <span class="why zh">這個味道給人咖啡般的印象，但不特別強調就是咖啡。</span>
+      </div>
+      <div class="ppoi-item">
+        <div class="sentence">彼女の性格、ちょっと<mark style="background:none;box-shadow:inset 0 -0.4em 0 #dde6d6;">子供っぽい</mark>ところがある。</div>
+        <span class="why en">Her personality has a somewhat childish quality/trait (a partial impression, not a full comparison).</span>
+        <span class="why zh">她的個性有點孩子氣的地方（部分特質給人的印象）。</span>
+      </div>
+    </div>
+    <div class="compare-box">
+      <b>みたい vs っぽい の違い：</b>
+      「みたい」は2つの<b>別の物</b>を丸ごと比べる直喩（〜のようだ）。「っぽい」はあるものの<b>一部の特徴・雰囲気</b>から〜を感じる、という部分的な印象表現です。<br>
+      <span class="en">Mitai = a full simile comparing two separate things. Ppoi = picking up on a partial trait/vibe that suggests X.</span><br>
+      <span class="zh">みたい是把兩個「不同的東西」整體拿來比較的比喻；っぽい則是從某物「部分的特質、氛圍」感受到像X的印象。</span>
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>正しい言葉を選んでみよう</h2>
+    <span class="lead-en en">Tap an option to check your answer.</span>
+    <span class="lead-zh zh">點選選項確認答案。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「らしい」はズバリ本物、<br>「みたい」は似てるだけの偽物、<br>「っぽい」はただの印象。</div>
+      <span class="en">Rashii = spot-on real. Mitai = looks like, but isn't. Ppoi = just gives a vibe.</span>
+      <span class="zh">らしい＝正是如此；みたい＝看似相像，其實不是；っぽい＝僅止於印象。</span>
+      <div class="mini-triad">
+        <span class="m1">みたい＝偽物</span>
+        <span class="m2">らしい＝本物</span>
+        <span class="m3">っぽい＝印象</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜みたい・らしい・っぽいの違い</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { jp:"このケーキ、まるで宝石", answer:"みたい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"実際は宝石ではないが、見た目が宝石に似ている→比喩の「みたい」。",
+      exp_en:"It's not really a jewel, but looks like one.",
+      exp_zh:"其實不是寶石，但外觀很像寶石。" },
+    { jp:"彼女は本物の先生", answer:"らしい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"実際に先生であり、先生のイメージ通りの態度→「らしい」。",
+      exp_en:"She really is a teacher and acts exactly like one.",
+      exp_zh:"她真的是老師，舉止完全符合老師的典型形象。" },
+    { jp:"あの色、大人", answer:"っぽい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"色そのものから「大人な感じ」という印象を受けている→「っぽい」。",
+      exp_en:"The color itself gives off a mature/adult impression.",
+      exp_zh:"那個顏色給人一種成熟大人的印象。" },
+    { jp:"この味、りんご", answer:"みたい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"実際はりんごではないが、味がりんごに似ている→比喩の「みたい」。",
+      exp_en:"It's not actually apple, but tastes like it.",
+      exp_zh:"其實不是蘋果，但味道很像蘋果。",
+      deco:"🍅", decoTitle:"見た目や色はりんごっぽいけど、実はトマト🍅（りんごじゃない！）" },
+    { jp:"田中さんの話し方、関西", answer:"っぽい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"出身地が関西かどうかは不明だが、話し方の特徴から関西を感じる→「っぽい」。",
+      exp_en:"Whether he's from Kansai or not, his speech gives that impression.",
+      exp_zh:"不論是不是關西人，說話方式給人關西的印象。" },
+    { jp:"あのロボット、まるで人間", answer:"みたい", opts:["みたい","らしい","っぽい"],
+      exp_jp:"実際は人間ではないが、動きが人間に似ている→比喩の「みたい」。",
+      exp_en:"It's not human, but moves like one.",
+      exp_zh:"其實不是人類，但動作很像人類。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.jp}<span class="blank"></span>ですね。${q.deco ? `<span class="deco-fruit" title="${q.decoTitle||''}">${q.deco}</span>` : ''}</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>
