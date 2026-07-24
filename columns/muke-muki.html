@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「〜向け」と「〜向き」の違いを徹底解説</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#6b4a4a;
+    --line:#E4D5C8;
+    --muke:#6B3D3D;
+    --muke-bg:#F1E4E0;
+    --muki:#C9897A;
+    --muki-bg:#FBEEE9;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--muke);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1.1rem,2.2vw,1.5rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--muke-bg); color:var(--muke);}
+  .terms .t2{background:var(--muki-bg); color:var(--muki);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--muke);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 2-card layout ---------- */
+  .cards2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.muke .stamp{color:var(--muke); background:var(--muke-bg);}
+  .card.muki .stamp{color:var(--muki); background:var(--muki-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.muke .sentence mark{--mark:#efd9d3;}
+  .card.muki .sentence mark{--mark:#f7e2da;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+
+  /* ---------- core duo ---------- */
+  .triad2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .triad2 .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad2 .col.muke{background:var(--muke-bg);}
+  .triad2 .col.muki{background:var(--muki-bg);}
+  .triad2 .term{font-family:var(--jp); font-weight:900; font-size:1.7rem;}
+  .triad2 .col.muke .term{color:var(--muke);}
+  .triad2 .col.muki .term{color:var(--muki);}
+  .triad2 .icon{font-size:1.6rem;}
+  .triad2 .def-jp{font-weight:700; font-size:1rem;}
+  .triad2 .def-en, .triad2 .def-zh{font-size:.85rem;}
+  .triad2 .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad2 .col.muke .axis{color:var(--muke);}
+  .triad2 .col.muki .axis{color:var(--muki);}
+
+  /* ---------- comparison table ---------- */
+  .compare-table{width:100%; border-collapse:collapse; margin-top:2vh; font-size:.92rem;}
+  .compare-table th, .compare-table td{border:1px solid var(--line); padding:.8em 1em; text-align:left; vertical-align:top;}
+  .compare-table th{background:var(--paper-deep); font-family:var(--jp); font-weight:700; color:var(--muke);}
+  .compare-table td.jp{font-weight:700;}
+  .compare-table tr:nth-child(2) td.jp{color:var(--muke);}
+  .compare-table tr:nth-child(3) td.jp{color:var(--muki);}
+
+  .conj-annot{
+    margin-top:1.4em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+  .conj-annot b{font-family:var(--jp);}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); text-align:center;}
+  .quiz .opts{display:flex; gap:.5em;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.15rem,2.4vw,1.6rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--muke-bg); color:var(--muke);}
+  .mini-triad .m2{background:var(--muki-bg); color:var(--muki);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards2, .triad2{grid-template-columns:1fr;}
+    .compare-table{font-size:.82rem;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--muke);color:#fff;border-color:var(--muke);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「〜向け」と「〜向き」<br>似ているようで、視点が全然違う二つの表現</h1>
+    <span class="sub-en en">They look similar — but come from completely different perspectives.</span>
+    <span class="sub-zh zh">看起來很像，出發點卻完全不同的兩個表現。</span>
+    <div class="terms">
+      <span class="t1">〜向け</span>
+      <span class="t2">〜向き</span>
+    </div>
+  </header>
+
+  <!-- 導入：ひとことで -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">IN SHORT</span> <span class="zh">一句話總結</span></div>
+    <h2>💡 ひとことで言うと？</h2>
+    <span class="lead-en en">A quick summary before we dive in.</span>
+    <span class="lead-zh zh">先快速掌握重點。</span>
+
+    <div class="cards2">
+      <div class="card muke">
+        <span class="stamp">〜向け（muke）</span>
+        <div class="meaning-jp">作った人が「これをターゲットにしよう」と決めて作った、という意味。</div>
+        <div class="meaning-en en"><b>EN:</b> Designed for / Targeted at</div>
+        <div class="meaning-zh zh"><b>TW:</b> 專為〜設計的 / 針對〜的</div>
+      </div>
+      <div class="card muki">
+        <span class="stamp">〜向き（muki）</span>
+        <div class="meaning-jp">ターゲットにしたかどうかは関係なく、結果的に合っている、という意味。</div>
+        <div class="meaning-en en"><b>EN:</b> Suitable for / Good fit for</div>
+        <div class="meaning-zh zh"><b>TW:</b> 適合〜的 / 蠻合適〜的</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>二つの違いを一枚で整理する</h2>
+    <div class="triad2">
+      <div class="col muke">
+        <div class="icon">🎯</div>
+        <div class="term">〜向け</div>
+        <div class="def-jp">作った人の「意図・目的」。〜をターゲットにして作った。</div>
+        <div class="def-en en">Creator's INTENT — made with X specifically as the target.</div>
+        <div class="def-zh zh">強調製作人的「目的」——專為X而做。</div>
+        <div class="axis">視点 ＝ 作り手の意図（Target）</div>
+      </div>
+      <div class="col muki">
+        <div class="icon">✅</div>
+        <div class="term">〜向き</div>
+        <div class="def-jp">使う人との「相性・適合度」。狙ったかどうかは関係ない。</div>
+        <div class="def-en en">SUITABILITY / FIT — matches X well, regardless of original intent.</div>
+        <div class="def-zh zh">強調「特質・適合度」——不一定是特意設計，但客觀上很適合。</div>
+        <div class="axis">視点 ＝ 使い手との適合度（Fit）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 女性向け -->
+  <section>
+    <div class="eyebrow">1 <span class="en">TARGETED AT</span> <span class="zh">專為〜設計</span></div>
+    <h2>女性向け（muke）</h2>
+    <p>メーカーや開発者が「女性をターゲットにして作った」という意味です。</p>
+    <span class="lead-en en"><b>EN:</b> Made specifically for women (Intent / Target).</span>
+    <span class="lead-zh zh"><b>TW:</b> 這是<b>專為女性設計・開發</b>的（強調製作人的「目的」）。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card muke">
+        <span class="stamp">例文①</span>
+        <div class="sentence">これは<mark>女性向け</mark>の雑誌です。</div>
+        <div class="meaning-en en"><b>EN:</b> This magazine is targeted at women.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這是一本<b>針對女性</b>的雜誌。</div>
+      </div>
+      <div class="card muke">
+        <span class="stamp">例文②</span>
+        <div class="sentence"><mark>女性向け</mark>のアパート</div>
+        <div class="meaning-en en"><b>EN:</b> Apartments designed for women.</div>
+        <div class="meaning-zh zh"><b>TW:</b> <b>專為女性</b>打造的公寓。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 女性向き -->
+  <section>
+    <div class="eyebrow">2 <span class="en">SUITABLE FOR</span> <span class="zh">客觀上適合</span></div>
+    <h2>女性向き（muki）</h2>
+    <p>本来ターゲットかどうかに関係なく、「結果として女性の好みや条件に合っている」という意味です。</p>
+    <span class="lead-en en"><b>EN:</b> Suitable or convenient for women (Fit / Compatibility).</span>
+    <span class="lead-zh zh"><b>TW:</b> 雖然不一定是專為女性做的，但<b>客觀上很適合女性</b>（強調「特質・適合度」）。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card muki">
+        <span class="stamp">例文①</span>
+        <div class="sentence">このカクテルは甘くて<mark>女性向き</mark>だね。</div>
+        <div class="meaning-en en"><b>EN:</b> This cocktail is sweet, so it's very suitable for women.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這款調酒甜甜的，很<b>適合女性</b>飲用。</div>
+      </div>
+      <div class="card muki">
+        <span class="stamp">例文②</span>
+        <div class="sentence">この部屋は小さくて<mark>女性向き</mark>です。</div>
+        <div class="meaning-en en"><b>EN:</b> This room is small and well-suited for women.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這間房間不大，蠻<b>適合女性</b>住的。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 違いのまとめ -->
+  <section>
+    <div class="eyebrow">比較 <span class="en">COMPARISON</span> <span class="zh">比較看看</span></div>
+    <h2>🔍 違いのまとめ</h2>
+    <table class="compare-table">
+      <tr>
+        <th>表現</th>
+        <th>視点 <span class="en">/ Perspective</span> <span class="zh">/ 視角</span></th>
+        <th><span class="en">EN</span></th>
+        <th><span class="zh">台湾中国語</span></th>
+      </tr>
+      <tr>
+        <td class="jp">女性向け</td>
+        <td>作った人の意図<br><span class="en">(Creator's Intent)</span><span class="zh">（製作者的意圖）</span></td>
+        <td class="en">Targeted at women</td>
+        <td class="zh">專為女性設計的</td>
+      </tr>
+      <tr>
+        <td class="jp">女性向き</td>
+        <td>使う人の相性・適合度<br><span class="en">(Suitability / Fit)</span><span class="zh">（適合度・契合度）</span></td>
+        <td class="en">Fit / Suitable for women</td>
+        <td class="zh">很適合女性的</td>
+      </tr>
+    </table>
+    <div class="conj-annot">
+      💡 <b>教えるときのワンポイント（Tip）</b><br>
+      <b>向け（muke）</b> ＝ <b>Target</b>（針對）<br>
+      <b>向き（muki）</b> ＝ <b>Fit</b>（適合）
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>正しい言葉を選んでみよう</h2>
+    <span class="lead-en en">Tap an option to check your answer.</span>
+    <span class="lead-zh zh">點選選項確認答案。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「向け」は狙って作った、<br>「向き」はたまたま合っている。</div>
+      <span class="en">Muke = made with that target in mind. Muki = simply happens to fit.</span>
+      <span class="zh">向け＝特意鎖定目標製作；向き＝剛好很適合。</span>
+      <div class="mini-triad">
+        <span class="m1">向け＝Target（針對）</span>
+        <span class="m2">向き＝Fit（適合）</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜「〜向け」・「〜向き」の違い</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { jp:"これは女性", answer:"向け", opts:["向け","向き"], suffix:"の雑誌です。",
+      exp_jp:"出版社が女性をターゲットにして作った雑誌→「向け」。",
+      exp_en:"The publisher made this magazine specifically targeting women.",
+      exp_zh:"出版社是以女性為目標對象製作的雜誌→「向け」。" },
+    { jp:"このカクテルは甘くて女性", answer:"向き", opts:["向け","向き"], suffix:"だね。",
+      exp_jp:"甘さが女性の好みに合っている、という「結果的な適合」→「向き」。",
+      exp_en:"The sweetness happens to suit women's taste — a matter of fit, not original intent.",
+      exp_zh:"甜度剛好符合女性的喜好，是「結果上的適合」→「向き」。" },
+    { jp:"女性", answer:"向け", opts:["向け","向き"], suffix:"のアパート",
+      exp_jp:"デベロッパーが女性をターゲットに企画した物件→「向け」。",
+      exp_en:"The developer planned this property specifically targeting women.",
+      exp_zh:"建商是以女性為目標客群規劃的物件→「向け」。" },
+    { jp:"この部屋は小さくて女性", answer:"向き", opts:["向け","向き"], suffix:"です。",
+      exp_jp:"部屋の広さが結果的に女性の条件に合っている→「向き」。",
+      exp_en:"The room's size just happens to suit women — a matter of fit.",
+      exp_zh:"房間大小剛好符合女性的條件→「向き」。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.jp}<span class="blank"></span>${q.suffix}</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>

@@ -251,8 +251,8 @@
   .teacher-desc {
     font-size: 13px;
     line-height: 2;
-    color: #7a6060;
-    font-weight: 300;
+    color: #5a4040;
+    font-weight: 400;
   }
 
   .lang-badges {
@@ -264,11 +264,11 @@
 
   .lang-badge {
     background: var(--mist);
-    color: var(--sage);
+    color: #4a5c48;
     font-size: 11px;
     padding: 5px 14px;
     letter-spacing: 1px;
-    font-weight: 300;
+    font-weight: 500;
   }
 
   /* 5-STEP FLOW */
@@ -317,9 +317,9 @@
   }
   .step-desc {
     font-size: 11px;
-    color: #9a8080;
+    color: #6b4a4a;
     line-height: 1.6;
-    font-weight: 300;
+    font-weight: 400;
   }
   .step-arrow {
     color: var(--rose);
@@ -329,7 +329,8 @@
     flex-shrink: 0;
   }
   @media (max-width: 768px) {
-    .steps-row { flex-direction: column; }
+    .steps-row { flex-direction: column; align-items: center; }
+    .step-item { width: 100%; max-width: 320px; flex: none; }
     .step-arrow { transform: rotate(90deg); margin: 2px 0; }
     .steps-section { padding: 50px 24px 20px; }
   }
@@ -342,11 +343,42 @@
     padding: 90px 40px;
     text-align: center;
   }
-  .calendly-inline-widget {
-    margin-top: 32px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(107,61,61,0.08);
+  .booking-cta-panel {
+    max-width: 560px;
+    margin: 36px auto 0;
+    background: #fff;
+    border-radius: 18px;
+    padding: 36px 32px;
+    box-shadow: 0 10px 34px rgba(107,61,61,0.14);
+    text-align: center;
+  }
+  .booking-cta-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--blush);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 18px;
+  }
+  .booking-cta-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    color: var(--deep);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .booking-cta-sub {
+    font-size: 12px;
+    color: #6b4a4a;
+    font-weight: 400;
+    margin-bottom: 22px;
+  }
+  .booking-cta-btn { width: 100%; }
+  .booking-cta-note {
+    font-size: 11px;
+    color: #8a5a5a;
+    margin-top: 14px;
+    font-weight: 400;
   }
 
   /* SAFE SPACE SECTION */
@@ -381,8 +413,8 @@
   .section-body {
     font-size: 14px;
     line-height: 2.2;
-    color: #7a6060;
-    font-weight: 300;
+    color: #5a4040;
+    font-weight: 400;
     margin-bottom: 32px;
   }
 
@@ -419,9 +451,9 @@
 
   .safe-desc {
     font-size: 12px;
-    color: #9a8080;
+    color: #6b4a4a;
     line-height: 1.8;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   /* LESSONS SECTION */
@@ -523,9 +555,9 @@
 
   .lesson-desc {
     font-size: 12px;
-    color: rgba(250,246,240,0.5);
+    color: rgba(250,246,240,0.8);
     line-height: 2;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   /* ABOUT */
@@ -625,7 +657,7 @@
   .milestone-text {
     font-size: 13px;
     line-height: 1.8;
-    color: #6a5050;
+    color: #5a4040;
     font-weight: 300;
   }
 
@@ -673,7 +705,7 @@
 
   .trial-body {
     font-size: 14px;
-    color: #9a7070;
+    color: #6b4040;
     line-height: 2;
     margin-bottom: 48px;
     font-weight: 300;
@@ -689,7 +721,7 @@
 
   .price-label { font-size: 11px; letter-spacing: 4px; color: var(--rose); text-transform: uppercase; margin-bottom: 8px; }
   .price-amount { font-family: 'Noto Serif JP', serif; font-size: 48px; font-weight: 300; color: var(--deep); }
-  .price-unit { font-size: 14px; color: #9a8080; margin-top: 4px; font-weight: 300; }
+  .price-unit { font-size: 14px; color: #6b4a4a; margin-top: 4px; font-weight: 300; }
 
   footer {
     background: var(--ink);
@@ -912,7 +944,7 @@
   }
   .pricing-subtitle {
     font-size: 13px;
-    color: #9a7070;
+    color: #6b4040;
     line-height: 1.8;
     font-weight: 300;
   }
@@ -952,7 +984,7 @@
   }
   .pc-name-cn {
     font-size: 11px;
-    color: #b09090;
+    color: #8a5a5a;
     margin-bottom: 20px;
     font-weight: 300;
   }
@@ -966,14 +998,14 @@
   }
   .pc-unit {
     font-size: 12px;
-    color: #b09090;
+    color: #8a5a5a;
     margin-bottom: 20px;
     font-weight: 300;
     line-height: 1.7;
   }
   .pc-detail {
     font-size: 12px;
-    color: #7a6060;
+    color: #5a4040;
     line-height: 2;
     font-weight: 300;
     border-top: 1px solid rgba(107,61,61,0.07);
@@ -1004,7 +1036,7 @@
   }
   .flow-title-cn {
     font-size: 11px;
-    color: #b09090;
+    color: #8a5a5a;
     font-weight: 300;
     margin-bottom: 20px;
     display: block;
@@ -1035,9 +1067,9 @@
   }
   .flow-text {
     font-size: 12px;
-    color: #6a5050;
+    color: #5a4040;
     line-height: 1.8;
-    font-weight: 300;
+    font-weight: 400;
   }
   .flow-text strong { display: block; color: var(--deep); font-size: 13px; font-weight: 400; }
   .flow-arrow {
@@ -1163,6 +1195,55 @@
   }
   .quiz-float.hidden { opacity: 0; pointer-events: none; transform: translateY(20px); }
 
+  .trial-float {
+    position: fixed;
+    bottom: 122px;
+    right: 20px;
+    z-index: 800;
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 0.4s;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .trial-float.hidden { opacity: 0; pointer-events: none; transform: translateY(20px); }
+  .trial-float-card {
+    background: var(--gold);
+    color: #3a2a10;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 24px rgba(196,164,107,0.45);
+    text-decoration: none;
+    max-width: 200px;
+    position: relative;
+  }
+  .trial-float-icon { font-size: 24px; flex-shrink: 0; }
+  .trial-float-text { flex: 1; }
+  .trial-float-label { font-size: 9px; letter-spacing: 2px; color: #6b3d3d; font-weight: 700; margin-bottom: 2px; }
+  .trial-float-title { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 500; }
+  .trial-float-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 22px;
+    height: 22px;
+    background: #b07070;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .trial-float-close:hover { background: var(--rose); }
+  @media (max-width: 480px) {
+    .trial-float { bottom: 112px; }
+  }
+
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
@@ -1219,25 +1300,40 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 0;
-    padding: 6px 72px 6px 20px;
-    background: rgba(107,61,61,0.06);
-    border-bottom: 1px solid rgba(107,61,61,0.08);
+    gap: 8px;
+    padding: 8px 72px 8px 20px;
+    background: rgba(107,61,61,0.1);
+    border-bottom: 1px solid rgba(107,61,61,0.18);
+  }
+  .lang-switcher-label {
+    font-size: 11px;
+    color: var(--deep);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
   .lang-sw-btn {
-    background: none;
-    border: 1px solid rgba(107,61,61,0.2);
-    padding: 4px 12px;
+    background: #fff;
+    border: 1.5px solid rgba(107,61,61,0.45);
+    padding: 5px 13px;
     font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 700;
     letter-spacing: 1.5px;
-    color: #9a7070;
+    color: #6b4040;
     cursor: pointer;
     transition: all 0.2s;
+    animation: langAttention 1.6s ease-in-out 3;
   }
   .lang-sw-btn:first-child { border-radius: 4px 0 0 4px; }
   .lang-sw-btn:last-child  { border-radius: 0 4px 4px 0; border-left: none; }
   .lang-sw-btn.active { background: var(--deep); color: white; border-color: var(--deep); }
+  @keyframes langAttention {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201,137,122,0); }
+    50% { box-shadow: 0 0 0 5px rgba(201,137,122,0.45); }
+  }
 
   .quick-links-bar{
     display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;
@@ -1289,7 +1385,7 @@
     font-weight: 500;
   }
   .form-label small {
-    color: #b09090;
+    color: #8a5a5a;
     font-weight: 300;
     letter-spacing: 1px;
     margin-left: 6px;
@@ -1310,7 +1406,7 @@
   .form-textarea { resize: vertical; min-height: 120px; line-height: 1.8; }
   .form-note {
     font-size: 11px;
-    color: #b09090;
+    color: #8a5a5a;
     margin-top: 16px;
     line-height: 2;
     text-align: center;
@@ -1389,8 +1485,9 @@
   }
   .column-desc {
     font-size: 13px;
-    color: #9a8080;
+    color: #6b4a4a;
     line-height: 1.8;
+    font-weight: 400;
     flex: 1;
   }
   .column-cta {
@@ -1429,6 +1526,22 @@
   <a class="nav-quiz-link" href="jlpt.html">📖 <span data-lang="ja">JLPT単語カード</span><span data-lang="zh">JLPT單字卡</span><span data-lang="en">JLPT Word Cards</span></a>
 </nav>
 
+<!-- Floating trial booking popup -->
+<div class="trial-float" id="trial-float">
+  <a class="trial-float-card" href="https://calendly.com/suzu-nihongo/30min" target="_blank" rel="noopener">
+    <span class="trial-float-icon">📅</span>
+    <div class="trial-float-text">
+      <div class="trial-float-label">FREE TRIAL</div>
+      <div class="trial-float-title">
+        <span data-lang="ja">無料体験<br>レッスン予約</span>
+        <span data-lang="zh">預約免費<br>體驗課</span>
+        <span data-lang="en">Book a Free<br>Trial Lesson</span>
+      </div>
+    </div>
+  </a>
+  <button class="trial-float-close" onclick="document.getElementById('trial-float').classList.add('hidden')" title="閉じる">✕</button>
+</div>
+
 <!-- Floating quiz popup -->
 <div class="quiz-float" id="quiz-float">
   <a class="quiz-float-card" href="quiz.html">
@@ -1464,6 +1577,7 @@ function closeNav() {
 
 <!-- Language switcher -->
 <div class="lang-switcher">
+  <span class="lang-switcher-label">🌐 <span data-lang="ja">言語切替</span><span data-lang="zh">切換語言</span><span data-lang="en">Language</span></span>
   <button class="lang-sw-btn active" id="ls-ja" onclick="setLang('ja')">🇯🇵 JP</button>
   <button class="lang-sw-btn" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
   <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
@@ -1694,31 +1808,31 @@ function closeNav() {
       </h2>
       <div class="milestone">
         <span class="milestone-icon">🌸</span>
-        <div class="milestone-text"><strong>日本語母語者</strong>埼玉・神奈川・東京・タイ・台湾での居住経験を持つ正真正銘の日本語母語者<br><small style="color:#b09090;" data-lang="zh">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small><small style="color:#b09090" data-lang="en">Native Japanese speaker – lived in Saitama, Kanagawa, Tokyo, Thailand & Taiwan</small></div>
+        <div class="milestone-text"><strong>日本語母語者</strong>埼玉・神奈川・東京・タイ・台湾での居住経験を持つ正真正銘の日本語母語者<br><small style="color:#8a5a5a;" data-lang="zh">正宗日語母語者，曾居住埼玉・神奈川・東京・泰國・台灣</small><small style="color:#8a5a5a" data-lang="en">Native Japanese speaker – lived in Saitama, Kanagawa, Tokyo, Thailand & Taiwan</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🇹🇼</span>
-        <div class="milestone-text"><strong>台湾にて英語留学 半年</strong>語学学習の孤独と挫折を身をもって知るからこそ、生徒一人ひとりに深く寄り添える<br><small style="color:#b09090;" data-lang="zh">在台灣留學半年，深知語言學習的挫折與孤獨</small><small style="color:#b09090" data-lang="en">6 months studying English in Taiwan – understands the loneliness & frustration of language learning firsthand</small></div>
+        <div class="milestone-text"><strong>台湾にて英語留学 半年</strong>語学学習の孤独と挫折を身をもって知るからこそ、生徒一人ひとりに深く寄り添える<br><small style="color:#8a5a5a;" data-lang="zh">在台灣留學半年，深知語言學習的挫折與孤獨</small><small style="color:#8a5a5a" data-lang="en">6 months studying English in Taiwan – understands the loneliness & frustration of language learning firsthand</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🇹🇭</span>
-        <div class="milestone-text"><strong>タイでの営業経験 2年</strong>異文化の中で生活・仕事をし、コミュニケーション力こそ最も重要だと実感<br><small style="color:#b09090;" data-lang="zh">在異文化中生活與工作，讓教學更有溫度</small><small style="color:#b09090" data-lang="en">2 years in sales in Thailand – living across cultures proved that communication is everything</small></div>
+        <div class="milestone-text"><strong>タイでの営業経験 2年</strong>異文化の中で生活・仕事をし、コミュニケーション力こそ最も重要だと実感<br><small style="color:#8a5a5a;" data-lang="zh">在異文化中生活與工作，讓教學更有溫度</small><small style="color:#8a5a5a" data-lang="en">2 years in sales in Thailand – living across cultures proved that communication is everything</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">👩‍🏫</span>
-        <div class="milestone-text"><strong>英語・数学 教師経験 4年</strong>豊富な指導経験から、どんなレベルの生徒にも柔軟に対応できる<br><small style="color:#b09090;" data-lang="zh">豐富的授課歷程，讓每位學生都能跟上節奏</small><small style="color:#b09090" data-lang="en">4 years teaching English & Math – flexible and experienced with students at every level</small></div>
+        <div class="milestone-text"><strong>英語・数学 教師経験 4年</strong>豊富な指導経験から、どんなレベルの生徒にも柔軟に対応できる<br><small style="color:#8a5a5a;" data-lang="zh">豐富的授課歷程，讓每位學生都能跟上節奏</small><small style="color:#8a5a5a" data-lang="en">4 years teaching English & Math – flexible and experienced with students at every level</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">✈️</span>
-        <div class="milestone-text"><strong>東南アジアの熱風を感じ、欧州4カ国の歴史を深く見つめる旅</strong>旅の現場で使える生きた日本語を、実体験から教えられる<br><small style="color:#b09090;" data-lang="zh">感受東南亞的熱情，深度探訪歐洲四國歷史</small><small style="color:#b09090" data-lang="en">Travelled Southeast Asia & 4 European countries – teaches real, living Japanese from lived experience</small></div>
+        <div class="milestone-text"><strong>東南アジアの熱風を感じ、欧州4カ国の歴史を深く見つめる旅</strong>旅の現場で使える生きた日本語を、実体験から教えられる<br><small style="color:#8a5a5a;" data-lang="zh">感受東南亞的熱情，深度探訪歐洲四國歷史</small><small style="color:#8a5a5a" data-lang="en">Travelled Southeast Asia & 4 European countries – teaches real, living Japanese from lived experience</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">🗣️</span>
-        <div class="milestone-text"><strong>TOEIC 800点 / タイ語検定4級取得</strong>多言語学習者として、最も効果的な学び方を自身の経験から導ける<br><small style="color:#b09090;" data-lang="zh">不是只會日語的老師，而是真正懂得「學語言的痛苦」的老師</small><small style="color:#b09090" data-lang="en">TOEIC 800 / Thai Level 4 – a multi-language learner who knows the most effective ways to study</small></div>
+        <div class="milestone-text"><strong>TOEIC 800点 / タイ語検定4級取得</strong>多言語学習者として、最も効果的な学び方を自身の経験から導ける<br><small style="color:#8a5a5a;" data-lang="zh">不是只會日語的老師，而是真正懂得「學語言的痛苦」的老師</small><small style="color:#8a5a5a" data-lang="en">TOEIC 800 / Thai Level 4 – a multi-language learner who knows the most effective ways to study</small></div>
       </div>
       <div class="milestone">
         <span class="milestone-icon">💡</span>
-        <div class="milestone-text"><strong>英語・中国語・タイ語の学習経験あり</strong>独学で英語・中国語・タイ語を学んだが現地では全く通じず挫折——その経験が今の教え方の原点<br><small style="color:#b09090;" data-lang="zh">正因如此，上課時間就是<em>輸入的時間</em>：打好基礎的同時，學習最真實的發音與生活中真正在用的單字</small><small style="color:#b09090" data-lang="en">Self-studied English, Mandarin & Thai – and failed in the field. That failure became the foundation of her teaching approach</small></div>
+        <div class="milestone-text"><strong>英語・中国語・タイ語の学習経験あり</strong>独学で英語・中国語・タイ語を学んだが現地では全く通じず挫折——その経験が今の教え方の原点<br><small style="color:#8a5a5a;" data-lang="zh">正因如此，上課時間就是<em>輸入的時間</em>：打好基礎的同時，學習最真實的發音與生活中真正在用的單字</small><small style="color:#8a5a5a" data-lang="en">Self-studied English, Mandarin & Thai – and failed in the field. That failure became the foundation of her teaching approach</small></div>
       </div>
     </div>
   </div>
@@ -1734,7 +1848,7 @@ function closeNav() {
       <span data-lang="zh">我們會做<br>這樣的筆記。</span>
       <span data-lang="en">Here's a look at<br>the notes we take.</span>
     </h2>
-    <p style="font-size:13px; color:#9a8080; font-weight:300; margin-top:12px;">
+    <p style="font-size:13px; color:#6b4a4a; font-weight:300; margin-top:12px;">
       毎回の授業内容を丁寧に記録し、生徒さんと共有しています。<br>
       <small data-lang="zh">每堂課的內容都會詳細記錄，並與學生共享筆記。</small><small data-lang="en">Every lesson is carefully documented and shared with each student.</small>
     </p>
@@ -1772,7 +1886,7 @@ function closeNav() {
     <span data-lang="zh">透過比較，<br>理解日文的細微差異。</span>
     <span data-lang="en">Understand Japanese nuance<br>through comparison.</span>
   </h2>
-  <p style="text-align:center;font-size:13px;color:#9a8080;font-weight:300;margin-top:12px;">
+  <p style="text-align:center;font-size:13px;color:#6b4a4a;font-weight:300;margin-top:12px;">
     <span data-lang="ja">似ている表現の違いを、例文とクイズでわかりやすく。随時更新中。</span>
     <span data-lang="zh">用例句和小測驗，輕鬆理解相似表現的差異。持續更新中。</span>
     <span data-lang="en">Similar expressions, explained clearly with examples and quizzes. Updated regularly.</span>
@@ -1785,6 +1899,16 @@ function closeNav() {
         <span data-lang="ja">似ているようで全然違う3つの表現を、例文とクイズで整理。</span>
         <span data-lang="zh">整理三個看似相像、意思卻完全不同的表現，附例句與小測驗。</span>
         <span data-lang="en">Three expressions that look similar but mean something completely different — explained with examples and a quiz.</span>
+      </div>
+      <div class="column-cta"><span data-lang="ja">読む →</span><span data-lang="zh">閱讀 →</span><span data-lang="en">Read →</span></div>
+    </a>
+    <a class="column-card" href="columns/muke-muki.html" target="_blank">
+      <div class="column-date">2026.07.24</div>
+      <div class="column-title">「〜向け」と「〜向き」の違いを徹底解説</div>
+      <div class="column-desc">
+        <span data-lang="ja">似ているようで視点が全然違う二つの表現を、例文とクイズで整理。</span>
+        <span data-lang="zh">整理兩個看似相像、視角卻完全不同的表現，附例句與小測驗。</span>
+        <span data-lang="en">Two expressions that look similar but come from different perspectives — explained with examples and a quiz.</span>
       </div>
       <div class="column-cta"><span data-lang="ja">読む →</span><span data-lang="zh">閱讀 →</span><span data-lang="en">Read →</span></div>
     </a>
@@ -1911,13 +2035,13 @@ She always takes great care of me, teaching me the conversations I need during l
         <div class="pc-unit">25分 / 1回限り<br><small data-lang="zh">25分鐘・僅限一次</small><small data-lang="en">25 min · One time only</small></div>
         <div class="pc-detail">
           ✓ 自己紹介・目標ヒアリング<br>
-          <small style="color:#b09090;" data-lang="zh">自我介紹＋目標確認</small><small style="color:#b09090" data-lang="en">Intro & goal-setting</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">自我介紹＋目標確認</small><small style="color:#8a5a5a" data-lang="en">Intro & goal-setting</small><br>
           ✓ レッスンスタイルの体験<br>
-          <small style="color:#b09090;" data-lang="zh">體驗授課方式</small><small style="color:#b09090" data-lang="en">Experience the lesson style</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">體驗授課方式</small><small style="color:#8a5a5a" data-lang="en">Experience the lesson style</small><br>
           ✓ 完全無料<br>
-          <small style="color:#b09090;" data-lang="zh">完全免費</small><small style="color:#b09090" data-lang="en">Completely free</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">完全免費</small><small style="color:#8a5a5a" data-lang="en">Completely free</small><br>
           ✓ 下記の予約リンクから簡単日時予約<br>
-          <small style="color:#b09090;" data-lang="zh">透過下方預約連結輕鬆預約時間</small><small style="color:#b09090" data-lang="en">Easy booking via the link below</small>
+          <small style="color:#8a5a5a;" data-lang="zh">透過下方預約連結輕鬆預約時間</small><small style="color:#8a5a5a" data-lang="en">Easy booking via the link below</small>
         </div>
       </div>
 
@@ -1927,16 +2051,16 @@ She always takes great care of me, teaching me the conversations I need during l
         <div class="pc-name" data-lang="ja">通常レッスン</div>
         <div class="pc-name-cn"><span data-lang="zh">一般課程</span><span data-lang="en">Regular Lessons</span></div>
         <div class="pc-price">700</div>
-        <div class="pc-unit">TWD or THB / 50分<br><small data-lang="zh">台幣 或 泰銖・每堂50分鐘</small><small data-lang="en">TWD or THB · 50 min/lesson</small><br><small style="font-size:10px;">USD $22 でのお支払いも可能です</small><small style="font-size:10px;color:#b09090;" data-lang="zh">亦可用美金 $22 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $22</small></div>
+        <div class="pc-unit">TWD or THB / 50分<br><small data-lang="zh">台幣 或 泰銖・每堂50分鐘</small><small data-lang="en">TWD or THB · 50 min/lesson</small><br><small style="font-size:10px;">USD $22 でのお支払いも可能です</small><small style="font-size:10px;color:#8a5a5a;" data-lang="zh">亦可用美金 $22 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $22</small></div>
         <div class="pc-detail">
           ✓ 10回パッケージから受付（最低 7,000 TWD / THB〜）<br>
-          <small style="color:#b09090;" data-lang="zh">最少10堂起購・最低消費 7,000 TWD / THB</small><small style="color:#b09090" data-lang="en">Minimum 10-lesson pack · from 7,000 TWD/THB</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">最少10堂起購・最低消費 7,000 TWD / THB</small><small style="color:#8a5a5a" data-lang="en">Minimum 10-lesson pack · from 7,000 TWD/THB</small><br>
           ✓ オンライン完全個別対応<br>
-          <small style="color:#b09090;" data-lang="zh">線上一對一授課</small><small style="color:#b09090" data-lang="en">Online, fully one-on-one</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">線上一對一授課</small><small style="color:#8a5a5a" data-lang="en">Online, fully one-on-one</small><br>
           ✓ 授業後ノート共有<br>
-          <small style="color:#b09090;" data-lang="zh">每堂課後共享筆記</small><small style="color:#b09090" data-lang="en">Lesson notes shared after each class</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">每堂課後共享筆記</small><small style="color:#8a5a5a" data-lang="en">Lesson notes shared after each class</small><br>
           ✓ お振込で簡単にお支払い<br>
-          <small style="color:#b09090;" data-lang="zh">匯款輕鬆付款</small><small style="color:#b09090" data-lang="en">Easy payment by transfer</small>
+          <small style="color:#8a5a5a;" data-lang="zh">匯款輕鬆付款</small><small style="color:#8a5a5a" data-lang="en">Easy payment by transfer</small>
         </div>
       </div>
 
@@ -1946,12 +2070,12 @@ She always takes great care of me, teaching me the conversations I need during l
         <div class="pc-name" data-lang="ja">20回パッケージ</div>
         <div class="pc-name-cn"><span data-lang="zh">20堂套餐・超值推薦</span><span data-lang="en">20-Lesson Pack · Best Value</span></div>
         <div class="pc-price">14,000</div>
-        <div class="pc-unit">TWD or THB / 20回<br><small data-lang="zh">台幣 或 泰銖・共20堂</small><small data-lang="en">TWD or THB · 20 lessons total</small><br><small style="font-size:10px;">USD $440 でのお支払いも可能です</small><small style="font-size:10px;color:#b09090;" data-lang="zh">亦可用美金 $440 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $440</small></div>
+        <div class="pc-unit">TWD or THB / 20回<br><small data-lang="zh">台幣 或 泰銖・共20堂</small><small data-lang="en">TWD or THB · 20 lessons total</small><br><small style="font-size:10px;">USD $440 でのお支払いも可能です</small><small style="font-size:10px;color:#8a5a5a;" data-lang="zh">亦可用美金 $440 支付</small><small style="font-size:10px" data-lang="en">Also payable in USD $440</small></div>
         <div class="pc-detail">
           ✓ 通常レッスン全て含む<br>
-          <small style="color:#b09090;" data-lang="zh">包含所有一般課程內容</small><small style="color:#b09090" data-lang="en">All Regular Lesson features included</small><br>
+          <small style="color:#8a5a5a;" data-lang="zh">包含所有一般課程內容</small><small style="color:#8a5a5a" data-lang="en">All Regular Lesson features included</small><br>
           ✓ お振込で簡単にお支払い<br>
-          <small style="color:#b09090;" data-lang="zh">匯款輕鬆付款</small><small style="color:#b09090" data-lang="en">Easy payment by transfer</small>
+          <small style="color:#8a5a5a;" data-lang="zh">匯款輕鬆付款</small><small style="color:#8a5a5a" data-lang="en">Easy payment by transfer</small>
         </div>
         <div class="pc-bonus">
           🎁 <span data-lang="ja">ボーナス特典：</span><span data-lang="zh">額外優惠：</span><span data-lang="en">Bonus Perk:</span><br>
@@ -1994,7 +2118,7 @@ She always takes great care of me, teaching me the conversations I need during l
       <div class="flow-title">支払い方法
         <span class="flow-title-cn" data-lang="zh">付款方式</span><span class="flow-title-cn" data-lang="en">Payment Methods</span>
       </div>
-      <p style="font-size: 12px; color: #b09090; margin-bottom: 16px; line-height: 1.8;">
+      <p style="font-size: 12px; color: #8a5a5a; margin-bottom: 16px; line-height: 1.8;">
         <span data-lang="ja">体験レッスン後、入会希望となった際、学生専用ページにてお教えします。</span>
         <span data-lang="zh">體驗課後，若確定入班，會透過「我的教室」專屬頁面告知帳戶資訊。</span>
         <span data-lang="en">After your trial lesson, if you decide to enroll, payment details will be shared on your student page.</span>
@@ -2003,30 +2127,30 @@ She always takes great care of me, teaching me the conversations I need during l
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
           <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
             <span data-lang="ja">🌍 Wise（国際送金）</span>
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🌍 Wise（國際轉帳）</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🌍 Wise (International Transfer)</small></div>
-          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <small style="font-weight: 300; color: #8a5a5a; margin-left: 8px;" data-lang="zh">🌍 Wise（國際轉帳）</small><small style="font-weight: 300; color: #8a5a5a; margin-left: 8px" data-lang="en">🌍 Wise (International Transfer)</small></div>
+          <div style="font-size: 13px; color: #5a4040; line-height: 1.8;">
             海外学生の送金に便利です（手数料は学生負担）<br>
-            <span style="color:#b09090;" data-lang="zh">方便國際學生跨境匯款（手續費由學生負擔）</span><span style="color:#b09090" data-lang="en">Convenient for international transfers (transfer fee paid by student)</span><br>
+            <span style="color:#8a5a5a;" data-lang="zh">方便國際學生跨境匯款（手續費由學生負擔）</span><span style="color:#8a5a5a" data-lang="en">Convenient for international transfers (transfer fee paid by student)</span><br>
             米ドル（USD）・タイバーツ（THB）・台湾元（TWD）すべて対応
-            <span style="color:#b09090;" data-lang="zh">支援美金（USD）・泰銖（THB）・台幣（TWD）全部收款</span><span style="color:#b09090" data-lang="en">Accepts USD, THB, and TWD</span>
+            <span style="color:#8a5a5a;" data-lang="zh">支援美金（USD）・泰銖（THB）・台幣（TWD）全部收款</span><span style="color:#8a5a5a" data-lang="en">Accepts USD, THB, and TWD</span>
           </div>
         </div>
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
           <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
             <span data-lang="ja">🇹🇭 開泰銀行（タイ）</span>
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🇹🇭 泰國開泰銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🇹🇭 Kasikorn Bank, Thailand</small></div>
-          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <small style="font-weight: 300; color: #8a5a5a; margin-left: 8px;" data-lang="zh">🇹🇭 泰國開泰銀行</small><small style="font-weight: 300; color: #8a5a5a; margin-left: 8px" data-lang="en">🇹🇭 Kasikorn Bank, Thailand</small></div>
+          <div style="font-size: 13px; color: #5a4040; line-height: 1.8;">
             口座をお持ちの方はどなたでもご利用いただけます<br>
-            <span style="color:#b09090;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#b09090" data-lang="en">Anyone with an account</span>
+            <span style="color:#8a5a5a;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#8a5a5a" data-lang="en">Anyone with an account</span>
           </div>
         </div>
         <div class="pay-method-card" style="border: 1px solid #d4c8bd; border-radius: 8px; padding: 16px; background: white;">
           <div style="font-weight: 600; color: #6b3d3d; margin-bottom: 8px;">
             <span data-lang="ja">🇹🇼 中國信託商業銀行（台湾）</span>
-            <small style="font-weight: 300; color: #b09090; margin-left: 8px;" data-lang="zh">🇹🇼 中國信託商業銀行</small><small style="font-weight: 300; color: #b09090; margin-left: 8px" data-lang="en">🇹🇼 CTBC Bank</small></div>
-          <div style="font-size: 13px; color: #7a6060; line-height: 1.8;">
+            <small style="font-weight: 300; color: #8a5a5a; margin-left: 8px;" data-lang="zh">🇹🇼 中國信託商業銀行</small><small style="font-weight: 300; color: #8a5a5a; margin-left: 8px" data-lang="en">🇹🇼 CTBC Bank</small></div>
+          <div style="font-size: 13px; color: #5a4040; line-height: 1.8;">
             口座をお持ちの方はどなたでもご利用いただけます<br>
-            <span style="color:#b09090;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#b09090" data-lang="en">Anyone with an account</span>
+            <span style="color:#8a5a5a;" data-lang="zh">有帳戶者皆可使用</span><span style="color:#8a5a5a" data-lang="en">Anyone with an account</span>
           </div>
         </div>
       </div>
@@ -2036,7 +2160,7 @@ She always takes great care of me, teaching me the conversations I need during l
       <button class="btn-primary" style="font-size: 14px; padding: 18px 60px; letter-spacing: 3px; background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">
         📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span> ✿
       </button>
-      <p style="margin-top: 16px; font-size: 12px; color: #b09090; font-weight:300;">
+      <p style="margin-top: 16px; font-size: 12px; color: #8a5a5a; font-weight:300;">
         <span data-lang="ja">※ 無料体験レッスン、お気軽にご予約ください</span>
         <span data-lang="zh">※ 免費體驗課，歡迎預約</span>
         <span data-lang="en">※ Free trial lesson — feel free to book</span><br>
@@ -2062,10 +2186,28 @@ She always takes great care of me, teaching me the conversations I need during l
     <span data-lang="zh">下方直接選擇方便的時間，即可完成預約。</span>
     <span data-lang="en">Pick a time that works for you below to book instantly.</span>
   </p>
-  <button class="btn-primary" style="background: var(--gold);" onclick="window.open('https://calendly.com/suzu-nihongo/30min','_blank')">📅 <span data-lang="ja">無料体験レッスンを予約する</span><span data-lang="zh">預約免費體驗課</span><span data-lang="en">Book a Free Trial Lesson</span></button>
-  <div class="calendly-inline-widget" data-url="https://calendly.com/suzu-nihongo/30min" style="min-width:280px;height:650px;"></div>
+  <div class="booking-cta-panel">
+    <div class="booking-cta-icon">📅</div>
+    <div class="booking-cta-title">
+      <span data-lang="ja">空いている日時をチェック</span>
+      <span data-lang="zh">查看可預約時段</span>
+      <span data-lang="en">Check available times</span>
+    </div>
+    <div class="booking-cta-sub">
+      <span data-lang="ja">ボタンを押すと予約カレンダーが開きます（約1分で完了）</span>
+      <span data-lang="zh">點擊後會開啟預約行事曆（約1分鐘即可完成）</span>
+      <span data-lang="en">Tap below to open the booking calendar — takes about a minute</span>
+    </div>
+    <button class="btn-primary booking-cta-btn" style="background: var(--gold);" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/suzu-nihongo/30min'}); return false;">📅 <span data-lang="ja">日時を選んで予約する</span><span data-lang="zh">選擇時間預約</span><span data-lang="en">Choose a Time to Book</span></button>
+    <div class="booking-cta-note">
+      <span data-lang="ja">※ Calendlyの予約フォームが開きます</span>
+      <span data-lang="zh">※ 將開啟Calendly的預約表單</span>
+      <span data-lang="en">※ Opens the Calendly booking form</span>
+    </div>
+  </div>
 </section>
 </div>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 <!-- CONTACT -->
@@ -2075,8 +2217,8 @@ She always takes great care of me, teaching me the conversations I need during l
       <div class="section-label"><span data-lang="ja">お問い合わせ</span><span data-lang="zh">聯絡我們</span><span data-lang="en">Contact</span></div>
       <h2 class="section-title">
         気軽に<br>ご連絡ください。<br>
-        <small style="font-size:14px;color:#9a8080;font-weight:300;" data-lang="zh">歡迎隨時與我聯繫</small>
-        <small style="font-size:14px;color:#9a8080;font-weight:300" data-lang="en">Feel free to reach out anytime.</small>
+        <small style="font-size:14px;color:#6b4a4a;font-weight:300;" data-lang="zh">歡迎隨時與我聯繫</small>
+        <small style="font-size:14px;color:#6b4a4a;font-weight:300" data-lang="en">Feel free to reach out anytime.</small>
       </h2>
     </div>
     <div class="contact-form">
