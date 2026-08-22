@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>入会申込｜純香老師的暖心日語</title>
+<link rel="stylesheet" href="../textbook/theme.css">
+<style>
+  :root{
+    /* このページだけ文字を濃く上書き（読みやすさ優先） */
+    --ink: #000000;
+    --ink-mid: #222222;
+    --ink-light: #3a3a3a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-zh-sans);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--font-zh-serif);}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 70px;}
+  a.back{display:inline-block;margin-bottom:14px;font-size:0.85rem;color:var(--ink-mid);text-decoration:none;}
+  .hero{background-color:#7d4f82;background-image:linear-gradient(135deg,var(--step,#9a5c9f),var(--frame,#7d4f82));border-radius:16px;padding:28px 20px;text-align:center;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(122,79,130,.25);}
+  .hero h1{font-size:1.3rem;margin:0 0 6px;}
+  .hero p{font-size:0.88rem;opacity:0.92;margin:0;}
+  .card{background:var(--paper);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;}
+  .card h2{font-size:1rem;font-weight:700;margin:0 0 14px;color:var(--frame);border-bottom:1px solid var(--border);padding-bottom:10px;}
+  .card.soft{background:var(--step-pale, var(--bg));}
+  .cta-row{display:flex;flex-direction:column;gap:10px;}
+  .btn-main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;border:none;cursor:pointer;text-decoration:none;background:linear-gradient(135deg,var(--step),var(--frame));color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:0.95rem;}
+  .btn-main small{font-size:0.72rem;font-weight:400;opacity:0.88;}
+  .btn-main:disabled{opacity:0.5;cursor:not-allowed;}
+  .btn-gold{background:linear-gradient(135deg,#d9a441,#b9852c);}
+  .btn-line{background:#06C755;}
+  .btn-outline{display:block;text-align:center;width:100%;border:1.5px solid var(--border2);background:transparent;color:var(--ink-mid);border-radius:12px;padding:12px;font-size:0.88rem;text-decoration:none;cursor:pointer;}
+  .form-field{margin-bottom:14px;}
+  .form-field label{display:block;font-size:0.82rem;color:var(--ink-mid);margin-bottom:5px;}
+  .form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:var(--bg);color:var(--ink);font-family:inherit;}
+  .form-field textarea{resize:vertical;min-height:80px;}
+  .radio-row{display:flex;flex-wrap:wrap;gap:16px;font-size:0.9rem;}
+  .radio-row label{display:flex;align-items:center;gap:6px;color:var(--ink);font-weight:400;white-space:nowrap;}
+  .time-select-row{display:flex;align-items:center;gap:6px;}
+  .time-select-row select{width:auto;flex:1;min-width:0;}
+  .time-select-row span{color:var(--ink-mid);font-weight:700;}
+  .extra-slot-row{border:1px solid var(--border2);border-radius:12px;padding:12px;margin-bottom:14px;background:var(--bg);}
+  .extra-slot-row .extra-slot-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .extra-slot-row .extra-slot-head strong{font-size:0.85rem;color:var(--ink-mid);font-weight:700;}
+  .extra-slot-row .extra-slot-body{display:flex;flex-wrap:wrap;gap:10px;}
+  .extra-slot-row .extra-slot-field{flex:1 1 140px;min-width:140px;}
+  .extra-slot-row .extra-slot-field label{display:block;font-size:0.78rem;color:var(--ink-mid);margin-bottom:5px;}
+  .extra-slot-row select{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:#fff;color:var(--ink);font-family:inherit;}
+  .extra-slot-remove{flex:0 0 auto;border:1.5px solid var(--border2);background:transparent;color:var(--ink-mid);border-radius:10px;padding:6px 12px;font-size:0.85rem;cursor:pointer;}
+  .note{font-size:0.85rem;color:var(--ink-mid);line-height:1.8;margin-top:8px;}
+  .success{display:none;background:#eaf4ea;border:1px solid var(--sage,#8B9E8A);border-radius:10px;padding:16px;font-size:0.9rem;color:#2e5c2e;margin-top:12px;line-height:1.8;}
+  /* 元々は小さい補足キャプション用のクラスだったが、言語切替で表示される文章の大半がこのクラスになるため、
+     読みやすさ優先でこのページでは通常サイズ・濃い色に統一する（display:blockも外し、インライン要素内で崩れないように） */
+  .sub{font-size:inherit;font-weight:inherit;color:inherit;margin-top:0;}
+  /* wrapJaText() が主要な日本語テキストを包む用（.subと同様、通常の文字サイズ・色のまま） */
+  .ja-wrap{font:inherit;color:inherit;}
+  [data-lang]{display:none;}
+  body.lang-ja [data-lang="ja"]{display:inline;}
+  body.lang-zh [data-lang="zh"]{display:inline;}
+  body.lang-en [data-lang="en"]{display:inline;}
+  .lang-switcher{display:flex;justify-content:flex-end;gap:0;margin-bottom:10px;}
+  .lang-sw-btn{background:none;border:1px solid var(--border2);padding:4px 12px;font-size:11px;letter-spacing:1px;color:var(--ink-mid);cursor:pointer;}
+  .lang-sw-btn:first-child{border-radius:6px 0 0 6px;}
+  .lang-sw-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .lang-sw-btn:not(:first-child){border-left:none;}
+  .lang-sw-btn.active{background:var(--frame);color:#fff;border-color:var(--frame);}
+
+  .flow-steps{display:flex;flex-direction:column;gap:12px;}
+  .flow-step{display:flex;gap:12px;padding:14px;border:1px solid var(--border2);border-radius:12px;background:var(--bg);}
+  .flow-step-icon{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--step-pale);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+  .flow-step-body{flex:1;}
+  .flow-step-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;}
+  .flow-step-num{font-size:0.72rem;letter-spacing:1px;color:var(--step);font-weight:700;}
+  .flow-step-tag{font-size:0.68rem;padding:2px 8px;border-radius:999px;font-weight:700;}
+  .flow-step-tag.you{background:var(--step-pale);color:var(--frame);}
+  .flow-step-tag.wait{background:var(--border);color:var(--ink-mid);}
+  .flow-step-title{font-weight:400;font-size:0.95rem;color:var(--ink);}
+  .flow-step-desc{font-size:0.85rem;color:var(--ink-mid);line-height:1.7;margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <a class="back" href="../../index.html">← トップページへ<span class="sub" data-lang="zh">回首頁</span><span class="sub" data-lang="en">Home</span></a>
+    <div class="lang-switcher">
+      <button class="lang-sw-btn" id="ls-ja" onclick="setLang('ja')">🇯🇵 日本語</button>
+      <button class="lang-sw-btn active" id="ls-zh" onclick="setLang('zh')">🇹🇼 中文</button>
+      <button class="lang-sw-btn" id="ls-en" onclick="setLang('en')">🇬🇧 EN</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>📝 入会のお申し込み<span class="sub" data-lang="zh">📝 報名入班</span><span class="sub" data-lang="en">📝 Enrollment Application</span></h1>
+    <p>純香老師的暖心日語 · すず先生</p>
+  </div>
+
+  <div class="card soft">
+    <h2>はじめての方へ<span class="sub" data-lang="zh">初次來訪的你</span><span class="sub" data-lang="en">New Here?</span></h2>
+    <p class="note" style="margin-top:0;margin-bottom:14px;">
+      まずは無料のクイズや体験レッスンで、授業の雰囲気を試してみませんか？体験後に本入会をご希望の方は、下のフォームからお申し込みください。<br>
+      <span class="sub" data-lang="zh">建議先透過免費小測驗或體驗課，感受一下上課氛圍。體驗後如果想正式入班，請填寫下方表單申請。</span>
+      <span class="sub" data-lang="en">We recommend trying the free quiz or a trial lesson first to get a feel for the class. If you'd like to formally enroll afterward, please use the form below.</span>
+    </p>
+    <div class="cta-row">
+      <a class="btn-main" href="../../quiz.html">🎴 クイズで日本語を試す<small data-lang="zh">🎴 用小測驗試試看</small><small data-lang="en">🎴 Try the Practice Quiz</small></a>
+      <a class="btn-main btn-gold" href="https://calendly.com/suzu-nihongo/30min" target="_blank">📅 無料体験レッスンを予約<small data-lang="zh">📅 預約免費體驗課</small><small data-lang="en">📅 Book a Free Trial Lesson</small></a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>送信後の流れ<span class="sub" data-lang="zh">送出後的流程</span><span class="sub" data-lang="en">What Happens After You Submit</span></h2>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-step-icon">📝</div>
+        <div class="flow-step-body">
+          <div class="flow-step-top">
+            <span class="flow-step-num">STEP 1</span>
+            <span class="flow-step-tag you">🙋 学生側<span class="sub" data-lang="zh">🙋 學生端</span><span class="sub" data-lang="en">🙋 Student side</span></span>
+          </div>
+          <div class="flow-step-title">下のフォームに入力して送信<span class="sub" data-lang="zh">填寫下方表單並送出</span><span class="sub" data-lang="en">Fill out and submit the form below</span></div>
+          <div class="flow-step-desc">
+            お名前・希望の曜日と時間などを入力するだけ。今すぐ支払いは発生しません。<br>
+            <span class="sub" data-lang="zh">只需填寫姓名、希望的上課日與時間等資訊，現在還不需要付款。</span>
+            <span class="sub" data-lang="en">Just enter your name, preferred day/time, etc. No payment is required yet.</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-icon">⏳</div>
+        <div class="flow-step-body">
+          <div class="flow-step-top">
+            <span class="flow-step-num">STEP 2</span>
+            <span class="flow-step-tag wait">👩‍🏫 先生側<span class="sub" data-lang="zh">👩‍🏫 老師端</span><span class="sub" data-lang="en">👩‍🏫 Teacher side</span></span>
+          </div>
+          <div class="flow-step-title">先生からの連絡を待つ（通常24時間以内）<span class="sub" data-lang="zh">等待老師聯絡（通常24小時內）</span><span class="sub" data-lang="en">Wait for the teacher to contact you (usually within 24h)</span></div>
+          <div class="flow-step-desc">
+            メールまたはLINEで、日程の確認・ご案内が届きます。<br>
+            <span class="sub" data-lang="zh">老師會透過Email或LINE確認上課時間並提供說明。</span>
+            <span class="sub" data-lang="en">You'll receive a confirmation and instructions by email or LINE.</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-icon">🔑</div>
+        <div class="flow-step-body">
+          <div class="flow-step-top">
+            <span class="flow-step-num">STEP 3</span>
+            <span class="flow-step-tag wait">👩‍🏫 先生側<span class="sub" data-lang="zh">👩‍🏫 老師端</span><span class="sub" data-lang="en">👩‍🏫 Teacher side</span></span>
+          </div>
+          <div class="flow-step-title">アカウントが発行される<span class="sub" data-lang="zh">帳號開通</span><span class="sub" data-lang="en">Your account is set up</span></div>
+          <div class="flow-step-desc">
+            入力したメールアドレス（Googleアカウント）で「わたしの教室」にログインできるようになります。<br>
+            <span class="sub" data-lang="zh">開通後即可用你填寫的Email（Google帳號）登入「我的教室」。</span>
+            <span class="sub" data-lang="en">You'll be able to log in to "My Classroom" with the Google account you entered.</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-icon">💳</div>
+        <div class="flow-step-body">
+          <div class="flow-step-top">
+            <span class="flow-step-num">STEP 4</span>
+            <span class="flow-step-tag you">🙋 学生側<span class="sub" data-lang="zh">🙋 學生端</span><span class="sub" data-lang="en">🙋 Student side</span></span>
+          </div>
+          <div class="flow-step-title">「わたしの教室」からお支払い→受講スタート<span class="sub" data-lang="zh">在「我的教室」繳費→開始上課</span><span class="sub" data-lang="en">Pay in "My Classroom" → lessons begin</span></div>
+          <div class="flow-step-desc">
+            振込後にスクリーンショットをアップロードすると、先生の確認後に残り回数が加算され、授業がスタートします。<br>
+            <span class="sub" data-lang="zh">轉帳後上傳截圖，老師確認後會加入剩餘堂數，即可開始上課。</span>
+            <span class="sub" data-lang="en">After transferring, upload a screenshot — once confirmed, your lessons will be added and you can start.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>本入会のお申し込み<span class="sub" data-lang="zh">正式入班申請</span><span class="sub" data-lang="en">Formal Enrollment Form</span></h2>
+    <p class="note" style="margin-top:0;margin-bottom:14px;">
+      送信後、先生が内容を確認し、メールまたはLINEでご連絡します（通常24時間以内）。その後アカウントが発行され、「わたしの教室」からお支払いに進めます。<br>
+      <span class="sub" data-lang="zh">送出後，老師會確認內容並透過Email或LINE與你聯絡（通常會在24小時內回覆）。之後會開通帳號，即可在「我的教室」進行繳費。</span>
+      <span class="sub" data-lang="en">After submitting, the teacher will review and contact you by email or LINE (usually within 24 hours). Your account will then be set up so you can proceed to payment in "My Classroom".</span>
+    </p>
+
+    <div class="form-field">
+      <label>お名前<span class="sub" data-lang="zh">姓名</span><span class="sub" data-lang="en">Name</span></label>
+      <input type="text" id="ef-name" placeholder="例：田中太郎 / Suzu">
+    </div>
+    <div class="form-field">
+      <label>メールアドレス（ログインに使うGoogleアカウント）<span class="sub" data-lang="zh">Email（登入用的Google帳號）</span><span class="sub" data-lang="en">Email (the Google account you'll log in with)</span></label>
+      <input type="email" id="ef-email" placeholder="your@gmail.com">
+      <p class="note" style="margin-top:6px;margin-bottom:0;">
+        ※Gmailアドレスでのご登録を推奨します（Google以外のメールはログインできない場合があります）<br>
+        <span class="sub" data-lang="zh">※建議使用Gmail信箱註冊（非Google信箱有時無法登入）</span>
+        <span class="sub" data-lang="en">※We recommend using a Gmail address (non-Google emails may not be able to log in)</span>
+      </p>
+    </div>
+    <div class="form-field">
+      <label>体験レッスンは受けましたか？<span class="sub" data-lang="zh">是否已上過體驗課？</span><span class="sub" data-lang="en">Have you taken a trial lesson?</span></label>
+      <div class="radio-row">
+        <label><input type="radio" name="ef-trial" value="はい" checked> はい<span class="sub" data-lang="zh">是</span><span class="sub" data-lang="en">Yes</span></label>
+        <label><input type="radio" name="ef-trial" value="いいえ"> いいえ<span class="sub" data-lang="zh">否</span><span class="sub" data-lang="en">No</span></label>
+      </div>
+    </div>
+    <div class="form-field">
+      <label>コース<span class="sub" data-lang="zh">課程</span><span class="sub" data-lang="en">Course</span></label>
+      <div style="padding:10px 12px;border:1px solid var(--border2);border-radius:10px;font-size:0.9rem;background:var(--bg);color:var(--ink);">
+        マンツーマン（1対1）<span class="sub" data-lang="zh">一對一（マンツーマン）</span><span class="sub" data-lang="en">1-on-1 Lesson</span>
+      </div>
+    </div>
+    <div class="form-field">
+      <label>希望の曜日<span class="sub" data-lang="zh">希望的上課日</span><span class="sub" data-lang="en">Preferred Weekday</span></label>
+      <select id="ef-day"></select>
+    </div>
+    <div class="form-field">
+      <label>希望の時間<span class="sub" data-lang="zh">希望的時間</span><span class="sub" data-lang="en">Preferred Time</span></label>
+      <div class="time-select-row">
+        <select id="ef-time-h"></select>
+        <span>:</span>
+        <select id="ef-time-m"></select>
+      </div>
+    </div>
+    <div id="ef-extra-slots"></div>
+    <div class="form-field">
+      <button type="button" class="btn-outline" id="ef-slot-add" onclick="addExtraEfSlot()">＋もう1枠追加（週2回以上ご希望の方）<span class="sub" data-lang="zh">＋新增一個時段（週2次以上）</span><span class="sub" data-lang="en">＋ Add another slot (2+ times a week)</span></button>
+    </div>
+    <div class="form-field">
+      <label>タイムゾーン<span class="sub" data-lang="zh">時區</span><span class="sub" data-lang="en">Time Zone</span></label>
+      <select id="ef-tz"></select>
+      <p class="note" style="margin-top:6px;" id="ef-tz-note"></p>
+    </div>
+    <div class="form-field">
+      <label>ご質問・伝えたいこと（任意）<span class="sub" data-lang="zh">問題或想說的話（選填）</span><span class="sub" data-lang="en">Questions or notes (optional)</span></label>
+      <textarea id="ef-msg" placeholder="例：水曜と金曜の夜21時以降希望です。週末午前9〜12時でいつが空いていますか？"></textarea>
+    </div>
+    <button class="btn-main" id="ef-submit" onclick="submitEnrollment()">申し込む<small data-lang="zh">送出申請</small><small data-lang="en">Submit Application</small></button>
+    <div class="note" id="ef-status"></div>
+    <div class="success" id="ef-success">
+      送信しました！先生が確認後、メールまたはLINEでご連絡します（通常24時間以内にご連絡します）。<br>
+      <span class="sub" data-lang="zh">已送出！老師確認後會透過Email或LINE與你聯絡（通常會在24小時內回覆）。</span>
+      <span class="sub" data-lang="en">Submitted! The teacher will contact you by email or LINE after review (usually within 24 hours).</span>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <h2 style="border-bottom:none;padding-bottom:0;">ご質問がある方<span class="sub" data-lang="zh">有其他問題嗎？</span><span class="sub" data-lang="en">Have a Question?</span></h2>
+    <p class="note" style="margin-top:0;margin-bottom:14px;">
+      トップページの「お問い合わせ」フォーム、またはLINEからお気軽にどうぞ。<br>
+      <span class="sub" data-lang="zh">歡迎透過首頁的「聯絡表單」，或加LINE詢問。</span>
+      <span class="sub" data-lang="en">Feel free to use the contact form on the homepage, or reach out via LINE.</span>
+    </p>
+    <div class="cta-row">
+      <a class="btn-outline" href="../../index.html#contact">✉️ お問い合わせフォームへ<span class="sub" data-lang="zh">✉️ 前往聯絡表單</span><span class="sub" data-lang="en">✉️ Go to Contact Form</span></a>
+      <a class="btn-outline" href="https://lin.ee/u3ojW9D" target="_blank">💬 LINEで質問する<span class="sub" data-lang="zh">💬 用LINE發問</span><span class="sub" data-lang="en">💬 Ask via LINE</span></a>
+    </div>
+  </div>
+
+</div>
+<script>
+function wrapJaText(root){
+  const hosts = new Set();
+  root.querySelectorAll('[data-lang="zh"],[data-lang="en"]').forEach(el => { if (el.parentElement) hosts.add(el.parentElement); });
+  const BOUNDARY_TAGS = new Set(['INPUT','SELECT','TEXTAREA','BUTTON']);
+  hosts.forEach(parent => {
+    const children = Array.from(parent.childNodes);
+    let i = 0;
+    const isBoundary = (n) => n.nodeType === 1 && n.hasAttribute && (n.hasAttribute('data-lang') || BOUNDARY_TAGS.has(n.tagName));
+    while (i < children.length) {
+      if (isBoundary(children[i])) { i++; continue; }
+      const runStart = i;
+      while (i < children.length && !isBoundary(children[i])) i++;
+      const run = children.slice(runStart, i);
+      const hasContent = run.some(n => n.nodeType !== 3 || n.textContent.trim() !== '');
+      const followedByLang = i < children.length && children[i].nodeType === 1 && children[i].hasAttribute('data-lang');
+      if (hasContent && followedByLang) {
+        const span = document.createElement('span');
+        span.className = 'ja-wrap';
+        span.setAttribute('data-lang', 'ja');
+        parent.insertBefore(span, run[0]);
+        run.forEach(n => span.appendChild(n));
+      }
+    }
+  });
+}
+
+let secondaryLang = localStorage.getItem('classroomLang') || 'zh';
+if (secondaryLang !== 'ja' && secondaryLang !== 'zh' && secondaryLang !== 'en') secondaryLang = 'zh';
+
+const FIXED_COURSE_VALUE = 'マンツーマン（1対1）';
+const DAY_OPTIONS = [
+  { value: '未定', ja: 'まだ決めていない', zh: '尚未決定', en: 'Not decided yet' },
+  { value: '日', ja: '毎週日曜日', zh: '每週日', en: 'Every Sunday' },
+  { value: '月', ja: '毎週月曜日', zh: '每週一', en: 'Every Monday' },
+  { value: '火', ja: '毎週火曜日', zh: '每週二', en: 'Every Tuesday' },
+  { value: '水', ja: '毎週水曜日', zh: '每週三', en: 'Every Wednesday' },
+  { value: '木', ja: '毎週木曜日', zh: '每週四', en: 'Every Thursday' },
+  { value: '金', ja: '毎週金曜日', zh: '每週五', en: 'Every Friday' },
+  { value: '土', ja: '毎週土曜日', zh: '每週六', en: 'Every Saturday' }
+];
+const NOT_SPECIFIED_OPTION = { value: '', ja: '指定しない', zh: '不指定', en: 'Not specified' };
+function renderHourOptions(sel, lang){
+  const prev = sel.value;
+  let html = `<option value="">${NOT_SPECIFIED_OPTION[lang] || NOT_SPECIFIED_OPTION.ja}</option>`;
+  for (let h = 0; h < 24; h++){
+    const hh = String(h).padStart(2, '0');
+    html += `<option value="${hh}">${hh}</option>`;
+  }
+  sel.innerHTML = html;
+  if ([...sel.options].some(op => op.value === prev)) sel.value = prev;
+}
+function renderMinuteOptions(sel, lang){
+  const prev = sel.value;
+  let html = `<option value="">${NOT_SPECIFIED_OPTION[lang] || NOT_SPECIFIED_OPTION.ja}</option>`;
+  ['00', '30'].forEach(mm => { html += `<option value="${mm}">${mm}</option>`; });
+  sel.innerHTML = html;
+  if ([...sel.options].some(op => op.value === prev)) sel.value = prev;
+}
+function localizeSelectOptions(lang){
+  const daySel = document.getElementById('ef-day');
+  const prevDay = daySel.value;
+  daySel.innerHTML = DAY_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+  if ([...daySel.options].some(op => op.value === prevDay)) daySel.value = prevDay;
+
+  document.querySelectorAll('.ef-extra-day').forEach(sel => {
+    const prev = sel.value;
+    sel.innerHTML = DAY_OPTIONS.map(o => `<option value="${o.value}">${o[lang] || o.ja}</option>`).join('');
+    if ([...sel.options].some(op => op.value === prev)) sel.value = prev;
+  });
+
+  renderHourOptions(document.getElementById('ef-time-h'), lang);
+  renderMinuteOptions(document.getElementById('ef-time-m'), lang);
+  document.querySelectorAll('.ef-extra-time-h').forEach(sel => renderHourOptions(sel, lang));
+  document.querySelectorAll('.ef-extra-time-m').forEach(sel => renderMinuteOptions(sel, lang));
+}
+
+let _efExtraSlotSeq = 0;
+function renumberExtraEfSlots(){
+  const wrap = document.getElementById('ef-extra-slots');
+  [...wrap.children].forEach((row, idx) => {
+    const n = idx + 2; // 1枠目が「1」なので追加分は2枠目〜
+    const numEl = row.querySelector('.extra-slot-num');
+    if (numEl) numEl.textContent = n + '枠目';
+  });
+}
+function addExtraEfSlot(){
+  const id = 'ef-extra-' + (_efExtraSlotSeq++);
+  const wrap = document.getElementById('ef-extra-slots');
+  const row = document.createElement('div');
+  row.id = id;
+  row.className = 'extra-slot-row';
+  row.innerHTML = `
+    <div class="extra-slot-head">
+      <strong><span class="extra-slot-num"></span>：追加の希望枠<span class="sub" data-lang="zh">：新增時段</span><span class="sub" data-lang="en">: Additional slot</span></strong>
+      <button type="button" class="extra-slot-remove" onclick="document.getElementById('${id}').remove(); renumberExtraEfSlots();">✕ <span data-lang="ja">削除</span><span class="sub" data-lang="zh">刪除</span><span class="sub" data-lang="en">Remove</span></button>
+    </div>
+    <div class="extra-slot-body">
+      <div class="extra-slot-field" style="flex-basis:100%;">
+        <label>希望の曜日<span class="sub" data-lang="zh">希望的上課日</span><span class="sub" data-lang="en">Preferred Weekday</span></label>
+        <select class="ef-extra-day"></select>
+      </div>
+      <div class="extra-slot-field">
+        <label>時<span class="sub" data-lang="zh">時</span><span class="sub" data-lang="en">Hour</span></label>
+        <select class="ef-extra-time-h"></select>
+      </div>
+      <div class="extra-slot-field">
+        <label>分<span class="sub" data-lang="zh">分</span><span class="sub" data-lang="en">Minute</span></label>
+        <select class="ef-extra-time-m"></select>
+      </div>
+    </div>
+  `;
+  wrap.appendChild(row);
+  const daySel = row.querySelector('.ef-extra-day');
+  daySel.innerHTML = DAY_OPTIONS.map(o => `<option value="${o.value}">${o[secondaryLang] || o.ja}</option>`).join('');
+  renderHourOptions(row.querySelector('.ef-extra-time-h'), secondaryLang);
+  renderMinuteOptions(row.querySelector('.ef-extra-time-m'), secondaryLang);
+  wrapJaText(row);
+  renumberExtraEfSlots();
+}
+
+function setLang(lang){
+  secondaryLang = lang;
+  localStorage.setItem('classroomLang', lang);
+  wrapJaText(document);
+  document.body.classList.remove('lang-ja','lang-zh','lang-en');
+  document.body.classList.add('lang-' + lang);
+  ['ja','zh','en'].forEach(l => {
+    const btn = document.getElementById('ls-' + l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
+  localizeSelectOptions(lang);
+  if (typeof initTimezone === 'function' && document.getElementById('ef-tz').options.length) {
+    renderTimezoneOptions(lang);
+    updateTzNote();
+  }
+}
+setLang(secondaryLang);
+
+const TZ_LIST = [
+  { zone: 'Asia/Taipei',    label: '台湾（UTC+8）',       labelZh: '台灣（UTC+8）',      labelEn: 'Taiwan (UTC+8)' },
+  { zone: 'Asia/Bangkok',   label: 'タイ（UTC+7）',       labelZh: '泰國（UTC+7）',      labelEn: 'Thailand (UTC+7)' },
+  { zone: 'Asia/Tokyo',     label: '日本（UTC+9）',       labelZh: '日本（UTC+9）',      labelEn: 'Japan (UTC+9)' },
+  { zone: 'Asia/Hong_Kong', label: '香港（UTC+8）',       labelZh: '香港（UTC+8）',      labelEn: 'Hong Kong (UTC+8)' },
+  { zone: 'Asia/Singapore', label: 'シンガポール（UTC+8）', labelZh: '新加坡（UTC+8）',  labelEn: 'Singapore (UTC+8)' },
+  { zone: 'Asia/Shanghai',  label: '中国（UTC+8）',       labelZh: '中國（UTC+8）',      labelEn: 'China (UTC+8)' },
+  { zone: 'Asia/Seoul',     label: '韓国（UTC+9）',       labelZh: '韓國（UTC+9）',      labelEn: 'South Korea (UTC+9)' },
+  { zone: 'America/Los_Angeles', label: 'アメリカ西部（UTC-8/-7）', labelZh: '美國西岸（UTC-8/-7）', labelEn: 'US Pacific (UTC-8/-7)' },
+  { zone: 'America/New_York',    label: 'アメリカ東部（UTC-5/-4）', labelZh: '美國東岸（UTC-5/-4）', labelEn: 'US Eastern (UTC-5/-4)' },
+  { zone: 'Europe/London',  label: 'イギリス（UTC+0/+1）', labelZh: '英國（UTC+0/+1）', labelEn: 'UK (UTC+0/+1)' },
+  { zone: 'Australia/Sydney', label: 'オーストラリア東部（UTC+10/+11）', labelZh: '澳洲東部（UTC+10/+11）', labelEn: 'Australia East (UTC+10/+11)' }
+];
+
+function renderTimezoneOptions(lang){
+  const sel = document.getElementById('ef-tz');
+  const prev = sel.value;
+  const labelKey = lang === 'zh' ? 'labelZh' : (lang === 'en' ? 'labelEn' : 'label');
+  sel.innerHTML = TZ_LIST.map(tz =>
+    `<option value="${tz.zone}">${tz[labelKey] || tz.label}</option>`
+  ).join('');
+  if ([...sel.options].some(op => op.value === prev)) sel.value = prev;
+}
+function initTimezone(){
+  const sel = document.getElementById('ef-tz');
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
+  let matched = TZ_LIST.some(tz => tz.zone === detected);
+  if (!matched){
+    TZ_LIST.push({ zone: detected, label: detected, labelZh: detected, labelEn: detected });
+  }
+  renderTimezoneOptions(secondaryLang);
+  sel.value = detected;
+  updateTzNote();
+  sel.addEventListener('change', updateTzNote);
+}
+function updateTzNote(){
+  const sel = document.getElementById('ef-tz');
+  const noteEl = document.getElementById('ef-tz-note');
+  const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Taipei';
+  if (sel.value === detected){
+    noteEl.innerHTML = '<span data-lang="ja">あなたの端末から自動検出しました。違う場合は選び直してください。</span><span class="sub" data-lang="zh">已自動偵測您的時區，如不正確請重新選擇。</span><span class="sub" data-lang="en">Auto-detected from your device. Please change it if it\'s incorrect.</span>';
+  } else {
+    noteEl.innerHTML = '<span data-lang="ja">手動で変更されました。</span><span class="sub" data-lang="zh">已手動變更時區。</span><span class="sub" data-lang="en">Manually changed.</span>';
+  }
+  wrapJaText(noteEl);
+}
+initTimezone();
+
+async function submitEnrollment(){
+  const name = document.getElementById('ef-name').value.trim();
+  const email = document.getElementById('ef-email').value.trim();
+  const trial = document.querySelector('input[name="ef-trial"]:checked').value;
+  const course = FIXED_COURSE_VALUE;
+  const day = document.getElementById('ef-day').value;
+  const timeH = document.getElementById('ef-time-h').value;
+  const timeM = document.getElementById('ef-time-m').value;
+  const time = (timeH && timeM) ? (timeH + ':' + timeM) : '（未指定）';
+  const extraRows = [...document.querySelectorAll('#ef-extra-slots > .extra-slot-row')];
+  const extraSlotsText = extraRows.map((row, i) => {
+    const d = row.querySelector('.ef-extra-day').value;
+    const h = row.querySelector('.ef-extra-time-h').value;
+    const m = row.querySelector('.ef-extra-time-m').value;
+    const t = (h && m) ? (h + ':' + m) : '（未指定）';
+    return (i + 2) + '枠目: ' + d + ' ' + t;
+  }).join(' / ') || '（希望なし）';
+  const tz = document.getElementById('ef-tz').value;
+  const msg = document.getElementById('ef-msg').value.trim() || '（なし）';
+  const statusEl = document.getElementById('ef-status');
+  const btn = document.getElementById('ef-submit');
+
+  const tMsg = (ja, zh, en) => secondaryLang === 'zh' ? zh : (secondaryLang === 'en' ? en : ja);
+
+  if (!name || !email){ statusEl.textContent = tMsg('お名前とメールアドレスを入力してください。', '請輸入姓名與Email。', 'Please enter your name and email.'); return; }
+
+  btn.disabled = true;
+  statusEl.textContent = tMsg('送信中...', '傳送中...', 'Sending...');
+  try {
+    const res = await fetch('https://formsubmit.co/ajax/suzu.nihongo@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        名前: name,
+        メールアドレス: email,
+        体験レッスン受講済み: trial,
+        希望コース: course,
+        希望曜日: day,
+        希望時間: time,
+        '追加の希望枠（週2回以上）': extraSlotsText,
+        タイムゾーン: tz,
+        メッセージ: msg,
+        _subject: '【入会申込】' + name + ' さんより',
+        _captcha: 'false',
+        _template: 'table'
+      })
+    });
+    const result = await res.json();
+    if (result.success !== false){
+      document.getElementById('ef-success').style.display = 'block';
+      statusEl.textContent = '';
+      document.getElementById('ef-name').value = '';
+      document.getElementById('ef-email').value = '';
+      document.getElementById('ef-msg').value = '';
+      document.getElementById('ef-extra-slots').innerHTML = '';
+    } else {
+      statusEl.textContent = tMsg('送信に失敗しました。LINEからご連絡ください。', '傳送失敗，請透過LINE聯繫。', 'Send failed. Please contact via LINE.');
+    }
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = '送信に失敗しました。LINEからご連絡ください。';
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

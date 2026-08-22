@@ -1,4 +1,4 @@
-name: Deploy classroom to GitHub Pages
+name: Deploy public site and classroom to GitHub Pages
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           VITE_DEPLOY_ENV: production
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
-      - run: pnpm build
+      - run: pnpm build:pages
         env:
           VITE_DEPLOY_ENV: production
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}

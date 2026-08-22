@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「匹」と「頭」の違い</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#6b4a4a;
+    --line:#E4D5C8;
+    --hiki:#6B3D3D;
+    --hiki-bg:#F1E4E0;
+    --tou:#C9897A;
+    --tou-bg:#FBEEE9;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--hiki);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1.1rem,2.2vw,1.5rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--hiki-bg); color:var(--hiki);}
+  .terms .t2{background:var(--tou-bg); color:var(--tou);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--hiki);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 2-card layout ---------- */
+  .cards2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.hiki .stamp{color:var(--hiki); background:var(--hiki-bg);}
+  .card.tou .stamp{color:var(--tou); background:var(--tou-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.hiki .sentence mark{--mark:#efd9d3;}
+  .card.tou .sentence mark{--mark:#f7e2da;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+
+  /* ---------- core duo ---------- */
+  .triad2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .triad2 .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad2 .col.hiki{background:var(--hiki-bg);}
+  .triad2 .col.tou{background:var(--tou-bg);}
+  .triad2 .term{font-family:var(--jp); font-weight:900; font-size:1.7rem;}
+  .triad2 .col.hiki .term{color:var(--hiki);}
+  .triad2 .col.tou .term{color:var(--tou);}
+  .triad2 .icon{font-size:1.6rem;}
+  .triad2 .def-jp{font-weight:700; font-size:1rem;}
+  .triad2 .def-en, .triad2 .def-zh{font-size:.85rem;}
+  .triad2 .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad2 .col.hiki .axis{color:var(--hiki);}
+  .triad2 .col.tou .axis{color:var(--tou);}
+
+  /* ---------- comparison table ---------- */
+  .compare-table{width:100%; border-collapse:collapse; margin-top:2vh; font-size:.92rem;}
+  .compare-table th, .compare-table td{border:1px solid var(--line); padding:.8em 1em; text-align:left; vertical-align:top;}
+  .compare-table th{background:var(--paper-deep); font-family:var(--jp); font-weight:700; color:var(--hiki);}
+  .compare-table td.jp{font-weight:700;}
+  .compare-table tr:nth-child(2) td.jp{color:var(--hiki);}
+  .compare-table tr:nth-child(3) td.jp{color:var(--tou);}
+
+  .conj-annot{
+    margin-top:1.4em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+  .conj-annot b{font-family:var(--jp);}
+
+  /* ---------- history timeline ---------- */
+  .timeline{display:flex; flex-direction:column; gap:1em; margin-top:2vh;}
+  .tl-item{display:flex; gap:1em; align-items:flex-start; background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em;}
+  .tl-era{flex:0 0 auto; font-family:var(--jp); font-weight:900; font-size:.95rem; color:var(--hiki); background:var(--hiki-bg); padding:.3em .8em; border-radius:999px; white-space:nowrap;}
+  .tl-body{flex:1;}
+  .tl-body .jp{font-size:.95rem;}
+  .tl-body .en, .tl-body .zh{font-size:.83rem; display:block; margin-top:.3em;}
+
+  /* ---------- special value list ---------- */
+  .special-list{display:flex; flex-direction:column; gap:1em; margin-top:2vh;}
+  .special-item{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1.1em 1.3em;}
+  .special-item .stitle{font-family:var(--jp); font-weight:900; font-size:1.02rem; color:var(--tou);}
+  .special-item .jp{font-size:.94rem; margin-top:.3em;}
+  .special-item .en, .special-item .zh{font-size:.83rem; display:block; margin-top:.25em;}
+
+  /* ---------- misc counters grid ---------- */
+  .misc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:2.5vw; margin-top:2vh;}
+  .misc-card{background:var(--paper-deep); border-radius:10px; padding:1em 1.2em;}
+  .misc-card .counter{font-family:var(--jp); font-weight:900; font-size:1.15rem; color:var(--hiki);}
+  .misc-card .jp{font-size:.9rem; margin-top:.3em;}
+  .misc-card .en, .misc-card .zh{font-size:.8rem; display:block; margin-top:.25em;}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); text-align:center;}
+  .quiz .opts{display:flex; gap:.5em;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.15rem,2.4vw,1.6rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--hiki-bg); color:var(--hiki);}
+  .mini-triad .m2{background:var(--tou-bg); color:var(--tou);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards2, .triad2, .misc-grid{grid-template-columns:1fr;}
+    .compare-table{font-size:.82rem;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--hiki);color:#fff;border-color:var(--hiki);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「匹」と「頭」<br>動物の数え方、何が違う？</h1>
+    <span class="sub-en en">Counting animals in Japanese — why some get "hiki" and others get "tou".</span>
+    <span class="sub-zh zh">數動物的量詞，「匹」和「頭」差在哪裡？</span>
+    <div class="terms">
+      <span class="t1">匹（ひき）</span>
+      <span class="t2">頭（とう）</span>
+    </div>
+  </header>
+
+  <!-- 導入：ひとことで -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">IN SHORT</span> <span class="zh">一句話總結</span></div>
+    <h2>💡 ひとことで言うと？</h2>
+    <span class="lead-en en">A quick summary before we dive in.</span>
+    <span class="lead-zh zh">先快速掌握重點。</span>
+
+    <div class="cards2">
+      <div class="card hiki">
+        <span class="stamp">匹（hiki）</span>
+        <div class="meaning-jp">鳥・犬・猫・魚・虫など、人間より小さくて抱きかかえられる動物を数える単位。</div>
+        <div class="meaning-en en"><b>EN:</b> For small-to-medium animals a person can pick up (dogs, cats, birds, fish, insects).</div>
+        <div class="meaning-zh zh"><b>TW:</b> 數比人小、能抱起來的動物（狗、貓、鳥、魚、蟲等）。</div>
+      </div>
+      <div class="card tou">
+        <span class="stamp">頭（tou）</span>
+        <div class="meaning-jp">象・ライオン・牛・馬など、人間より大きくて抱えきれない動物を数える単位。</div>
+        <div class="meaning-en en"><b>EN:</b> For large animals too big to pick up (elephants, lions, cattle, horses).</div>
+        <div class="meaning-zh zh"><b>TW:</b> 數比人大、抱不起來的動物（大象、獅子、牛、馬等）。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>二つの違いを一枚で整理</h2>
+    <div class="triad2">
+      <div class="col hiki">
+        <div class="icon">🐕</div>
+        <div class="term">匹</div>
+        <div class="def-jp">「戦って勝てる」「特別な価値はない」＝身近で脅威にならない動物。</div>
+        <div class="def-en en">Not a threat — an animal a person could "beat" or handle.</div>
+        <div class="def-zh zh">「打得贏、沒有特殊價值」——不構成威脅的動物。</div>
+        <div class="axis">視点 ＝ 抱ける大きさ・勝てる相手</div>
+      </div>
+      <div class="col tou">
+        <div class="icon">🐘</div>
+        <div class="term">頭</div>
+        <div class="def-jp">「戦っても勝てない」「特別な価値がある」＝大きい、または貴重な動物。</div>
+        <div class="def-en en">A threat, or an animal of special/high value.</div>
+        <div class="def-zh zh">「打不贏、或有特殊價值」——巨大或珍貴的動物。</div>
+        <div class="axis">視点 ＝ 抱えられない大きさ・価値の高さ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 広辞苑の定義 -->
+  <section>
+    <div class="eyebrow">1 <span class="en">DICTIONARY DEFINITION</span> <span class="zh">辭典定義</span></div>
+    <h2>📖 広辞苑（第七版）の定義</h2>
+    <span class="lead-en en"><b>EN:</b> What the dictionary actually says, plus the history behind each word.</span>
+    <span class="lead-zh zh"><b>TW:</b> 辭典的正式定義，以及背後的歷史由來。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card hiki">
+        <span class="stamp">匹（ひき）</span>
+        <div class="meaning-jp">獣・鳥・魚・虫などを数える語。</div>
+        <div class="meaning-en en"><b>EN:</b> A word for counting beasts, birds, fish, insects, etc.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 用來數獸、鳥、魚、蟲等的量詞。</div>
+        <div class="meaning-jp" style="margin-top:.6em;">由来：「匹」は本来「二つが対になった様子」を表す漢字。馬を後ろから見ると尻が二つに割れて対に見えることや、手綱を「ひく」ことに由来して昔は馬を数えたが、現代は主に小型動物全般に使われる。</div>
+        <div class="meaning-en en"><b>EN:</b> Originally meant "a matching pair." It was once used for horses (viewed from behind, the haunches look like a matched pair; also linked to "hiku," to pull the reins) — today it covers small animals in general.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 「匹」原意是「兩個成對」。過去用來數馬（從後面看馬臀像一對，也與「牽」馬韁繩的「引く」有關），現代則廣泛用於小型動物。</div>
+      </div>
+      <div class="card tou">
+        <span class="stamp">頭（とう）</span>
+        <div class="meaning-jp">牛・馬・犬などの動物を数える語。蝶や蚕にも用いる。</div>
+        <div class="meaning-en en"><b>EN:</b> A word for counting cattle, horses, dogs, etc. — also used for butterflies and silkworms.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 用來數牛、馬、狗等動物的量詞，也用於蝴蝶、蠶。</div>
+        <div class="meaning-jp" style="margin-top:.6em;">由来：明治時代以降、英語の "1 head, 2 head..." という家畜の数え方を直訳したのが始まり。辞書の通り、大型動物だけでなく特定の昆虫（蝶・蚕）にも例外的に使われる。</div>
+        <div class="meaning-en en"><b>EN:</b> Introduced after the Meiji era as a direct translation of the English livestock count "1 head, 2 head..." As the dictionary notes, it's also applied — as an exception — to certain insects like butterflies and silkworms.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 明治時代之後，直接翻譯英語家畜計數方式「1 head, 2 head…」而來。如辭典所述，也例外用於蝴蝶、蠶等特定昆蟲。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 番組による結論・歴史 -->
+  <section>
+    <div class="eyebrow">2 <span class="en">TV EXPLANATION & HISTORY</span> <span class="zh">節目解說與歷史</span></div>
+    <h2>🐴 歴史的経緯 ― 「頭」はいつ生まれた？</h2>
+    <p>江戸時代までは生き物を数える単位は基本的に「匹」だけで、「頭」という言い方は存在しませんでした（浮世絵にも象は「一匹」と記されている）。</p>
+    <span class="lead-en en"><b>EN:</b> Until the Edo period, "hiki" was the only counter for living creatures — even elephants were called "1 hiki" in ukiyo-e prints. "Tou" didn't exist yet.</span>
+    <span class="lead-zh zh"><b>TW:</b> 直到江戶時代為止，生物的量詞基本上只有「匹」——連浮世繪裡的大象也寫作「一匹」。當時還沒有「頭」這個說法。</span>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-era">江戸時代</div>
+        <div class="tl-body">
+          <span class="jp">生き物はすべて「匹」。「頭」という単位はまだ存在しない。</span>
+          <span class="en">All creatures were counted with "hiki." "Tou" did not exist.</span>
+          <span class="zh">所有生物都用「匹」計數，「頭」尚未出現。</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-era">明治時代</div>
+        <div class="tl-body">
+          <span class="jp">西洋の生物学論文を翻訳する際、英語の "head" を直訳して「頭」が導入される。上野動物園の飼育記録（明治25年）に「水牛 1頭」の記載あり。</span>
+          <span class="en">Translating Western biology papers, "head" was translated literally as "tou." Ueno Zoo's 1892 records already show "1 tou" used for a water buffalo.</span>
+          <span class="zh">翻譯西方生物學論文時，把英語的「head」直譯為「頭」。上野動物園明治25年（1892年）的飼育紀錄中已有「水牛 1頭」的用法。</span>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-era">大正5年</div>
+        <div class="tl-body">
+          <span class="jp">夏目漱石が東京朝日新聞の小説内で「頭」を使用したことなどをきっかけに、一般に広く定着した。</span>
+          <span class="en">Natsume Soseki's use of "tou" in a novel serialized in the Tokyo Asahi Shimbun (1916) helped the word spread to the general public.</span>
+          <span class="zh">1916年（大正5年），夏目漱石在《東京朝日新聞》連載小說中使用「頭」，成為它普及至一般大眾的契機之一。</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 使い分けの基準 -->
+  <section>
+    <div class="eyebrow">3 <span class="en">HOW TO CHOOSE</span> <span class="zh">選用標準</span></div>
+    <h2>⚖️ 使い分けの具体的な基準</h2>
+    <span class="lead-en en"><b>EN:</b> Two practical criteria for choosing between the two.</span>
+    <span class="lead-zh zh"><b>TW:</b> 兩個實用的判斷標準。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card hiki">
+        <span class="stamp">基準①：戦って勝てるか</span>
+        <div class="sentence">勝てる（脅威ではない）＝<mark>匹</mark></div>
+        <div class="meaning-jp">人間の性別・成長段階・個人の感覚によって、動物への「脅威度」の感じ方は変わる。目の前の動物をどう捉えるかで使い分けてよい（例：サルを脅威と見れば「頭」、可愛いと見れば「匹」）。</div>
+        <div class="meaning-en en"><b>EN:</b> Whether an animal feels threatening varies by the speaker's age, gender, or personal impression — so the same animal (e.g. a monkey) can be "tou" if seen as scary, or "hiki" if seen as cute.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 對動物「威脅程度」的感受，會因性別、年齡、個人感覺而不同。同一種動物（例如猴子）覺得可怕就用「頭」，覺得可愛就用「匹」。</div>
+      </div>
+      <div class="card tou">
+        <span class="stamp">基準②：特別な価値があるか</span>
+        <div class="sentence">貴重・特別な存在＝<mark>頭</mark></div>
+        <div class="meaning-jp">標本になるようなコレクター垂涎の「蝶」や、専門訓練を受けた「警察犬」「麻薬探知犬」は、特別な存在として「頭」と数える。</div>
+        <div class="meaning-en en"><b>EN:</b> A butterfly prized as a collector's specimen, or a specially trained police/drug-detection dog, is counted as "tou" because of its special value.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 對收藏家而言珍貴的標本蝴蝶，或受過專業訓練的警犬、緝毒犬，因具有特殊價值而用「頭」計數。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 違いのまとめ表 -->
+  <section>
+    <div class="eyebrow">比較 <span class="en">COMPARISON</span> <span class="zh">比較看看</span></div>
+    <h2>🔍 違いのまとめ</h2>
+    <table class="compare-table">
+      <tr>
+        <th>単位</th>
+        <th>基準 <span class="en">/ Criteria</span> <span class="zh">/ 判斷標準</span></th>
+        <th>該当する動物 <span class="en">/ Examples</span> <span class="zh">/ 例子</span></th>
+      </tr>
+      <tr>
+        <td class="jp">匹</td>
+        <td>抱きかかえられる／戦って勝てる／特別な価値はない<br><span class="en">Small / not a threat / no special value</span><span class="zh">能抱起來／打得贏／無特殊價值</span></td>
+        <td>犬・猫・鳥・魚・虫など<br><span class="en">Dogs, cats, birds, fish, insects</span><span class="zh">狗、貓、鳥、魚、蟲等</span></td>
+      </tr>
+      <tr>
+        <td class="jp">頭</td>
+        <td>抱えきれない／戦っても勝てない／特別な価値がある<br><span class="en">Large / a threat / special value</span><span class="zh">抱不起來／打不贏／有特殊價值</span></td>
+        <td>象・ライオン・牛・警察犬・珍しい蝶の標本など<br><span class="en">Elephants, lions, cattle, police dogs, prized butterfly specimens</span><span class="zh">大象、獅子、牛、警犬、珍貴蝴蝶標本等</span></td>
+      </tr>
+    </table>
+    <div class="conj-annot">
+      💡 <b>ワンポイント（Tip）</b><br>
+      <b>匹（hiki）</b> ＝ <b>Beatable</b>（打得贏・不是威脅）<br>
+      <b>頭（tou）</b> ＝ <b>Unbeatable or precious</b>（打不贏・或很珍貴）
+    </div>
+  </section>
+
+  <!-- 5. 番組で紹介されたユニークな数え方 -->
+  <section>
+    <div class="eyebrow">4 <span class="en">FUN EXTRAS</span> <span class="zh">趣味延伸</span></div>
+    <h2>✨ 番組で紹介されたユニークな数え方</h2>
+    <span class="lead-en en"><b>EN:</b> A few surprise counters mentioned in the same episode.</span>
+    <span class="lead-zh zh"><b>TW:</b> 節目中一併介紹的幾個特殊量詞。</span>
+
+    <div class="special-list">
+      <div class="special-item">
+        <div class="stitle">🌟 ホタル → 灯（とう）</div>
+        <span class="jp">普段は「匹」で数えるが、光っている最中のホタルは「灯」と数えることがある。</span>
+        <span class="en">Fireflies are normally "hiki," but a glowing firefly can be counted as "tou" (灯, meaning "light").</span>
+        <span class="zh">螢火蟲平常用「匹」，但正在發光的螢火蟲有時會用「灯」（意指「光」）計數。</span>
+      </div>
+      <div class="special-item">
+        <div class="stitle">⛰️ 山 → 座（ざ）</div>
+        <span class="jp">山は神様が座っている場所と考えられているため「座」と数える。</span>
+        <span class="en">Mountains are counted with "za" (座, "seat"), since they're believed to be where gods sit.</span>
+        <span class="zh">山被視為神明所坐之處，因此用「座」計數。</span>
+      </div>
+      <div class="special-item">
+        <div class="stitle">🌰 イガ栗 → 毬（いが）</div>
+        <span class="jp">毛羽立った毬に似ているため「毬」と数える（中の栗の粒は「個」や「粒」）。</span>
+        <span class="en">The spiky chestnut husk is counted as "iga" (毬) because of its bristly shape — the chestnuts inside are counted as "ko" or "tsubu."</span>
+        <span class="zh">帶刺的栗子外殼因形似毛球而用「毬」計數（裡面的栗子則用「個」或「粒」）。</span>
+      </div>
+      <div class="special-item">
+        <div class="stitle">⛩️ 神様 → 柱（はしら）</div>
+        <span class="jp">神様は柱に見立てられることに由来し、「柱」と数える。</span>
+        <span class="en">Gods (kami) are counted with "hashira" (柱, "pillar"), from the idea of a deity dwelling in a pillar.</span>
+        <span class="zh">神明用「柱」計數，源自神明依附於柱子的概念。</span>
+      </div>
+    </div>
+
+    <div class="misc-grid">
+      <div class="misc-card">
+        <div class="counter">約500種類</div>
+        <div class="jp">日本語に存在する助数詞（物の数え方）のおおよその数。</div>
+        <span class="en">The approximate number of counter words that exist in Japanese.</span>
+        <span class="zh">日語中存在的助數詞（量詞）大約種類數。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">明治25年</div>
+        <div class="jp">上野動物園の記録に「頭」の使用例が確認された年。</div>
+        <span class="en">The year (1892) Ueno Zoo's records show an early confirmed use of "tou."</span>
+        <span class="zh">上野動物園紀錄中確認「頭」用法的年份（1892年）。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>正しい言葉を選んでみよう</h2>
+    <span class="lead-en en">Tap an option to check your answer.</span>
+    <span class="lead-zh zh">點選選項確認答案。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「匹」は抱ける・勝てる相手、<br>「頭」は抱えきれない・貴重な相手。</div>
+      <span class="en">Hiki = you could pick it up or "beat" it. Tou = too big to hold, or too precious to treat lightly.</span>
+      <span class="zh">匹＝抱得起、打得贏的對象；頭＝抱不起、或很珍貴的對象。</span>
+      <div class="mini-triad">
+        <span class="m1">匹＝Beatable（打得贏）</span>
+        <span class="m2">頭＝Unbeatable/Precious（打不贏・珍貴）</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜「匹」・「頭」の違い</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { jp:"公園で子犬が２", answer:"匹", opts:["匹","頭"], suffix:"遊んでいる。",
+      exp_jp:"子犬は抱きかかえられる小さな動物なので「匹」。",
+      exp_en:"Puppies are small enough to pick up, so they're counted with \"hiki.\"",
+      exp_zh:"小狗是能抱起來的小型動物，所以用「匹」。" },
+    { jp:"動物園にゾウが３", answer:"頭", opts:["匹","頭"], suffix:"います。",
+      exp_jp:"ゾウは大きくて抱えきれない動物なので「頭」。",
+      exp_en:"Elephants are far too large to pick up, so they're counted with \"tou.\"",
+      exp_zh:"大象體型巨大、抱不起來，所以用「頭」。" },
+    { jp:"あの麻薬探知犬は特別に訓練された１", answer:"頭", opts:["匹","頭"], suffix:"だ。",
+      exp_jp:"特別な訓練を受けた価値の高い犬は、例外的に「頭」と数える。",
+      exp_en:"A specially trained, high-value dog like a drug-detection dog is an exception counted as \"tou.\"",
+      exp_zh:"受過專業訓練、具有特殊價值的犬類，屬例外用「頭」計數。" },
+    { jp:"水槽の中に金魚が５", answer:"匹", opts:["匹","頭"], suffix:"いる。",
+      exp_jp:"金魚は小さく抱きかかえられる（すくえる）動物なので「匹」。",
+      exp_en:"Goldfish are small and easily handled, so they're counted with \"hiki.\"",
+      exp_zh:"金魚體型小、容易撈起，所以用「匹」。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.jp}<span class="blank"></span>${q.suffix}</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>

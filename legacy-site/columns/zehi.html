@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「ぜひ」の使い方 ― なぜ「次はぜひ頑張ります」は不自然？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#6b4a4a;
+    --line:#E4D5C8;
+    --bad:#A63D2A;
+    --bad-bg:#F5E3DC;
+    --good:#3B6E5A;
+    --good-bg:#E1EFE9;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.5rem,3.8vw,2.3rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--bad);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1rem,2vw,1.3rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--bad-bg); color:var(--bad);}
+  .terms .t2{background:var(--good-bg); color:var(--good);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--bad);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 2-card layout ---------- */
+  .cards2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.bad .stamp{color:var(--bad); background:var(--bad-bg);}
+  .card.good .stamp{color:var(--good); background:var(--good-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.bad .sentence mark{--mark:#f0dcd3;}
+  .card.good .sentence mark{--mark:#dcebe4;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+
+  /* ---------- core duo ---------- */
+  .triad2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .triad2 .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad2 .col.bad{background:var(--bad-bg);}
+  .triad2 .col.good{background:var(--good-bg);}
+  .triad2 .term{font-family:var(--jp); font-weight:900; font-size:1.4rem;}
+  .triad2 .col.bad .term{color:var(--bad);}
+  .triad2 .col.good .term{color:var(--good);}
+  .triad2 .icon{font-size:1.6rem;}
+  .triad2 .def-jp{font-weight:700; font-size:1rem;}
+  .triad2 .def-en, .triad2 .def-zh{font-size:.85rem;}
+  .triad2 .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad2 .col.bad .axis{color:var(--bad);}
+  .triad2 .col.good .axis{color:var(--good);}
+
+  /* ---------- comparison table ---------- */
+  .compare-table{width:100%; border-collapse:collapse; margin-top:2vh; font-size:.92rem;}
+  .compare-table th, .compare-table td{border:1px solid var(--line); padding:.8em 1em; text-align:left; vertical-align:top;}
+  .compare-table th{background:var(--paper-deep); font-family:var(--jp); font-weight:700; color:var(--bad);}
+  .compare-table td.jp{font-weight:700;}
+  .compare-table tr:nth-child(2) td.jp{color:var(--bad);}
+  .compare-table tr:nth-child(3) td.jp{color:var(--good);}
+  .compare-table tr:nth-child(4) td.jp{color:var(--good);}
+
+  .conj-annot{
+    margin-top:1.4em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+  .conj-annot b{font-family:var(--jp);}
+
+  /* ---------- NG example box ---------- */
+  .warn-box{background:#fff; border:1px dashed var(--warn); border-radius:10px; padding:1em 1.2em; margin-top:1.6em;}
+  .warn-box .line{font-size:1rem; margin:.35em 0;}
+  .warn-box .x{color:var(--bad); font-weight:900;}
+  .warn-box .o{color:var(--good); font-weight:900;}
+  .warn-box .note{margin-top:.7em; font-size:.9rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .warn-box .note-en, .warn-box .note-zh{font-size:.83rem; margin-top:.4em; display:block;}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); text-align:center;}
+  .quiz .opts{display:flex; gap:.5em; flex-wrap:wrap;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.1rem,2.2vw,1.5rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--bad-bg); color:var(--bad);}
+  .mini-triad .m2{background:var(--good-bg); color:var(--good);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards2, .triad2{grid-template-columns:1fr;}
+    .compare-table{font-size:.82rem;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--bad);color:#fff;border-color:var(--bad);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「ぜひ」の使い方<br>「次はぜひ頑張ります」はなぜ不自然？</h1>
+    <span class="sub-en en">"I'll definitely do my best next time" — using "zehi" here sounds a little off to native ears. Here's why.</span>
+    <span class="sub-zh zh">「次はぜひ頑張ります」這句話，聽起來有一點點不自然，原因是什麼呢？</span>
+    <div class="terms">
+      <span class="t1">❌ 自分だけの宣言</span>
+      <span class="t2">⭕ 相手がいる場面</span>
+    </div>
+  </header>
+
+  <!-- 導入：ひとことで -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">IN SHORT</span> <span class="zh">一句話總結</span></div>
+    <h2>💡 ひとことで言うと？</h2>
+    <span class="lead-en en">A quick summary before we dive in.</span>
+    <span class="lead-zh zh">先快速掌握重點。</span>
+
+    <div class="cards2">
+      <div class="card bad">
+        <span class="stamp">❌ 自分だけの予定・決意</span>
+        <div class="meaning-jp">相手がいない、自分ひとりの行動宣言に「ぜひ」を使うと、押しつけがましく、不自然に聞こえる。</div>
+        <div class="meaning-en en"><b>EN:</b> Using "zehi" for your own solo plan or resolve — with no one else involved — sounds pushy and unnatural.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 只是表達自己一個人的行動宣言時使用「ぜひ」，聽起來會有點強加於人、不自然。</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">⭕ 相手が関わる場面</span>
+        <div class="meaning-jp">相手を誘う・相手の誘いに応じる・相手にお願いする時に「ぜひ」を使うと自然。</div>
+        <div class="meaning-en en"><b>EN:</b> Using "zehi" to invite someone, accept an invitation, or make a request sounds natural.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 用來邀請對方、回應對方的邀約，或拜託對方時使用「ぜひ」，就很自然。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>二つの違いを一枚で整理</h2>
+    <div class="triad2">
+      <div class="col bad">
+        <div class="icon">🙅</div>
+        <div class="term">NGな使い方</div>
+        <div class="def-jp">自分ひとりの行動宣言（次はぜひ頑張ります）に使うと不自然。</div>
+        <div class="def-en en">Unnatural when used for your own solo declaration of intent.</div>
+        <div class="def-zh zh">用於自己一個人的行動宣言時不自然。</div>
+        <div class="axis">視点 ＝ 相手不在</div>
+      </div>
+      <div class="col good">
+        <div class="icon">🙆</div>
+        <div class="term">OKな使い方</div>
+        <div class="def-jp">相手を誘う・相手の誘いに応じる・相手にお願いする場面で使うと自然。</div>
+        <div class="def-en en">Natural when inviting, accepting an invitation, or making a request.</div>
+        <div class="def-zh zh">用於邀請、回應邀約、或拜託對方時很自然。</div>
+        <div class="axis">視点 ＝ 相手が関わる</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 結論：なぜ違和感があるのか -->
+  <section>
+    <div class="eyebrow">結論 <span class="en">WHY IT SOUNDS OFF</span> <span class="zh">為什麼聽起來怪怪的</span></div>
+    <h2>なぜ違和感があるのか？</h2>
+    <p>大きな理由は、「ぜひ（是非）」という言葉が持つニュアンスにあります。「ぜひ」は、相手に強く勧めたり、相手の誘いに乗ったりする時の言葉です。自分の単なる「予定」や「個人的な決意」だけに使うと、少し押しつけがましく聞こえたり、日本語としてアンバランスになったりします。</p>
+    <span class="lead-en en"><b>EN:</b> The reason lies in the nuance of "zehi." It's a word for strongly urging someone else, or eagerly accepting someone else's invitation. Used only for your own plan or personal resolve, it sounds pushy and slightly off-balance.</span>
+    <span class="lead-zh zh"><b>TW:</b> 主要原因在於「ぜひ（是非）」這個詞本身的語感。「ぜひ」是用來強力邀請對方，或是欣然接受對方邀約時使用的詞。如果只用在表達自己的「打算」或「個人決心」，聽起來會有點強加於人、日語上也會顯得不平衡。</span>
+  </section>
+
+  <!-- 1. 「ぜひ」は「相手」がいる時に使う -->
+  <section>
+    <div class="eyebrow">1 <span class="en">ZEHI NEEDS SOMEONE ELSE</span> <span class="zh">「ぜひ」需要有對象</span></div>
+    <h2>①「ぜひ」は「相手」がいる時に使う</h2>
+    <p>「ぜひ」は英語の"by all means"や"definitely"、中国語の「一定（要）／務必」に近い言葉ですが、主に相手が関わる場面で使います。</p>
+    <span class="lead-en en"><b>EN:</b> "Zehi" is close to English "by all means" or "definitely," or Chinese "一定（要）／務必" — but it's mainly used in scenes involving another person.</span>
+    <span class="lead-zh zh"><b>TW:</b> 「ぜひ」接近英語的"by all means"、"definitely"，或中文的「一定（要）／務必」，但主要用在有對方參與的場合。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card good">
+        <span class="stamp">相手を誘う</span>
+        <div class="sentence"><mark>ぜひ</mark>来てください。</div>
+        <div class="meaning-en en"><b>EN:</b> Please do come!</div>
+        <div class="meaning-zh zh"><b>TW:</b> 請一定要來！</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">相手の誘いに応じる</span>
+        <div class="sentence"><mark>ぜひ</mark>行きたいです！</div>
+        <div class="meaning-en en"><b>EN:</b> I'd love to go!</div>
+        <div class="meaning-zh zh"><b>TW:</b> 我非常想去！</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">相手に強くお願いする</span>
+        <div class="sentence"><mark>ぜひ</mark>よろしくお願いします。</div>
+        <div class="meaning-en en"><b>EN:</b> I highly request your kind support.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 務必請多多關照。</div>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <div class="line"><span class="x">✕</span> 自分ひとりの行動宣言：「次は<mark style="background:none;box-shadow:inset 0 -0.4em 0 #f0dcd3;">ぜひ</mark>頑張ります」</div>
+      <div class="note">👉 相手からの強い誘いに対して「はい！ぜひ頑張ります！」と答えるなら自然ですが、自分から言い出す場合は「ぜひ」を入れると不自然になります。
+        <span class="note-en en">Answering someone else's enthusiastic invitation with "Yes! I'd love to give it my best!" is natural. But bringing it up yourself, unprompted, makes "zehi" sound off.</span>
+        <span class="note-zh zh">如果是回應對方熱情的邀請說「好！我一定會加油！」是自然的，但如果是自己主動說出口，加上「ぜひ」就會顯得不自然。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 自分の意志・決意なら「絶対に」「必ず」 -->
+  <section>
+    <div class="eyebrow">2 <span class="en">USE "ZETTAI NI" OR "KANARAZU" INSTEAD</span> <span class="zh">用「絶対に」「必ず」代替</span></div>
+    <h2>②自分の意志・決意なら「絶対に」「必ず」を使う</h2>
+    <p>自分の決意を強く言いたい時は、「ぜひ」ではなく「絶対に」や「必ず」を使います。</p>
+    <span class="lead-en en"><b>EN:</b> When you want to strongly express your own resolve, use "zettai ni" or "kanarazu" instead of "zehi."</span>
+    <span class="lead-zh zh"><b>TW:</b> 想強烈表達自己的決心時，不用「ぜひ」，而是用「絶対に」或「必ず」。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card bad">
+        <span class="stamp">❌ 不自然</span>
+        <div class="sentence">次は<mark>ぜひ</mark>頑張ります。</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">⭕ 自然①</span>
+        <div class="sentence">次は<mark>絶対に</mark>頑張ります！</div>
+        <div class="meaning-en en"><b>EN:</b> A strong will — "I'm absolutely going to do my best next time!"</div>
+        <div class="meaning-zh zh"><b>TW:</b> 表達強烈意志——「下次我一定會加油（下定決心）！」</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">⭕ 自然②</span>
+        <div class="sentence">次は<mark>必ず</mark>頑張ります！</div>
+        <div class="meaning-en en"><b>EN:</b> A firm resolve to follow through — "I will keep my promise and do my best."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 表達堅定的決心——「一定會遵守約定、確實執行」。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 「ぜひ」を使いたいなら「〜したいです」に -->
+  <section>
+    <div class="eyebrow">3 <span class="en">OR PAIR ZEHI WITH "WANT TO"</span> <span class="zh">或搭配「想要」使用</span></div>
+    <h2>③「ぜひ」を使いたいなら「〜したいです」にする</h2>
+    <p>もし「ぜひ」という単語を使いたい場合は、文末を「〜頑張ります（宣言）」ではなく「〜したいです（希望）」に変えると一気に自然になります。</p>
+    <span class="lead-en en"><b>EN:</b> If you do want to use "zehi," changing the ending from a flat declaration ("I will do my best") to a wish ("I want to try my best") makes it sound natural right away.</span>
+    <span class="lead-zh zh"><b>TW:</b> 如果想使用「ぜひ」這個詞，把句尾從「〜頑張ります（宣言）」改成「〜したいです（希望）」，就會一下子變得很自然。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card good">
+        <span class="stamp">⭕ 自然①</span>
+        <div class="sentence">次は<mark>ぜひ</mark>頑張ってみたいです！</div>
+        <div class="meaning-en en"><b>EN:</b> I'd really love to try my best next time!</div>
+        <div class="meaning-zh zh"><b>TW:</b> 下次我非常想試試看、加油！</div>
+      </div>
+      <div class="card good">
+        <span class="stamp">⭕ 自然②</span>
+        <div class="sentence">次は<mark>ぜひ</mark>参加したいです！</div>
+        <div class="meaning-en en"><b>EN:</b> I'd really love to take part next time!</div>
+        <div class="meaning-zh zh"><b>TW:</b> 下次我非常想參加！</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 違いのまとめ -->
+  <section>
+    <div class="eyebrow">比較 <span class="en">COMPARISON</span> <span class="zh">比較看看</span></div>
+    <h2>🔍 違いのまとめ</h2>
+    <table class="compare-table">
+      <tr>
+        <th>場面</th>
+        <th>使う言葉 <span class="en">/ Word to use</span> <span class="zh">/ 該用的詞</span></th>
+        <th>例 <span class="en">/ Example</span> <span class="zh">/ 例子</span></th>
+      </tr>
+      <tr>
+        <td class="jp">自分だけの宣言</td>
+        <td>❌「ぜひ」は使わない<br><span class="en">Don't use "zehi" here</span><span class="zh">這裡不用「ぜひ」</span></td>
+        <td>次は<mark style="background:none;box-shadow:inset 0 -0.4em 0 #f0dcd3;">ぜひ</mark>頑張ります（不自然）</td>
+      </tr>
+      <tr>
+        <td class="jp">相手が関わる場面</td>
+        <td>⭕「ぜひ」がぴったり<br><span class="en">"Zehi" fits perfectly</span><span class="zh">「ぜひ」正合適</span></td>
+        <td>ぜひ来てください／ぜひ行きたいです</td>
+      </tr>
+      <tr>
+        <td class="jp">自分の決意</td>
+        <td>⭕「絶対に」「必ず」を使う<br><span class="en">Use "zettai ni" or "kanarazu"</span><span class="zh">用「絶対に」「必ず」</span></td>
+        <td>次は絶対に／必ず頑張ります</td>
+      </tr>
+    </table>
+    <div class="conj-annot">
+      💡 <b>ワンポイント（Tip）</b><br>
+      <b>ぜひ</b> ＝ <b>相手ありき</b>（Needs someone else）<br>
+      <b>絶対に・必ず</b> ＝ <b>自分の決意</b>（Your own resolve）
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>一番いい言葉を選んでみよう</h2>
+    <span class="lead-en en">Tap an option to check your answer.</span>
+    <span class="lead-zh zh">點選選項確認答案。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「ぜひ」は相手がいてこそ。<br>自分だけの決意は「絶対に」「必ず」で。</div>
+      <span class="en">"Zehi" needs someone else in the picture. For your own resolve alone, use "zettai ni" or "kanarazu."</span>
+      <span class="zh">「ぜひ」要有對方才成立；自己一個人的決心，就用「絶対に」「必ず」。</span>
+      <div class="mini-triad">
+        <span class="m1">ぜひ＝相手ありき（With someone）</span>
+        <span class="m2">絶対に・必ず＝自分の決意（On your own）</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜「ぜひ」の使い方</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { jp:"このお店のラーメンはすごくおいしいですよ！", answer:"ぜひ", opts:["ぜひ","絶対に"], suffix:"食べてみてください。",
+      exp_jp:"相手に「〜してください」と強くおすすめするときは「ぜひ」を使います。",
+      exp_en:"When strongly recommending that someone else do something (\"please do...\"), use \"zehi.\"",
+      exp_zh:"對對方強力推薦「請〜」時，使用「ぜひ」。" },
+    { jp:"来週のレッスンは、", answer:"必ず", opts:["ぜひ","必ず"], suffix:"休まずに行きます！",
+      exp_jp:"「休まない」という自分の約束や決意を伝えるときは「必ず」（または「絶対に」）を使います。",
+      exp_en:"When expressing your own promise or resolve — \"I won't miss it\" — use \"kanarazu\" (or \"zettai ni\").",
+      exp_zh:"表達「不缺席」這樣自己的約定或決心時，使用「必ず」（或「絶対に」）。" },
+    { jp:"友達：「明日、一緒にカフェに行かない？」<br>自分：「うん、", answer:"ぜひ", opts:["ぜひ","必ず"], suffix:"行きたい！」",
+      exp_jp:"相手からの誘いに「〜したい！」と嬉しく答えるときは「ぜひ」がぴったりです。",
+      exp_en:"When happily responding to someone else's invitation with \"I'd love to!\", \"zehi\" fits perfectly.",
+      exp_zh:"開心地回應對方的邀約說「我想〜！」時，「ぜひ」最合適。" },
+    { jp:"今日はあまりうまくいかなかったけれど、次は", answer:"絶対に", opts:["ぜひ","絶対に"], suffix:"頑張ります！",
+      exp_jp:"自分の決意（〜頑張ります！）を伝えるときは「絶対に」を使います。自分の行動宣言に「ぜひ」は使えません。",
+      exp_en:"When conveying your own resolve (\"I will do my best!\"), use \"zettai ni.\" \"Zehi\" doesn't work for your own declaration of action.",
+      exp_zh:"表達自己的決心（〜頑張ります！）時使用「絶対に」。自己的行動宣言不能用「ぜひ」。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.jp}<span class="blank"></span>${q.suffix}</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>

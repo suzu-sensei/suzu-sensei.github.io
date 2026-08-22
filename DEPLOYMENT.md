@@ -1,6 +1,6 @@
 # Deployment
 
-The public classroom will use `https://suzu-sensei.github.io/` only after the separate production Supabase migration is approved and verified.
+The public marketing site, games, textbook, and columns use `https://suzu-sensei.github.io/`. The role-aware classroom uses the canonical URL `https://suzu-sensei.github.io/classroom/`.
 
 ## GitHub Pages variables
 
@@ -15,10 +15,12 @@ The workflow sets `VITE_DEPLOY_ENV=production`. The application build fails clos
 
 1. Apply the reviewed migrations to production only after explicit approval.
 2. Run production structural, RLS, RPC, Storage, and security checks.
-3. Configure production Google OAuth and the root redirect URL.
+3. Configure production Google OAuth and allow both the root and `/classroom/` redirect URLs.
 4. Configure the two GitHub Pages repository variables.
 5. Enable GitHub Actions as the Pages source and run the deployment workflow.
 6. Verify teacher and student login, ownership isolation, booking, payment evidence, and signed URLs.
-7. Keep the archived previous site available at `https://suzu-sensei.github.io/old/`.
+7. Keep the pre-restoration snapshot available at `https://suzu-sensei.github.io/old/` as a rollback reference.
+
+The Pages artifact is assembled from the reviewed old public-site commit plus the Vite classroom build. Only the old student and teacher URLs are replaced with redirects to `/classroom/`; unpublished old-site work and credential files are not copied.
 
 Never place OAuth secrets, database passwords, service-role keys, or student data in GitHub variables used by the frontend.

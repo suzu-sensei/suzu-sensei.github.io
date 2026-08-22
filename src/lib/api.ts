@@ -3,6 +3,7 @@ import type { Booking, BookingRequest, Candidate, Credit, LessonHistory, Payment
 import { validateSlip } from './validation';
 import { uuid } from './format';
 import { friendlyMessage } from './errors';
+import { authRedirectUrl } from './auth-url';
 
 const unwrap = <T>(result: { data: T | null; error: { message: string } | null }): T => {
   if (result.error) throw new Error(friendlyMessage(result.error.message));
@@ -13,7 +14,10 @@ const unwrap = <T>(result: { data: T | null; error: { message: string } | null }
 export async function loginWithGoogle(): Promise<void> {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin, queryParams: { prompt: 'select_account' } },
+    options: {
+      redirectTo: authRedirectUrl(window.location.href, import.meta.env.BASE_URL),
+      queryParams: { prompt: 'select_account' },
+    },
   });
   if (error) throw new Error(friendlyMessage(error.message));
 }

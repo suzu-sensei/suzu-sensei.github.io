@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「合う」と「似合う」の違い</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#6b4a4a;
+    --line:#E4D5C8;
+    --au:#2C4A6E;
+    --au-bg:#E7EDF3;
+    --niau:#A93B2E;
+    --niau-bg:#F6E7E3;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--au);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1.1rem,2.2vw,1.5rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--au-bg); color:var(--au);}
+  .terms .t2{background:var(--niau-bg); color:var(--niau);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--au);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 2-card layout ---------- */
+  .cards2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.au .stamp{color:var(--au); background:var(--au-bg);}
+  .card.niau .stamp{color:var(--niau); background:var(--niau-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.au .sentence mark{--mark:#dbe4ee;}
+  .card.niau .sentence mark{--mark:#f2dbd5;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+
+  /* ---------- core duo ---------- */
+  .triad2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .triad2 .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad2 .col.au{background:var(--au-bg);}
+  .triad2 .col.niau{background:var(--niau-bg);}
+  .triad2 .term{font-family:var(--jp); font-weight:900; font-size:1.7rem;}
+  .triad2 .col.au .term{color:var(--au);}
+  .triad2 .col.niau .term{color:var(--niau);}
+  .triad2 .icon{font-size:1.6rem;}
+  .triad2 .def-jp{font-weight:700; font-size:1rem;}
+  .triad2 .def-en, .triad2 .def-zh{font-size:.85rem;}
+  .triad2 .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad2 .col.au .axis{color:var(--au);}
+  .triad2 .col.niau .axis{color:var(--niau);}
+
+  /* ---------- comparison table ---------- */
+  .compare-table{width:100%; border-collapse:collapse; margin-top:2vh; font-size:.92rem;}
+  .compare-table th, .compare-table td{border:1px solid var(--line); padding:.8em 1em; text-align:left; vertical-align:top;}
+  .compare-table th{background:var(--paper-deep); font-family:var(--jp); font-weight:700; color:var(--au);}
+  .compare-table td.jp{font-weight:700;}
+  .compare-table tr:nth-child(2) td.jp{color:var(--au);}
+  .compare-table tr:nth-child(3) td.jp{color:var(--niau);}
+
+  .conj-annot{
+    margin-top:1.4em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+  .conj-annot b{font-family:var(--jp);}
+
+  /* ---------- bad-case warning box ---------- */
+  .warn-box{background:#fff; border:1px dashed var(--warn); border-radius:10px; padding:1em 1.2em; margin-top:1.6em;}
+  .warn-box .line{font-size:1rem; margin:.35em 0;}
+  .warn-box .x{color:var(--warn); font-weight:900;}
+  .warn-box .o{color:var(--au); font-weight:900;}
+  .warn-box .note{margin-top:.7em; font-size:.9rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .warn-box .note-en, .warn-box .note-zh{font-size:.83rem; margin-top:.4em; display:block;}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .blank{display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); text-align:center;}
+  .quiz .opts{display:flex; gap:.5em;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.15rem,2.4vw,1.6rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--au-bg); color:var(--au);}
+  .mini-triad .m2{background:var(--niau-bg); color:var(--niau);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards2, .triad2{grid-template-columns:1fr;}
+    .compare-table{font-size:.82rem;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--au);color:#fff;border-color:var(--au);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「合う」と「似合う」<br>正しく使い分けられていますか？</h1>
+    <span class="sub-en en">Two verbs used every day, yet easy to mix up — the difference clicks once you look at scope and whether it's about looks.</span>
+    <span class="sub-zh zh">這是兩個日常會話中常用、卻很容易搞混的動詞，只要留意適用範圍與是否關乎外觀，就能豁然開朗。</span>
+    <div class="terms">
+      <span class="t1">合う</span>
+      <span class="t2">似合う</span>
+    </div>
+  </header>
+
+  <!-- 導入：ひとことで -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">IN SHORT</span> <span class="zh">一句話總結</span></div>
+    <h2>💡 ひとことで言うと？</h2>
+    <span class="lead-en en">A quick summary before we dive in.</span>
+    <span class="lead-zh zh">先快速掌握重點。</span>
+
+    <div class="cards2">
+      <div class="card au">
+        <span class="stamp">合う（au）</span>
+        <div class="meaning-jp">サイズ・条件・味・意見など、目に見えないことにも幅広く使える「一致する・調和する」という意味。</div>
+        <div class="meaning-en en"><b>EN:</b> To match / fit / align — broad, covers even invisible things like size, conditions, taste, or opinions.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 廣泛用於尺寸、條件、味道、意見等看不見的一致，意思是「吻合、調和」。</div>
+      </div>
+      <div class="card niau">
+        <span class="stamp">似合う（niau）</span>
+        <div class="meaning-jp">容姿や雰囲気など、見た目がよく調和することだけに使う動詞。</div>
+        <div class="meaning-en en"><b>EN:</b> Used only for visual harmony — how looks or vibe suit someone or something.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 只用於容貌、氛圍等外觀上的協調。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>二つの違いを一枚で整理</h2>
+    <div class="triad2">
+      <div class="col au">
+        <div class="icon">🔗</div>
+        <div class="term">合う</div>
+        <div class="def-jp">見た目に限らず、性質・条件・内容など幅広い対象に使う「一致・調和」。</div>
+        <div class="def-en en">Broad match — used for visual and non-visual things alike.</div>
+        <div class="def-zh zh">範圍廣泛的「吻合、調和」，不限於外觀。</div>
+        <div class="axis">視点 ＝ 範囲の広さ（Broad match）</div>
+      </div>
+      <div class="col niau">
+        <div class="icon">👗</div>
+        <div class="term">似合う</div>
+        <div class="def-jp">人や物の「見た目」だけに焦点を当てた調和。</div>
+        <div class="def-en en">Visual-only harmony — appearance is the whole point.</div>
+        <div class="def-zh zh">只聚焦於「外觀」的協調。</div>
+        <div class="axis">視点 ＝ 視覚的かどうか（Visual only）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 合う -->
+  <section>
+    <div class="eyebrow">1 <span class="en">BROAD MATCH</span> <span class="zh">範圍廣泛的一致</span></div>
+    <h2>合う（あう）</h2>
+    <p>複数のものや考えが<b>ぴったり重なる、一致する、調和する</b>という意味です。見た目に限らず、性質・条件・味・意見など、幅広い対象に使えます。</p>
+    <span class="lead-en en"><b>EN:</b> To match, fit, or align perfectly between multiple things or ideas — visible or not.</span>
+    <span class="lead-zh zh"><b>TW:</b> 指多個事物或想法完全吻合、一致、調和，範圍不限於外觀。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card au">
+        <span class="stamp">例文①</span>
+        <div class="sentence">このスニーカー、サイズが<mark>合わ</mark>なくて足が痛いんです。</div>
+        <div class="meaning-en en"><b>EN:</b> These sneakers don't fit right, and my feet hurt.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這雙運動鞋尺寸不合，腳很痛。</div>
+      </div>
+      <div class="card au">
+        <span class="stamp">例文②</span>
+        <div class="sentence">来週の水曜日なら、予定が<mark>合い</mark>ますよ。</div>
+        <div class="meaning-en en"><b>EN:</b> If it's next Wednesday, my schedule works.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 如果是下週三的話，我的行程可以配合喔。</div>
+      </div>
+      <div class="card au">
+        <span class="stamp">例文③</span>
+        <div class="sentence">このチーズ、赤ワインとよく<mark>合い</mark>ますね。</div>
+        <div class="meaning-en en"><b>EN:</b> This cheese goes really well with red wine.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這個起司跟紅酒非常搭。</div>
+      </div>
+      <div class="card au">
+        <span class="stamp">例文④</span>
+        <div class="sentence">私たち、意外と趣味が<mark>合う</mark>から話していて楽しい。</div>
+        <div class="meaning-en en"><b>EN:</b> Our hobbies match surprisingly well, so it's fun talking with you.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 我們的興趣意外地很合得來，聊天很開心。</div>
+      </div>
+      <div class="card au">
+        <span class="stamp">例文⑤</span>
+        <div class="sentence">このスカーフ、コートの色とよく<mark>合って</mark>るね。</div>
+        <div class="meaning-en en"><b>EN:</b> This scarf really matches the color of the coat.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 這條圍巾跟外套的顏色很搭呢。</div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.6vh;">①・②は「サイズ」「予定」という基準にぴったり一致しているという意味。③・④は、味や趣味という<b>目には見えない性質</b>が調和しているという意味です。⑤のように、色や形の組み合わせという<b>見た目の話</b>にも「合う」は使えます。つまり「合う」は、見た目にも見た目以外にも使える、範囲の広い動詞なのです。</p>
+    <span class="lead-en en"><b>EN:</b> ① and ② match a standard like "size" or "schedule." ③ and ④ show harmony in invisible qualities like taste or interests. ⑤ shows "au" also covers visual combinations of color or shape — in short, "au" is a broad verb, used both visually and non-visually.</span>
+    <span class="lead-zh zh"><b>TW:</b> ①②是與「尺寸」「行程」等基準完全吻合;③④是味道、興趣等看不見的性質相互調和;⑤則顯示「合う」也能用於顏色、造型等外觀上的搭配。簡言之，「合う」是範圍廣泛、視覺與非視覺皆可使用的動詞。</span>
+  </section>
+
+  <!-- 2. 似合う -->
+  <section>
+    <div class="eyebrow">2 <span class="en">VISUAL-ONLY HARMONY</span> <span class="zh">只限外觀的調和</span></div>
+    <h2>似合う（にあう）</h2>
+    <p>容姿や雰囲気が人や物に<b>とてもよく調和して、見た目が引き立って見える</b>という意味です。主に、人の外見や、頭の中でイメージした見た目に対して使います。</p>
+    <span class="lead-en en"><b>EN:</b> To visually harmonize so well with a person or object that it brings out their appeal — used mainly for a person's looks or an imagined appearance.</span>
+    <span class="lead-zh zh"><b>TW:</b> 指外觀、氛圍與人或物非常協調，使外表更顯出色，主要用於人的外貌或腦中想像的樣子。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card niau">
+        <span class="stamp">例文①</span>
+        <div class="sentence">その帽子、すごく<mark>似合って</mark>ますね！</div>
+        <div class="meaning-en en"><b>EN:</b> That hat really suits you!</div>
+        <div class="meaning-zh zh"><b>TW:</b> 那頂帽子真的很適合你！</div>
+      </div>
+      <div class="card niau">
+        <span class="stamp">例文②</span>
+        <div class="sentence">大人っぽい服が<mark>似合う</mark>年齢になったなあ。</div>
+        <div class="meaning-en en"><b>EN:</b> I've reached an age where mature-looking clothes suit me.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 我已經到了適合穿成熟風格衣服的年紀了呢。</div>
+      </div>
+      <div class="card niau">
+        <span class="stamp">例文③</span>
+        <div class="sentence">二人並ぶと、本当に<mark>お似合い</mark>だね。</div>
+        <div class="meaning-en en"><b>EN:</b> When the two of you stand together, you really look like a great match.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 你們兩個站在一起，真的很登對呢。</div>
+      </div>
+      <div class="card niau">
+        <span class="stamp">例文④</span>
+        <div class="sentence">私、金髪は<mark>似合わない</mark>気がする。</div>
+        <div class="meaning-en en"><b>EN:</b> I feel like blonde hair wouldn't suit me.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 我覺得金髮應該不適合我。</div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.6vh;">①・②は、身につけているものと本人の外見が調和しているという意味。③は「お似合い」という形で、カップルや夫婦の組み合わせが自然に見えるときによく使われます。④のように、まだ試していなくても、<b>頭の中でイメージした見た目</b>に対しても使えます。</p>
+    <span class="lead-en en"><b>EN:</b> ① and ② show harmony between what's worn and the person's appearance. ③ uses "o-niai" for couples or pairs that visually look natural together. ④ shows it can apply even to an imagined look you haven't tried yet.</span>
+    <span class="lead-zh zh"><b>TW:</b> ①②是穿戴的物品與本人外貌調和;③是「お似合い」的形式，常用於情侶或夫妻看起來很登對;④則顯示即使還沒試過，也能用於腦中想像的外觀。</span>
+
+    <div class="warn-box">
+      <div class="line"><span class="x">✕</span> この仕事、私にすごく<mark style="background:none;box-shadow:inset 0 -0.4em 0 #f2dbd5;">似合ってる</mark>と思う。</div>
+      <div class="line"><span class="x">✕</span> 二人の意見、全然<mark style="background:none;box-shadow:inset 0 -0.4em 0 #f2dbd5;">似合ってない</mark>ね。</div>
+      <div class="line" style="margin-top:.6em;"><span class="o">◯</span> この仕事、私にすごく<mark style="background:none;box-shadow:inset 0 -0.4em 0 #dbe4ee;">合ってる</mark>と思う。</div>
+      <div class="line"><span class="o">◯</span> 二人の意見、全然<mark style="background:none;box-shadow:inset 0 -0.4em 0 #dbe4ee;">合ってない</mark>ね。</div>
+      <div class="note">→ 能力・適性・考え方の話であり、見た目の話ではないため「似合う」は不自然です。正しくは「合う」を使います。
+        <span class="note-en en">These are about ability, aptitude, or opinions — not appearance — so "niau" sounds unnatural. "Au" is correct here.</span>
+        <span class="note-zh zh">這些談的是能力、適性或想法，並非外觀問題，所以用「似合う」並不自然，正確應該用「合う」。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 使い分けのコツ -->
+  <section>
+    <div class="eyebrow">3 <span class="en">HOW TO CHOOSE</span> <span class="zh">選用標準</span></div>
+    <h2>⚖️ 迷ったときの見分け方</h2>
+    <span class="lead-en en"><b>EN:</b> Two practical hints for choosing between the two.</span>
+    <span class="lead-zh zh"><b>TW:</b> 兩個判斷用法的實用提示。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card niau">
+        <span class="stamp">見た目・外見だけの話</span>
+        <div class="sentence">＝<mark>似合う</mark></div>
+        <div class="meaning-en en"><b>EN:</b> Only about looks/appearance → "niau."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 只關於外觀、長相 → 用「似合う」。</div>
+      </div>
+      <div class="card au">
+        <span class="stamp">性質・条件・内容の話にも</span>
+        <div class="sentence">＝<mark>合う</mark></div>
+        <div class="meaning-en en"><b>EN:</b> Not limited to looks — also for qualities, conditions, content → "au."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 不限於外觀，也能用在性質、條件、內容 → 用「合う」。</div>
+      </div>
+    </div>
+
+    <div class="conj-annot">
+      💡 <b>判断のヒント（Tip）</b><br>
+      その人・そのものだけを見て判断している ＝ <b>似合う</b>／複数のものの組み合わせやバランスを見ている ＝ <b>合う</b><br>
+      <span class="en">Hint: judging just the person/object itself → "niau"; judging the balance between multiple things → "au."</span><br>
+      <span class="zh">判斷提示：只看該人／該物本身 → 用「似合う」；看多個事物之間的搭配平衡 → 用「合う」。</span>
+    </div>
+
+    <div class="card au" style="margin-top:1.6vh;">
+      <span class="stamp">例えば同じ「靴」の話でも</span>
+      <div class="sentence">「あの靴、<span style="color:var(--niau);">似合ってない</span>ね」／「あの靴、サイズが<span style="color:var(--au);">合ってない</span>ね」</div>
+      <div class="meaning-jp">前者は靴とその人全体の雰囲気のバランスが良くないという意味。後者は足のサイズと靴のサイズが一致していないという意味。見た目のことなのか、機能面のことなのかで、使う動詞が変わります。</div>
+      <div class="meaning-en en"><b>EN:</b> "Those shoes don't suit him" (niau) is about the overall visual balance between the shoes and the person, while "those shoes don't fit in size" (au) is about the shoe size matching the foot size. Same "shoes," but whether it's about looks or function decides the verb.</div>
+      <div class="meaning-zh zh"><b>TW:</b> 「那雙鞋跟他不搭」談的是鞋子與整體氛圍的視覺平衡；「那雙鞋尺寸不合」談的是腳的尺寸與鞋子尺寸是否一致。同樣是「鞋子」，是外觀問題還是機能問題，決定了該用哪個動詞。</div>
+    </div>
+  </section>
+
+  <!-- 違いのまとめ -->
+  <section>
+    <div class="eyebrow">比較 <span class="en">COMPARISON</span> <span class="zh">比較看看</span></div>
+    <h2>🔍 違いのまとめ</h2>
+    <table class="compare-table">
+      <tr>
+        <th>表現</th>
+        <th>範囲・視点 <span class="en">/ Scope</span> <span class="zh">/ 範圍・視角</span></th>
+        <th>例 <span class="en">/ Examples</span> <span class="zh">/ 例子</span></th>
+      </tr>
+      <tr>
+        <td class="jp">合う</td>
+        <td>見た目に限らない、幅広い一致<br><span class="en">Broad match — visual or not</span><span class="zh">範圍廣泛的一致，不限外觀</span></td>
+        <td>サイズ、予定、味、意見、色の組み合わせなど<br><span class="en">Size, schedule, taste, opinions, color combinations</span><span class="zh">尺寸、行程、味道、意見、顏色搭配等</span></td>
+      </tr>
+      <tr>
+        <td class="jp">似合う</td>
+        <td>見た目だけの調和<br><span class="en">Visual harmony only</span><span class="zh">只限外觀上的調和</span></td>
+        <td>服・帽子など身につけるもの、カップルの組み合わせなど<br><span class="en">Clothes, hats, and other things worn; how a couple looks together</span><span class="zh">衣服、帽子等穿戴物，情侶的組合等</span></td>
+      </tr>
+    </table>
+    <div class="conj-annot">
+      💡 <b>ワンポイント（Tip）</b><br>
+      <b>合う（au）</b> ＝ <b>Broad match</b>（廣泛的一致・不限外觀）<br>
+      <b>似合う（niau）</b> ＝ <b>Visual fit only</b>（只限外觀上的調和）
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>正しい言葉を選んでみよう</h2>
+    <span class="lead-en en">Tap an option to check your answer.</span>
+    <span class="lead-zh zh">點選選項確認答案。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「合う」は見た目もそれ以外も、<br>「似合う」は見た目だけ。</div>
+      <span class="en">Au = matching in general, visual or not. Niau = matching in looks alone.</span>
+      <span class="zh">合う＝不限外觀的一致；似合う＝只限外觀的協調。</span>
+      <div class="mini-triad">
+        <span class="m1">合う＝Broad match（廣泛一致）</span>
+        <span class="m2">似合う＝Visual fit（外觀協調）</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜「合う」・「似合う」の違い</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { jp:"その眼鏡、すごく", answer:"似合う", opts:["合う","似合う"], suffix:"ね！",
+      exp_jp:"眼鏡と顔・雰囲気の見た目の調和の話なので「似合う」。",
+      exp_en:"It's about how the glasses visually suit your face and vibe, so \"niau\" is used.",
+      exp_zh:"這是眼鏡與臉部、氣質在外觀上是否調和的問題，所以用「似合う」。" },
+    { jp:"明日の午後なら、時間が", answer:"合う", opts:["合う","似合う"], suffix:"と思います。",
+      exp_jp:"予定という基準への一致なので「合う」。",
+      exp_en:"This is about matching a schedule/condition, so \"au\" is used.",
+      exp_zh:"這是與時間安排這個基準是否一致的問題，所以用「合う」。" },
+    { jp:"この靴、少しサイズが", answer:"合う", opts:["合う","似合う"], suffix:"かどうか心配です。",
+      exp_jp:"靴のサイズが基準に一致するかどうかの話なので「合う」。",
+      exp_en:"This is about whether the shoe size matches a standard, so \"au\" is used.",
+      exp_zh:"這是關於鞋子尺寸是否符合標準的問題，所以用「合う」。" },
+    { jp:"彼女は、シンプルな服が本当に", answer:"似合う", opts:["合う","似合う"], suffix:"人だよね。",
+      exp_jp:"服とその人の見た目の調和の話なので「似合う」。",
+      exp_en:"It's about how clothes visually suit the person, so \"niau\" is used.",
+      exp_zh:"這是衣服與這個人在外觀上是否調和的問題，所以用「似合う」。" },
+    { jp:"田中さんとは昔から気が", answer:"合う", opts:["合う","似合う"], suffix:"んです。",
+      exp_jp:"性質・相性という目に見えない一致の話なので「合う」（「気が合う」で1セットの表現）。",
+      exp_en:"This is about an invisible compatibility of temperament, so \"au\" is used (\"ki ga au\" = to get along well, a set phrase).",
+      exp_zh:"這是性格、相性等看不見的一致，所以用「合う」（「気が合う」是固定用法，意思是「合得來」）。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.jp}<span class="blank"></span>${q.suffix}</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>

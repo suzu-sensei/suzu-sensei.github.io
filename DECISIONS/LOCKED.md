@@ -79,3 +79,11 @@
 - APPROVER: Project owner (user)
 - APPROVED_ON: 2026-08-22
 - EVIDENCE: Explicit selection of recommended production migration option 1
+
+## D-012 — Restore public home and use a dedicated classroom URL
+
+- DECISION: Keep the original public home, games, textbook, and columns at `https://suzu-sensei.github.io/`. Publish the new role-aware student/teacher portal at `https://suzu-sensei.github.io/classroom/`. Redirect the old student and teacher page URLs to the canonical classroom URL so existing bookmarks continue to work. Keep `/old/` as a rollback reference.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit user approval on 2026-08-22
+- SUPERSEDES: D-009

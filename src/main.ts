@@ -15,7 +15,7 @@ async function render(): Promise<void> {
   if (!session) {
     const authNotice = authErrorNotice(window.location.href);
     app.innerHTML = `<main class="login-page"><section class="login-card"><p class="eyebrow">SUZU CLASSROOM</p><h1>すず先生の教室</h1><p>予約、授業回数、お支払いを安全に管理する教室portalです。</p>${authNotice ? `<div class="notice auth-notice" role="alert">${escapeHtml(authNotice)}</div>` : ''}<button class="button google" id="login">Googleでログイン</button><small>ログイン後も、データの閲覧範囲はデータベース側で保護されます。</small></section></main><div id="toast" class="toast" role="status" aria-live="polite"></div>`;
-    document.querySelector<HTMLButtonElement>('#login')?.addEventListener('click', async event => { const button = event.currentTarget as HTMLButtonElement; button.disabled = true; button.textContent = 'Googleへ移動中…'; window.history.replaceState({}, '', window.location.origin); try { await loginWithGoogle(); } catch (error) { button.disabled = false; button.textContent = 'Googleでログイン'; showToast(error instanceof Error ? error.message : 'ログインを開始できませんでした。', 'error'); } });
+    document.querySelector<HTMLButtonElement>('#login')?.addEventListener('click', async event => { const button = event.currentTarget as HTMLButtonElement; button.disabled = true; button.textContent = 'Googleへ移動中…'; window.history.replaceState({}, '', window.location.pathname); try { await loginWithGoogle(); } catch (error) { button.disabled = false; button.textContent = 'Googleでログイン'; showToast(error instanceof Error ? error.message : 'ログインを開始できませんでした。', 'error'); } });
     return;
   }
   try {

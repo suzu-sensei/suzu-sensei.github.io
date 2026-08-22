@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教材 | SUZU先生</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#FAF6F0;--blush:#F2E0D5;--rose:#C9897A;--deep:#6B3D3D;--ink:#2C1F1F;--gold:#C4A46B;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;}
+
+.header{background:var(--deep);padding:20px 40px;color:white;display:flex;justify-content:space-between;align-items:center;}
+.header h1{font-family:'Noto Serif JP',serif;font-size:20px;letter-spacing:2px;font-weight:300;}
+.back-link{color:white;text-decoration:none;font-size:12px;padding:8px 16px;border:1px solid rgba(255,255,255,0.3);border-radius:4px;}
+
+.container{max-width:900px;margin:0 auto;padding:40px 20px;}
+
+.tab-bar{display:flex;gap:10px;margin-bottom:30px;border-bottom:2px solid var(--blush);padding-bottom:10px;}
+.tab-btn{background:none;border:none;padding:10px 20px;font-size:14px;letter-spacing:1px;color:#999;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;}
+.tab-btn.active{color:var(--deep);border-bottom-color:var(--rose);font-weight:500;}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+.char-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px;margin-bottom:40px;}
+.char-card{background:white;border:1px solid #ddd;border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.char-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(107,61,61,0.1);}
+.char-title{font-family:'Noto Serif JP',serif;font-size:24px;font-weight:400;margin-bottom:8px;letter-spacing:2px;}
+.char-label{font-size:11px;color:#999;letter-spacing:1px;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;}
+.modal.show{display:flex;}
+.modal-content{background:white;border-radius:12px;padding:40px;max-width:500px;text-align:center;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#999;}
+
+.stroke-order{width:100%;height:300px;border:2px solid var(--blush);border-radius:8px;margin:20px 0;}
+.char-detail{font-family:'Noto Serif JP',serif;font-size:48px;margin:20px 0;}
+.char-info{font-size:13px;color:#666;line-height:1.8;text-align:left;margin-top:20px;padding:16px;background:var(--cream);border-radius:6px;}
+
+.section-title{font-family:'Noto Serif JP',serif;font-size:18px;color:var(--deep);margin:40px 0 20px;letter-spacing:2px;border-bottom:2px solid var(--rose);padding-bottom:10px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📖 教材・基礎学習</h1>
+  <a href="/" class="back-link">← HOME</a>
+</div>
+
+<div class="container">
+  <!-- タブ -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('hiragana')">ひらがな</button>
+    <button class="tab-btn" onclick="switchTab('katakana')">カタカナ</button>
+  </div>
+
+  <!-- ひらがなタブ -->
+  <div id="hiragana" class="tab-content active">
+    <div class="section-title">あ行 - 基本の5文字</div>
+    <div class="char-grid">
+      <div class="char-card" onclick="openModal('あ', 'a', '3 strokes')">
+        <div class="char-title">あ</div>
+        <div class="char-label">a</div>
+      </div>
+      <div class="char-card" onclick="openModal('い', 'i', '2 strokes')">
+        <div class="char-title">い</div>
+        <div class="char-label">i</div>
+      </div>
+      <div class="char-card" onclick="openModal('う', 'u', '2 strokes')">
+        <div class="char-title">う</div>
+        <div class="char-label">u</div>
+      </div>
+      <div class="char-card" onclick="openModal('え', 'e', '2 strokes')">
+        <div class="char-title">え</div>
+        <div class="char-label">e</div>
+      </div>
+      <div class="char-card" onclick="openModal('お', 'o', '3 strokes')">
+        <div class="char-title">お</div>
+        <div class="char-label">o</div>
+      </div>
+    </div>
+
+    <div class="section-title">か行</div>
+    <div class="char-grid">
+      <div class="char-card" onclick="openModal('か', 'ka', '2 strokes')">
+        <div class="char-title">か</div>
+        <div class="char-label">ka</div>
+      </div>
+      <div class="char-card" onclick="openModal('き', 'ki', '1 stroke')">
+        <div class="char-title">き</div>
+        <div class="char-label">ki</div>
+      </div>
+      <div class="char-card" onclick="openModal('く', 'ku', '1 stroke')">
+        <div class="char-title">く</div>
+        <div class="char-label">ku</div>
+      </div>
+      <div class="char-card" onclick="openModal('け', 'ke', '3 strokes')">
+        <div class="char-title">け</div>
+        <div class="char-label">ke</div>
+      </div>
+      <div class="char-card" onclick="openModal('こ', 'ko', '2 strokes')">
+        <div class="char-title">こ</div>
+        <div class="char-label">ko</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- カタカナタブ -->
+  <div id="katakana" class="tab-content">
+    <div class="section-title">ア行 - 基本の5文字</div>
+    <div class="char-grid">
+      <div class="char-card" onclick="openModal('ア', 'a', '2 strokes')">
+        <div class="char-title">ア</div>
+        <div class="char-label">a</div>
+      </div>
+      <div class="char-card" onclick="openModal('イ', 'i', '2 strokes')">
+        <div class="char-title">イ</div>
+        <div class="char-label">i</div>
+      </div>
+      <div class="char-card" onclick="openModal('ウ', 'u', '2 strokes')">
+        <div class="char-title">ウ</div>
+        <div class="char-label">u</div>
+      </div>
+      <div class="char-card" onclick="openModal('エ', 'e', '3 strokes')">
+        <div class="char-title">エ</div>
+        <div class="char-label">e</div>
+      </div>
+      <div class="char-card" onclick="openModal('オ', 'o', '3 strokes')">
+        <div class="char-title">オ</div>
+        <div class="char-label">o</div>
+      </div>
+    </div>
+
+    <div class="section-title">カ行</div>
+    <div class="char-grid">
+      <div class="char-card" onclick="openModal('カ', 'ka', '2 strokes')">
+        <div class="char-title">カ</div>
+        <div class="char-label">ka</div>
+      </div>
+      <div class="char-card" onclick="openModal('キ', 'ki', '3 strokes')">
+        <div class="char-title">キ</div>
+        <div class="char-label">ki</div>
+      </div>
+      <div class="char-card" onclick="openModal('ク', 'ku', '2 strokes')">
+        <div class="char-title">ク</div>
+        <div class="char-label">ku</div>
+      </div>
+      <div class="char-card" onclick="openModal('ケ', 'ke', '2 strokes')">
+        <div class="char-title">ケ</div>
+        <div class="char-label">ke</div>
+      </div>
+      <div class="char-card" onclick="openModal('コ', 'ko', '3 strokes')">
+        <div class="char-title">コ</div>
+        <div class="char-label">ko</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- モーダル -->
+<div class="modal" id="charModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="char-detail" id="modalChar"></div>
+    <p id="modalRomaji" style="font-size:14px;color:#666;"></p>
+    <canvas id="strokeCanvas" class="stroke-order"></canvas>
+    <div class="char-info" id="charInfo"></div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function openModal(char, romaji, strokes) {
+  document.getElementById('modalChar').textContent = char;
+  document.getElementById('modalRomaji').textContent = romaji.toUpperCase();
+  document.getElementById('charInfo').innerHTML = `<strong>${strokes}</strong><br>筆順を守って丁寧に書きましょう。`;
+
+  // キャンバスに筆順例を描画
+  const canvas = document.getElementById('strokeCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#FAF6F0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = '100px serif';
+  ctx.fillStyle = '#2C1F1F';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(char, canvas.width / 2, canvas.height / 2);
+
+  document.getElementById('charModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('charModal').classList.remove('show');
+}
+</script>
+</body>
+</html>

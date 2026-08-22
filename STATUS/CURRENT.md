@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: PRODUCTION_DEPLOYED_VERIFIED
+STATUS: PUBLIC_HOME_RESTORE_READY
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -42,4 +42,8 @@ OWNER: Project owner (user)
 - The production Supabase callback URL was added to the existing Google OAuth client without removing the development callback, old-site origin, or existing secret. The known-good OAuth secret was transferred from development Supabase to production Supabase without reading or recording it.
 - Authenticated production smoke tests passed for both roles. The UUID teacher account saw four students and 27 aggregate available credits with no pending bookings or payments. The linked test student saw only its own eight available credits and no other student records.
 - The browser was logged out after verification. No booking, payment, credit, student, or Storage record was created or changed during production smoke testing.
-- Next stage: begin normal use with a small first cohort and monitor authentication, booking, payment, and Storage logs; production schema and root deployment are complete.
+- The project owner superseded the root-only classroom layout. The original public home, games, textbook, and columns are prepared for restoration at the root; the new role-aware classroom is prepared at `/classroom/`.
+- All six existing Column articles are now present in the home-page slider. Desktop arrow navigation and mobile horizontal swiping use the existing carousel behavior.
+- Legacy student and teacher URLs redirect to `/classroom/`, and production Supabase now allows the canonical classroom OAuth return URL alongside the root URL.
+- Local verification passed with 27/27 tests, a successful TypeScript/Vite build, six Column cards, working carousel navigation, visible quiz/classroom links, and both legacy role redirects.
+- Next stage: deploy the approved layout, verify public root/game/Column/classroom URLs, then run teacher and student OAuth smoke tests at `/classroom/`.

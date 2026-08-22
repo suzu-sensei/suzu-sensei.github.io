@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>「当て字」の秘密 ― 中国由来と日本オリジナル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700&family=Noto+Serif+JP:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF6F0;
+    --paper-deep:#F2E0D5;
+    --ink:#3B2424;
+    --ink-soft:#6b4a4a;
+    --line:#E4D5C8;
+    --r1:#6B3D3D;
+    --r1-bg:#F1E4E0;
+    --r2:#2F6B4A;
+    --r2-bg:#E4EFE7;
+    --warn:#B8860B;
+    --jp:'Zen Kaku Gothic New', sans-serif;
+    --en:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --zh:'Noto Serif TC', serif;
+    --serif:'Noto Serif JP', var(--zh), serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--jp); line-height:1.7;
+  }
+  .jp{font-family:var(--jp);}
+  .en{font-family:var(--en); color:var(--ink-soft);}
+  .zh{font-family:var(--zh); color:var(--ink-soft);}
+
+  main{max-width:880px; margin:0 auto; padding:6vw 5vw 10vw;}
+
+  /* ---------- hero ---------- */
+  header.hero{text-align:center; padding:4vh 0 3vh;}
+  header.hero h1{
+    font-family:var(--jp); font-weight:900; font-size:clamp(1.5rem,3.8vw,2.3rem);
+    margin:0 0 .4em; line-height:1.5; color:var(--r1);
+  }
+  header.hero .sub-en{display:block; font-size:1rem; margin-top:.3em;}
+  header.hero .sub-zh{display:block; font-size:1rem; margin-top:.2em;}
+  .terms{display:flex; justify-content:center; gap:2.5vw; margin:2.5vh 0 1vh; flex-wrap:wrap;}
+  .terms span{
+    font-family:var(--jp); font-weight:700; font-size:clamp(1rem,2vw,1.3rem);
+    padding:.35em 1em; border-radius:999px;
+  }
+  .terms .t1{background:var(--r1-bg); color:var(--r1);}
+  .terms .t2{background:var(--r2-bg); color:var(--r2);}
+
+  /* ---------- sections ---------- */
+  section{margin-top:6vh;}
+  .eyebrow{
+    font-size:.78rem; letter-spacing:.1em; color:var(--ink-soft); font-weight:700;
+    border-bottom:1px solid var(--line); padding-bottom:.6em; margin-bottom:1.2em;
+  }
+  h2{font-family:var(--jp); font-weight:900; font-size:clamp(1.25rem,2.6vw,1.7rem); margin:0 0 .3em; color:var(--r1);}
+  h3{font-family:var(--jp); font-weight:900; font-size:1.1rem; margin:1.6em 0 .2em; color:var(--ink);}
+  .lead-en, .lead-zh{display:block; font-size:.94rem; margin-bottom:.2em;}
+
+  /* ---------- 2-card layout ---------- */
+  .cards2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:1.4em 1.2em; display:flex; flex-direction:column; gap:.6em;
+  }
+  .card .stamp{
+    display:inline-flex; align-items:center; gap:.4em; align-self:flex-start;
+    font-family:var(--jp); font-weight:700; font-size:.9rem;
+    padding:.2em .8em; border-radius:999px; border:1.5px solid currentColor;
+  }
+  .card.r1 .stamp{color:var(--r1); background:var(--r1-bg);}
+  .card.r2 .stamp{color:var(--r2); background:var(--r2-bg);}
+  .card .sentence{font-family:var(--jp); font-weight:700; font-size:1.15rem; line-height:1.55;}
+  .card .sentence mark{background:none; box-shadow:inset 0 -0.4em 0 var(--mark,#f0e2c8); font-weight:900;}
+  .card.r1 .sentence mark{--mark:#efd9d3;}
+  .card.r2 .sentence mark{--mark:#dcebe1;}
+  .card .meaning-jp{font-size:.92rem; background:var(--paper-deep); padding:.6em .75em; border-radius:8px;}
+  .card .meaning-en, .card .meaning-zh{font-size:.86rem;}
+
+  /* ---------- core duo ---------- */
+  .triad2{display:grid; grid-template-columns:repeat(2,1fr); gap:3vw; margin-top:2vh;}
+  .triad2 .col{border-radius:14px; padding:1.6em 1.2em; display:flex; flex-direction:column; gap:.7em; border:1px solid var(--line);}
+  .triad2 .col.r1{background:var(--r1-bg);}
+  .triad2 .col.r2{background:var(--r2-bg);}
+  .triad2 .term{font-family:var(--jp); font-weight:900; font-size:1.4rem;}
+  .triad2 .col.r1 .term{color:var(--r1);}
+  .triad2 .col.r2 .term{color:var(--r2);}
+  .triad2 .icon{font-size:1.6rem;}
+  .triad2 .def-jp{font-weight:700; font-size:1rem;}
+  .triad2 .def-en, .triad2 .def-zh{font-size:.85rem;}
+  .triad2 .axis{margin-top:auto; font-size:.78rem; font-weight:700; padding:.35em .6em; border-radius:6px; background:rgba(255,255,255,.65); width:fit-content;}
+  .triad2 .col.r1 .axis{color:var(--r1);}
+  .triad2 .col.r2 .axis{color:var(--r2);}
+
+  /* ---------- comparison table ---------- */
+  .compare-table{width:100%; border-collapse:collapse; margin-top:2vh; font-size:.92rem;}
+  .compare-table th, .compare-table td{border:1px solid var(--line); padding:.8em 1em; text-align:left; vertical-align:top;}
+  .compare-table th{background:var(--paper-deep); font-family:var(--jp); font-weight:700; color:var(--r1);}
+  .compare-table td.jp{font-weight:700;}
+  .compare-table tr:nth-child(2) td.jp{color:var(--r1);}
+  .compare-table tr:nth-child(3) td.jp{color:var(--r2);}
+
+  .conj-annot{
+    margin-top:1.4em; font-size:.85rem; background:#FBF2DC; border-left:4px solid #D8B25C;
+    padding:.7em 1em; border-radius:0 8px 8px 0; color:#5c4a12;
+  }
+  .conj-annot b{font-family:var(--jp);}
+
+  /* ---------- misc counters grid (used for the 20-word bonus lists) ---------- */
+  .misc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:2.5vw; margin-top:2vh;}
+  .misc-card{background:var(--paper-deep); border-radius:10px; padding:1em 1.2em;}
+  .misc-card .counter{font-family:var(--jp); font-weight:900; font-size:1.1rem;}
+  .misc-grid.r1 .misc-card .counter{color:var(--r1);}
+  .misc-grid.r2 .misc-card .counter{color:var(--r2);}
+  .misc-card .jp{font-size:.9rem; margin-top:.4em;}
+  .misc-card .en, .misc-card .zh{font-size:.8rem; display:block; margin-top:.25em;}
+
+  /* ---------- quiz ---------- */
+  .quiz-list{display:flex; flex-direction:column; gap:.9em; margin-top:2vh;}
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:10px; padding:1em 1.2em; display:flex; align-items:center; gap:1.2em; flex-wrap:wrap;}
+  .quiz .qnum{font-family:var(--jp); font-weight:700; color:var(--ink-soft); font-size:.92rem;}
+  .quiz .qsentence{font-family:var(--jp); font-size:1.05rem; flex:1; min-width:220px;}
+  .quiz .opts{display:flex; gap:.5em; flex-wrap:wrap;}
+  .quiz .opt{
+    font-size:.85rem; padding:.28em .8em; border-radius:999px; border:1.4px solid var(--line);
+    cursor:pointer; user-select:none; background:var(--paper); transition:.15s; font-family:var(--jp); font-weight:700;
+  }
+  .quiz .opt:hover{border-color:var(--ink-soft);}
+  .quiz .opt{position:relative;}
+  .quiz .opt.correct-picked{background:#E8F5E9; border:2px solid #2E7D32; color:#2E7D32; padding:.22em .74em;}
+  .quiz .opt.wrong-picked{background:#FDECEA; border:2px solid #C62828; color:#C62828; padding:.22em .74em;}
+  .quiz .opt.correct-picked::after{
+    content:'○'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#2E7D32; border:2px solid #2E7D32; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .opt.wrong-picked::after{
+    content:'×'; position:absolute; top:-11px; right:-9px; width:19px; height:19px;
+    background:#fff; color:#C62828; border:2px solid #C62828; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; line-height:1;
+  }
+  .quiz .reveal{font-size:.8rem; color:var(--ink-soft); cursor:pointer; text-decoration:underline; white-space:nowrap;}
+  .quiz .answer-box{flex-basis:100%; display:none; font-size:.82rem; background:var(--paper-deep); border-radius:6px; padding:.6em .8em; margin-top:.3em; line-height:1.7;}
+  .quiz .answer-box.show{display:block;}
+  .quiz .answer-box .jp{display:block;}
+  .quiz .answer-box .en, .quiz .answer-box .zh{display:block; margin-top:.5em; color:var(--ink-soft);}
+
+  /* ---------- mnemonic ---------- */
+  .mnemonic{text-align:center; margin:0 auto; padding:3em 2em; border:1.5px solid var(--ink); border-radius:16px; background:#fff; max-width:700px;}
+  .mnemonic .jp{font-size:clamp(1.1rem,2.2vw,1.5rem); font-weight:900; line-height:1.8;}
+  .mnemonic .en, .mnemonic .zh{display:block; margin-top:.6em; font-size:.95rem;}
+  .mini-triad{display:flex; justify-content:center; gap:1.2em; margin-top:2em; flex-wrap:wrap;}
+  .mini-triad span{font-family:var(--jp); font-weight:700; padding:.4em 1.1em; border-radius:999px; font-size:.92rem;}
+  .mini-triad .m1{background:var(--r1-bg); color:var(--r1);}
+  .mini-triad .m2{background:var(--r2-bg); color:var(--r2);}
+
+  .closing-note{max-width:700px; margin:2.4vh auto 0; text-align:center; font-size:.92rem; color:var(--ink-soft);}
+
+  footer{text-align:center; margin-top:6vh; padding-top:2vh; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft);}
+
+  @media (max-width:700px){
+    .cards2, .triad2, .misc-grid{grid-template-columns:1fr;}
+    .compare-table{font-size:.82rem;}
+    main{padding:10vw 6vw 14vw;}
+  }
+
+  /* ---------- language toggle ---------- */
+  .col-top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5em;}
+  .col-lang-switcher{display:flex;gap:0;}
+  .col-lang-btn{background:var(--paper-deep);border:1px solid var(--line);padding:5px 12px;font-size:11px;letter-spacing:0.5px;color:var(--ink-soft);cursor:pointer;font-family:var(--jp);}
+  .col-lang-btn:first-child{border-radius:6px 0 0 6px;}
+  .col-lang-btn:last-child{border-radius:0 6px 6px 0;border-left:none;}
+  .col-lang-btn:not(:first-child){border-left:none;}
+  .col-lang-btn.active{background:var(--r1);color:#fff;border-color:var(--r1);}
+  body.col-ja .en, body.col-ja .zh{display:none;}
+  body.col-zh .en{display:none;}
+  body.col-en .zh{display:none;}
+</style>
+</head>
+<body>
+<main>
+  <div class="col-top-row">
+    <a href="../index.html#column" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:none;">← トップページ / Home / 回首頁</a>
+    <div class="col-lang-switcher">
+      <button class="col-lang-btn" id="cl-ja" onclick="setColLang('ja')">日本語</button>
+      <button class="col-lang-btn active" id="cl-zh" onclick="setColLang('zh')">＋中文</button>
+      <button class="col-lang-btn" id="cl-en" onclick="setColLang('en')">＋English</button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1>「当て字」の秘密<br>「倶楽部」も「珈琲」も、実は中国から来ていた？</h1>
+    <span class="sub-en en">Where did Japanese ateji really come from? Some were borrowed whole from Chinese, others invented entirely in Japan.</span>
+    <span class="sub-zh zh">日語的當字到底從哪裡來？有些直接借用自中文，有些則是日本原創。</span>
+    <div class="terms">
+      <span class="t1">ルート1：中国由来</span>
+      <span class="t2">ルート2：日本オリジナル</span>
+    </div>
+  </header>
+
+  <!-- 導入：ひとことで -->
+  <section>
+    <div class="eyebrow">導入 <span class="en">IN SHORT</span> <span class="zh">一句話總結</span></div>
+    <h2>💡 ひとことで言うと？</h2>
+    <span class="lead-en en">A quick summary before we dive in.</span>
+    <span class="lead-zh zh">先快速掌握重點。</span>
+
+    <div class="cards2">
+      <div class="card r1">
+        <span class="stamp">ルート1（中国由来）</span>
+        <div class="meaning-jp">中国が英語の音に漢字を当てた言葉を、明治時代の日本人がそのまま輸入して定着させたもの。</div>
+        <div class="meaning-en en"><b>EN:</b> Kanji that China matched to English sounds, later imported wholesale into Japanese during the Meiji era.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 中國把英語發音配上漢字後，明治時代的日本人直接借用，並在日語中定著下來。</div>
+      </div>
+      <div class="card r2">
+        <span class="stamp">ルート2（日本オリジナル）</span>
+        <div class="meaning-jp">中国語を頼らず、日本人が自分で外来語の発音に漢字を当てて作ったオリジナルの言葉。</div>
+        <div class="meaning-en en"><b>EN:</b> Kanji that Japanese people matched to foreign sounds entirely on their own, without relying on Chinese.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 不依賴中文，由日本人自己將外來語的發音配上漢字，創造出的原創詞彙。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心まとめ -->
+  <section>
+    <div class="eyebrow">核心 <span class="en">CORE CONCEPT</span> <span class="zh">核心概念</span></div>
+    <h2>二つのルートを一枚で整理</h2>
+    <div class="triad2">
+      <div class="col r1">
+        <div class="icon">📖</div>
+        <div class="term">ルート1</div>
+        <div class="def-jp">明治の知識人が、中国（清）の辞書や翻訳書を参考にし、優秀な当て字をそのまま輸入した。</div>
+        <div class="def-en en">Meiji-era scholars consulted Chinese dictionaries and translated texts, then imported the best ateji as-is.</div>
+        <div class="def-zh zh">明治時代的知識分子參考中國（清朝）的辭典與翻譯書籍，直接輸入優秀的當字。</div>
+        <div class="axis">出どころ ＝ 中国（Imported）</div>
+      </div>
+      <div class="col r2">
+        <div class="icon">🎌</div>
+        <div class="term">ルート2</div>
+        <div class="def-jp">日本人が自分の耳で聞いた外来語の音に、独自に漢字を当てた、完全オリジナルの当て字。</div>
+        <div class="def-en en">Ateji Japanese people invented from scratch, matching kanji to the sound of a foreign word they heard themselves.</div>
+        <div class="def-zh zh">日本人憑自己聽到的外來語發音，獨自配上漢字，完全原創的當字。</div>
+        <div class="axis">出どころ ＝ 日本（Original）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. ルート1 -->
+  <section>
+    <div class="eyebrow">1 <span class="en">IMPORTED FROM CHINA</span> <span class="zh">從中國輸入</span></div>
+    <h2>ルート1：中国が作った当て字を、日本がそのまま輸入したケース</h2>
+    <p>明治時代、日本に西洋の文化（英語など）が一気に入ってきたとき、当時の知識人たちは「お隣の中国（清）ではどう翻訳しているんだろう？」と、中国の辞書や翻訳書を参考にしました。そこで見つけた優秀な当て字を、そのまま日本語に取り入れたものがたくさんあります。</p>
+    <span class="lead-en en"><b>EN:</b> When Western culture flooded into Japan during the Meiji era, scholars often checked how neighboring China (the Qing dynasty) had already translated the same words, then borrowed the best ateji directly.</span>
+    <span class="lead-zh zh"><b>TW:</b> 明治時代，西方文化（如英語）大量湧入日本時，當時的知識分子會參考「隔壁的中國（清朝）是怎麼翻譯的？」，並直接引進他們找到的優秀當字。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card r1">
+        <span class="stamp">例①</span>
+        <div class="sentence"><mark>倶楽部</mark>（クラブ）</div>
+        <div class="meaning-en en"><b>EN:</b> Club — kanji matched to the English sound "club," imported from a Chinese translation.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 從中文翻譯借來，配上英語「club」發音的漢字。</div>
+      </div>
+      <div class="card r1">
+        <span class="stamp">例②</span>
+        <div class="sentence"><mark>瓦斯</mark>（ガス）</div>
+        <div class="meaning-en en"><b>EN:</b> Gas — kanji matched to the sound "gas."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 配上「gas」（瓦斯）發音的漢字。</div>
+      </div>
+      <div class="card r1">
+        <span class="stamp">例③</span>
+        <div class="sentence"><mark>浪漫</mark>（ロマン）</div>
+        <div class="meaning-en en"><b>EN:</b> Roman(ce) — kanji matched to the sound "roman."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 配上「roman」（浪漫）發音的漢字。</div>
+      </div>
+      <div class="card r1">
+        <span class="stamp">例④</span>
+        <div class="sentence"><mark>珈琲</mark>（コーヒー）</div>
+        <div class="meaning-en en"><b>EN:</b> Coffee — there are various theories, but the characters found in a Chinese dictionary were popularized by a Japanese scholar.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 咖啡。眾說紛紜，但這是日本人推廣了中國辭典中已收錄的漢字。</div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.6vh;">つまり、これらは「中国語の漢字（意味）と英語の発音を合わせたものを、日本人が借りて定着させた日本語」です。</p>
+    <span class="lead-en en"><b>EN:</b> In short, these are Japanese words that Japan borrowed and settled into everyday use — Chinese kanji combined with an English sound.</span>
+    <span class="lead-zh zh"><b>TW:</b> 簡言之，這些是「中文漢字（意義）配上英語發音」的組合，被日本人借用並定著成日語。</span>
+  </section>
+
+  <!-- 2. ルート2 -->
+  <section>
+    <div class="eyebrow">2 <span class="en">MADE IN JAPAN</span> <span class="zh">日本原創</span></div>
+    <h2>ルート2：日本人が自分で作った「完全オリジナル」のケース</h2>
+    <p>一方で、中国語を頼らずに、日本人が自分で英語の音を聞いて、日本の漢字を当てた言葉も大量にあります。</p>
+    <span class="lead-en en"><b>EN:</b> On the other hand, there are also plenty of words where Japanese people, without relying on Chinese, listened to a foreign sound themselves and matched it with Japanese kanji.</span>
+    <span class="lead-zh zh"><b>TW:</b> 另一方面，也有大量的詞彙是日本人不依賴中文、自己聽外語發音後配上日本漢字創造出來的。</span>
+
+    <div class="cards2" style="margin-top:2.4vh;">
+      <div class="card r2">
+        <span class="stamp">例①</span>
+        <div class="sentence"><mark>煙草</mark>（タバコ）</div>
+        <div class="meaning-en en"><b>EN:</b> Tobacco — kanji matched to the sound "tabako."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 配上「tabako」（菸草）發音的漢字。</div>
+      </div>
+      <div class="card r2">
+        <span class="stamp">例②</span>
+        <div class="sentence"><mark>型録</mark>（カタログ）</div>
+        <div class="meaning-en en"><b>EN:</b> Catalog — kanji matched to the sound "catalog."</div>
+        <div class="meaning-zh zh"><b>TW:</b> 配上「catalog」（型錄）發音的漢字。</div>
+      </div>
+      <div class="card r2">
+        <span class="stamp">例③</span>
+        <div class="sentence"><mark>背広</mark>（セビロ）</div>
+        <div class="meaning-en en"><b>EN:</b> Suit — kanji matched to the sound "sebiro" (theories vary, but likely from London's Savile Row).</div>
+        <div class="meaning-zh zh"><b>TW:</b> 西裝。配上「sebiro」發音的漢字（一說源自倫敦Savile Row）。</div>
+      </div>
+      <div class="card r2">
+        <span class="stamp">例④</span>
+        <div class="sentence"><mark>麦酒</mark>（ビール）</div>
+        <div class="meaning-en en"><b>EN:</b> Beer — kanji matched to the Dutch sound "bier," with 麦 (wheat/barley) added as a hint to the meaning.</div>
+        <div class="meaning-zh zh"><b>TW:</b> 啤酒。配上荷蘭語「bier」發音的漢字，並加上「麦」（麥）字提示意思。</div>
+      </div>
+    </div>
+
+    <p style="margin-top:1.6vh;">これらは中国語ではなく、日本人が「英語（や外来語）の発音」と「漢字の意味」を独自に組み合わせて作った、日本オリジナルの当て字です。</p>
+    <span class="lead-en en"><b>EN:</b> These are not from Chinese — they're original Japanese ateji, combining a foreign sound with kanji meaning entirely on Japan's own terms.</span>
+    <span class="lead-zh zh"><b>TW:</b> 這些並非源自中文，而是日本人獨自將「外語發音」與「漢字意義」結合而成的原創當字。</span>
+  </section>
+
+  <!-- 違いのまとめ -->
+  <section>
+    <div class="eyebrow">比較 <span class="en">COMPARISON</span> <span class="zh">比較看看</span></div>
+    <h2>🔍 まとめ</h2>
+    <table class="compare-table">
+      <tr>
+        <th>ルート</th>
+        <th>由来 <span class="en">/ Origin</span> <span class="zh">/ 由來</span></th>
+        <th>例 <span class="en">/ Examples</span> <span class="zh">/ 例子</span></th>
+      </tr>
+      <tr>
+        <td class="jp">ルート1</td>
+        <td>半分正解：もともと中国人が英語の発音に合わせて作った漢字を、日本が輸入したもの<br><span class="en">Half right — kanji China originally matched to English sounds, later imported by Japan</span><span class="zh">半對：原本是中國人配合英語發音創造的漢字，後被日本輸入</span></td>
+        <td>倶楽部・瓦斯・浪漫・珈琲<br><span class="en">Club, gas, roman(ce), coffee</span><span class="zh">俱樂部、瓦斯、浪漫、咖啡</span></td>
+      </tr>
+      <tr>
+        <td class="jp">ルート2</td>
+        <td>半分は日本オリジナル：日本人が自分で外来語の発音に合わせて作った漢字<br><span class="en">Half original — kanji Japanese people invented themselves to match a foreign sound</span><span class="zh">半原創：日本人自己配合外來語發音創造的漢字</span></td>
+        <td>煙草・型録・背広・麦酒<br><span class="en">Tobacco, catalog, suit, beer</span><span class="zh">菸草、型錄、西裝、啤酒</span></td>
+      </tr>
+    </table>
+    <div class="conj-annot">
+      💡 <b>ワンポイント（Tip）</b><br>
+      明治時代の日本人は、<b>中国の知恵を借りつつ</b>、<b>自分たちでもクリエイティブに</b>新しい日本語を作っていた、ということです。<br>
+      <span class="en">Meiji-era Japanese people borrowed wisdom from China while also creatively inventing new Japanese words themselves.</span><br>
+      <span class="zh">明治時代的日本人，一邊借用中國的智慧，一邊也創造性地打造出屬於自己的新日語詞彙。</span>
+    </div>
+  </section>
+
+  <!-- 3. おまけ：音だけの当て字20選 -->
+  <section>
+    <div class="eyebrow">3 <span class="en">BONUS: SOUND-ONLY ATEJI</span> <span class="zh">加碼：純音譯當字</span></div>
+    <h2>✨ 音だけで選ばれた当て字20選</h2>
+    <p>実はこれらすべて、漢字本来の意味ではなく、「音（発音）」だけで選ばれたカタカナ語や外来語です。</p>
+    <span class="lead-en en"><b>EN:</b> All of the words below were chosen purely for how they sound — not for the literal meaning of the kanji.</span>
+    <span class="lead-zh zh"><b>TW:</b> 以下這些詞彙全都不是取漢字本來的意思，而是純粹取其「發音」。</span>
+
+    <h3>暮らし・食べ物（10選）<span class="en" style="display:block;font-size:.82rem;font-weight:400;">Everyday life & food</span><span class="zh" style="display:block;font-size:.82rem;font-weight:400;">日常生活與食物</span></h3>
+    <div class="misc-grid r1">
+      <div class="misc-card">
+        <div class="counter">型録（カタログ）</div>
+        <div class="jp"><b>本来の意味：</b>商品などを一覧にまとめた冊子や資料のこと。</div>
+        <span class="en"><b>Actual meaning:</b> a booklet or document listing products — a catalog.</span>
+        <span class="zh"><b>本義：</b>將商品等整理成一覽表的冊子或資料。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">滅茶苦茶（めちゃくちゃ）</div>
+        <div class="jp"><b>本来の意味：</b>筋道が立たない、度を超えていること。「めちゃくちゃ暑い」のように程度を強調する言葉としても使う。</div>
+        <span class="en"><b>Actual meaning:</b> something in complete disorder or beyond reason; also used to emphasize degree, as in "insanely hot."</span>
+        <span class="zh"><b>本義：</b>毫無條理、超乎常理；也常用來強調程度，如「めちゃくちゃ暑い」（超級熱）。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">浪漫（ロマン）</div>
+        <div class="jp"><b>本来の意味：</b>現実を超えた甘美な夢や情緒、冒険心をかき立てる魅力のこと。</div>
+        <span class="en"><b>Actual meaning:</b> a dreamy, poetic feeling beyond everyday reality — romance or adventure.</span>
+        <span class="zh"><b>本義：</b>超脫現實的甜美夢想與情懷，能激起冒險心的魅力。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">目出度い（めでたい）</div>
+        <div class="jp"><b>本来の意味：</b>祝うべきめでたい出来事や、喜ばしいこと。</div>
+        <span class="en"><b>Actual meaning:</b> an auspicious, joyful occasion worth celebrating.</span>
+        <span class="zh"><b>本義：</b>值得慶祝的喜事、可喜可賀的事。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">出鱈目（でたらめ）</div>
+        <div class="jp"><b>本来の意味：</b>いいかげんで根拠のない、無責任なでまかせ。</div>
+        <span class="en"><b>Actual meaning:</b> irresponsible, baseless nonsense — something made up carelessly.</span>
+        <span class="zh"><b>本義：</b>毫無根據、不負責任的胡謅、隨口亂說。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">瓦斯（ガス）</div>
+        <div class="jp"><b>本来の意味：</b>気体の燃料や物質のこと。</div>
+        <span class="en"><b>Actual meaning:</b> gas — a gaseous fuel or substance.</span>
+        <span class="zh"><b>本義：</b>氣體燃料或物質。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">莫大小（メリヤス）</div>
+        <div class="jp"><b>本来の意味：</b>伸縮性のある編み物。靴下などの製品を指す。</div>
+        <span class="en"><b>Actual meaning:</b> elastic knitted fabric — used for goods like socks.</span>
+        <span class="zh"><b>本義：</b>具伸縮性的針織品，指襪子等製品。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">麦酒（ビール）</div>
+        <div class="jp"><b>本来の意味：</b>麦芽とホップを原料とした醸造酒。</div>
+        <span class="en"><b>Actual meaning:</b> beer — a brewed alcoholic drink made from malt and hops.</span>
+        <span class="zh"><b>本義：</b>以麥芽與啤酒花為原料釀造的酒。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">洋琴（ピアノ）</div>
+        <div class="jp"><b>本来の意味：</b>鍵盤を弾いて音を出す西洋の楽器。</div>
+        <span class="en"><b>Actual meaning:</b> a Western keyboard instrument — the piano.</span>
+        <span class="zh"><b>本義：</b>透過按鍵發聲的西洋樂器。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">麦藁（ストロー）</div>
+        <div class="jp"><b>本来の意味：</b>飲み物を吸うための細い管。もとは麦の茎で作られた。</div>
+        <span class="en"><b>Actual meaning:</b> a thin tube for drinking — originally made from wheat stalks.</span>
+        <span class="zh"><b>本義：</b>用來吸飲料的細管，最初是用麥稈製成的。</span>
+      </div>
+    </div>
+
+    <h3>感情・行動・その他（10選）<span class="en" style="display:block;font-size:.82rem;font-weight:400;">Emotions, actions & more</span><span class="zh" style="display:block;font-size:.82rem;font-weight:400;">情感、行為與其他</span></h3>
+    <div class="misc-grid r2">
+      <div class="misc-card">
+        <div class="counter">馬鹿（ばか）</div>
+        <div class="jp"><b>本来の意味：</b>知恵が足りないこと、愚かなこと。相手をののしる言葉としても使う。</div>
+        <span class="en"><b>Actual meaning:</b> foolishness, stupidity — also used as an insult toward someone.</span>
+        <span class="zh"><b>本義：</b>缺乏智慧、愚蠢；也用來罵人。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">珍糞漢（ちんぷんかん）</div>
+        <div class="jp"><b>本来の意味：</b>意味がわからず、さっぱり理解できないこと。</div>
+        <span class="en"><b>Actual meaning:</b> something totally incomprehensible, gibberish.</span>
+        <span class="zh"><b>本義：</b>完全聽不懂、無法理解的事。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">沢山（たくさん）</div>
+        <div class="jp"><b>本来の意味：</b>数や量が多いこと。</div>
+        <span class="en"><b>Actual meaning:</b> a large amount or number — "a lot," "many."</span>
+        <span class="zh"><b>本義：</b>數量很多。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">冗談（じょうだん）</div>
+        <div class="jp"><b>本来の意味：</b>相手を笑わせるための、本気ではない発言。</div>
+        <span class="en"><b>Actual meaning:</b> a playful, non-serious remark meant to amuse — a joke.</span>
+        <span class="zh"><b>本義：</b>為了逗人發笑而說的、非認真的話；玩笑。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">野暮（やぼ）</div>
+        <div class="jp"><b>本来の意味：</b>洗練されていない、気の利かないこと。</div>
+        <span class="en"><b>Actual meaning:</b> unsophisticated, lacking style or tact.</span>
+        <span class="zh"><b>本義：</b>不夠洗練、不懂得看場合、土氣。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">牛蒡（ゴボウ）</div>
+        <div class="jp"><b>本来の意味：</b>細長い根を食用にする野菜。植物名も当て字が多い。</div>
+        <span class="en"><b>Actual meaning:</b> burdock — a vegetable with a long edible root. Plant names are another category with plenty of ateji.</span>
+        <span class="zh"><b>本義：</b>食用細長根部的蔬菜「牛蒡」。植物名稱也有許多是當字。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">胡坐（あぐら）</div>
+        <div class="jp">外国（胡）から伝わった座り方の音。</div>
+        <span class="en">A sitting style; 胡 originally referred to foreign (barbarian) origin.</span>
+        <span class="zh">盤腿而坐的坐法，「胡」意指外來、異族的東西。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">頓珍漢（とんちんかん）</div>
+        <div class="jp"><b>本来の意味：</b>物事の辻褄が合わない、的外れな言動や見当違いなこと。</div>
+        <span class="en"><b>Actual meaning:</b> something nonsensical or off the mark — a mismatched, absurd remark or action.</span>
+        <span class="zh"><b>本義：</b>前後不搭、文不對題的言行；牛頭不對馬嘴。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">無茶（むちゃ）</div>
+        <div class="jp"><b>本来の意味：</b>道理に合わない、無謀なこと。</div>
+        <span class="en"><b>Actual meaning:</b> unreasonable, reckless — going too far.</span>
+        <span class="zh"><b>本義：</b>不合道理、魯莽的事。</span>
+      </div>
+      <div class="misc-card">
+        <div class="counter">合羽（カッパ）</div>
+        <div class="jp">雨具のカッパ。ポルトガル語「Capa」の音。</div>
+        <span class="en">A raincoat — from the Portuguese word "capa."</span>
+        <span class="zh">雨衣，源自葡萄牙語「Capa」。</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 練習問題 -->
+  <section>
+    <div class="eyebrow">練習 <span class="en">PRACTICE QUIZ</span> <span class="zh">練習問題</span></div>
+    <h2>この当て字、正しく読める？</h2>
+    <span class="lead-en en">Tap the correct reading for each ateji. The wrong options are the kind of guesses a Chinese-character reader might naturally make.</span>
+    <span class="lead-zh zh">點選正確的讀音。錯誤選項是習慣漢字發音的人容易誤猜的讀法。</span>
+    <div class="quiz-list" id="quizList"></div>
+  </section>
+
+  <!-- まとめ -->
+  <section>
+    <div class="eyebrow">まとめ <span class="en">SUMMARY</span> <span class="zh">總結</span></div>
+    <h2 style="text-align:center;">最後に一言でまとめると</h2>
+    <div class="mnemonic">
+      <div class="jp">「倶楽部」は中国から借りた当て字、<br>「煙草」は日本が自分で作った当て字。</div>
+      <span class="en">"Club" is an ateji borrowed from China. "Tobacco" is one Japan invented on its own.</span>
+      <span class="zh">「倶楽部」是向中國借來的當字；「煙草」則是日本自己創造的當字。</span>
+      <div class="mini-triad">
+        <span class="m1">ルート1＝中国由来（Imported）</span>
+        <span class="m2">ルート2＝日本オリジナル（Original）</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 日本語コラム｜「当て字」の秘密（中国由来・日本オリジナル）</footer>
+
+</main>
+
+<script>
+  const quizData = [
+    { kanji:"倶楽部", answer:"クラブ", opts:["グラクブ","クラブ","トモラクブ","クガクブ"],
+      exp_jp:"倶・楽・部を音読みのまま組み合わせると「グラクブ」と読みたくなりますが、これは英語「club」の音に漢字を当てた当て字で「クラブ」と読みます。",
+      exp_en:"Reading each character's on'yomi in order gives \"gurakubu\" — a tempting guess. But this is an ateji for the English word \"club,\" read \"kurabu.\"",
+      exp_zh:"把倶、楽、部依序用音讀念會變成「グラクブ」，容易誤猜。但這其實是配上英語「club」發音的當字，讀作「クラブ」。" },
+    { kanji:"珈琲", answer:"コーヒー", opts:["カハイ","カビ","コーヒー","コハイ"],
+      exp_jp:"珈と琲を音読みで読むと「カハイ」となりますが、これは当て字で「コーヒー」と読みます。",
+      exp_en:"Reading 珈 and 琲 by their on'yomi gives \"kahai\" — but this is an ateji read \"koohii\" (coffee).",
+      exp_zh:"珈與琲用音讀念會是「カハイ」，但這是當字，讀作「コーヒー」（咖啡）。" },
+    { kanji:"型録", answer:"カタログ", opts:["ケイロク","タイロク","カタロク","カタログ"],
+      exp_jp:"型と録を音読みで組み合わせると「ケイロク」と読みたくなりますが、英語「catalog」の音を当てた当て字で「カタログ」と読みます。",
+      exp_en:"Reading 型 and 録 by on'yomi gives \"keiroku\" — but this ateji matches the sound of the English word \"catalog.\"",
+      exp_zh:"型與録用音讀念會是「ケイロク」，但這是配上英語「catalog」發音的當字，讀作「カタログ」。" },
+    { kanji:"馬鹿", answer:"バカ", opts:["バロク","ウマシカ","メロク","バカ"],
+      exp_jp:"鹿の音読みは「ロク」なので「馬（バ）＋鹿（ロク）」で「バロク」と読みたくなりますが、サンスクリット語「モハ（無知）」由来の当て字で「バカ」と読みます。",
+      exp_en:"鹿's on'yomi is \"roku,\" so \"ba + roku\" is a tempting guess — but this ateji comes from the Sanskrit word \"moha\" (foolishness) and is read \"baka.\"",
+      exp_zh:"鹿的音讀是「ロク」，所以容易猜成「馬（バ）＋鹿（ロク）＝バロク」，但這其實源自梵語「moha」（愚癡）的當字，讀作「バカ」。" },
+    { kanji:"合羽", answer:"カッパ", opts:["ゴウウ","コウハ","カッパ","アイハ"],
+      exp_jp:"合と羽を音読みで組み合わせると「ゴウウ」と読みたくなりますが、ポルトガル語「capa」の音を当てた当て字で「カッパ」と読みます。",
+      exp_en:"Reading 合 and 羽 by on'yomi gives \"gouu\" — but this ateji matches the sound of the Portuguese word \"capa\" and is read \"kappa.\"",
+      exp_zh:"合與羽用音讀念會是「ゴウウ」，但這是配上葡萄牙語「capa」發音的當字，讀作「カッパ」。" },
+    { kanji:"莫大小", answer:"メリヤス", opts:["バクダイショウ","マクタイショウ","バクオオショウ","メリヤス"],
+      exp_jp:"莫・大・小をそのまま音読みすると「バクダイショウ」と読みたくなりますが、ポルトガル語「meias」の音を当てた当て字で「メリヤス」（伸縮性のある編み物）と読みます。",
+      exp_en:"Reading all three kanji by on'yomi gives \"bakudaishou\" — but this ateji matches the sound of the Portuguese word \"meias\" and is read \"meriyasu\" (knitwear).",
+      exp_zh:"莫、大、小依序用音讀念會是「バクダイショウ」，但這是配上葡萄牙語「meias」發音的當字，讀作「メリヤス」（有伸縮性的針織品）。" }
+  ];
+
+  const quizList = document.getElementById('quizList');
+  quizData.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz';
+    div.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qsentence">${q.kanji} はどう読む？</div>
+      <div class="opts">
+        ${q.opts.map(o => `<div class="opt" onclick="pick(this,'${o}','${q.answer}',${i})">${o}</div>`).join('')}
+      </div>
+      <div class="reveal" onclick="toggleAns(${i})">答え・解説を見る</div>
+      <div class="answer-box" id="ans${i}">
+        <span class="jp">${q.exp_jp}</span>
+        <span class="en">EN: ${q.exp_en}</span>
+        <span class="zh">ZH: ${q.exp_zh}</span>
+      </div>
+    `;
+    quizList.appendChild(div);
+  });
+
+  function pick(el, chosen, answer, i){
+    const parent = el.parentElement;
+    [...parent.children].forEach(c => c.classList.remove('correct-picked','wrong-picked'));
+    if(chosen === answer){ el.classList.add('correct-picked'); }
+    else{
+      el.classList.add('wrong-picked');
+      [...parent.children].forEach(c => { if(c.textContent === answer) c.classList.add('correct-picked'); });
+    }
+    document.getElementById('ans'+i).classList.add('show');
+  }
+  function toggleAns(i){ document.getElementById('ans'+i).classList.toggle('show'); }
+
+  function setColLang(lang){
+    document.body.classList.remove('col-ja','col-zh','col-en');
+    document.body.classList.add('col-'+lang);
+    ['ja','zh','en'].forEach(l=>{
+      const b=document.getElementById('cl-'+l);
+      if(b) b.classList.toggle('active', l===lang);
+    });
+  }
+  setColLang('zh');
+</script>
+
+</body>
+</html>

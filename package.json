@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "pnpm build && cp -R legacy-site/. dist/",
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "tsc -b --pretty false"
