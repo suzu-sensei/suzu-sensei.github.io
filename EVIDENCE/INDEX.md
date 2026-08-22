@@ -234,4 +234,8 @@
 - VERIFICATION_RESULT: PASS. Read-only SQL returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` and confirmed the required tables, RLS, RPC signatures, constraints, private Storage configuration, and migrated ownership/credit invariants.
 - DATA_RESULT: Four students, 27 available credits, and four teacher-only labels are present. Pending booking requests, pending candidates, reserved bookings, and pending payments are all zero.
 - RPC_SECURITY: All ten checked protected transition/identity RPCs are SECURITY DEFINER functions with fixed empty search paths, including the new exact-start booking approval and audited teacher-label RPC.
-- PUBLIC_RELEASE: In progress; matching frontend deployment and read-only public checks remain before this evidence item is complete.
+- PUBLIC_RELEASE: PASS. Commit `059fbeb` was pushed to `main`; GitHub Pages workflow run 6 completed successfully.
+- PUBLIC_ROOT: PASS. The original `SUZU 先生 · 日本語レッスン` home remained at the root. Quiz, JLPT, and all six Column article links remained present; the final `みたい／らしい／っぽい` article loaded successfully.
+- CLASSROOM: PASS. `/classroom/` loaded the production student dashboard. Japanese, Traditional Chinese, and English switching worked; all time choices used `:00`/`:30`; five candidate-date sections could be added and a sixth could not.
+- PRIVACY: PASS. The authenticated linked student saw only its own eight available credits and did not receive the teacher-only label `たい時間`. Both legacy student/teacher URLs redirected to `/classroom/`.
+- WRITE_BOUNDARY: No classroom form was submitted. A post-smoke read-only database query remained at four students, 27 available credits, four teacher-only labels, and zero pending requests/candidates/payments or reserved bookings.

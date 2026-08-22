@@ -1,7 +1,7 @@
 # Current Status
 
-MODE: IMPLEMENT
-STATUS: BOOKING_LANGUAGE_PRODUCTION_DB_VERIFIED_RELEASE_IN_PROGRESS
+MODE: DOCUMENT
+STATUS: BOOKING_LANGUAGE_UPDATE_DEPLOYED_AND_VERIFIED
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -56,4 +56,7 @@ OWNER: Project owner (user)
 - Migrations `20260822001000` through `20260822001200` passed development rollback suites and are now applied to production ref `ploropobmgwlpphtkndo` under explicit approval.
 - Existing linked students now have a teacher-only nickname edit control backed by an audited teacher RPC. The development test student is verified as registration name `林さん（テスト）` and teacher-only nickname `たい時間` with zero pending or reserved bookings.
 - Read-only production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`: four students, 27 available credits, four migrated teacher-only labels, and zero pending requests/candidates/payments or reserved bookings. Required RPCs remain SECURITY DEFINER with fixed search paths.
-- Matching frontend commit, push, GitHub Pages deployment, and public read-only verification are in progress. The original public home, games, textbook, and Columns remain outside the classroom bundle and must remain unchanged.
+- Matching frontend commit `059fbeb` was pushed to `main`, and GitHub Pages workflow run 6 completed successfully.
+- Public read-only verification passed: the original home, Quiz, JLPT, and all six Column articles remain available; both legacy classroom URLs redirect to `/classroom/`; and the production student portal supports Japanese, Traditional Chinese, and English.
+- The authenticated production student view showed only its own eight available credits, hid teacher-only labels, rendered three ranked half-hour availability ranges per candidate date, and enforced the five-date UI maximum. No form was submitted.
+- Post-smoke database counts remained unchanged at four students, 27 available credits, four teacher-only labels, and zero pending requests/candidates/payments or reserved bookings.
