@@ -171,3 +171,17 @@
 - MANDATORY_COVERAGE: Student A/B isolation, double booking approval, credit double use, booking overlap, double lesson completion, repeated payment approval, evidence-only approval, private Storage ownership, signed viewing, and teacher proxy upload are covered by rollback SQL tests and real browser flows.
 - RELEASE_BOUNDARY: The new site is pushed only to non-deployed branch `codex/classroom-ready`. Root activation remains blocked on explicit production migration approval and successful production verification.
 - PRODUCTION_BOUNDARY: No production database connection or state change was made during final review.
+
+## E-021 — Production migration and opening balance
+
+- SOURCE: Supabase SQL Editor on production ref `ploropobmgwlpphtkndo`, migrations `20260821000100` through `20260822000900`, and `supabase/tests/004_production_migration_verification.sql`
+- DATE: 2026-08-22
+- AUTHORIZATION: The project owner explicitly approved production migration and selected opening-balance option 1.
+- PRECONDITION: Production contained four legacy students, 27 aggregate unused lessons, three matching student Auth identities, one non-student Auth identity for teacher bootstrap, and no objects in the existing private payment-slip bucket. No new runtime tables or RPCs existed before migration.
+- RESULT: PASS. Schema, RLS, transactional RPCs, private Storage, onboarding, cancellation, payment retry, explicit claim-token denial, and returned-credit reuse migrations completed successfully.
+- DATA_BRIDGE: Four students were copied into the new UUID ownership model. The current 27 unused lessons were converted once into auditable manual opening-balance purchases and 27 `available` credit rows. Three students retained existing Auth UUID ownership; one remains unclaimed. One active UUID teacher role was installed.
+- ARCHIVE_BOUNDARY: Legacy lesson history, payment, change-request, override, reminder, quiz, and student tables were not deleted or rewritten. They remain preserved as the old-site archive and are not runtime sources for the new site.
+- STORAGE: The bucket is private with a 10 MiB limit and JPEG/PNG/WebP/PDF allow-list. Legacy email/folder and fixed-teacher-email policies were removed; only the new UUID student-ownership/teacher-role policies remain.
+- AUTH: Production Google provider is enabled. Site URL and redirect allow-list were set to `https://suzu-sensei.github.io/` without changing the Google OAuth client or secret.
+- VERIFICATION: Read-only verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` for required tables, RLS, RPCs, student/Auth mapping, 27-credit balance, teacher role, Storage policy removal, and bucket configuration.
+- ADVISOR: Production Security Advisor reported one error on the preserved legacy `public.public_leaderboard` SECURITY DEFINER view. It is unrelated to the new classroom schema and was left unchanged to preserve old-site behavior; new classroom tables produced no error-level finding.

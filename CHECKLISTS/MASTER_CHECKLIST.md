@@ -11,4 +11,4 @@ STATUS: ACTIVE
 - [x] Mandatory development tests passed. Evidence: EVIDENCE/INDEX.md E-008, E-009, E-013, E-016, and E-019.
 - [x] Development security review completed, including OAuth secret rotation. Evidence: EVIDENCE/INDEX.md E-015 and E-017.
 - [x] Final review completed. Evidence: EVIDENCE/INDEX.md E-020.
-- [ ] Explicit production migration approval obtained. Evidence: UNSET
+- [x] Explicit production migration approval obtained and migration verified. Evidence: DECISIONS/LOCKED.md D-011 and EVIDENCE/INDEX.md E-021.

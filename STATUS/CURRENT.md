@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: DEVELOPMENT_COMPLETE_FINAL_REVIEW_PASSED
+STATUS: PRODUCTION_MIGRATED_RELEASE_READY
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -33,4 +33,8 @@ OWNER: Project owner (user)
 - The currently published old-site snapshot is preserved and verified at `https://suzu-sensei.github.io/old/`; local uncommitted old-site work and credential-related files were excluded.
 - GitHub Pages root hosting is approved. The production workflow is prepared to fail closed unless its explicit production target matches ref `ploropobmgwlpphtkndo`.
 - Docker Desktop has been stopped and local Supabase will not be used.
-- Development testing and final review are complete. Next stage: obtain separate production Supabase migration approval, migrate and verify production, then activate the prepared GitHub Pages root workflow. Production remains untouched.
+- Production migration was explicitly approved with opening-balance option 1. All new schema, RLS, RPC, private Storage, onboarding, cancellation, retry, and credit-reuse migrations are installed on production ref `ploropobmgwlpphtkndo`.
+- Four legacy student profiles and 27 unused lessons were converted into the new ledger as auditable opening-balance purchases and available credits. Three profiles are linked to existing Auth UUIDs; one remains unclaimed. All legacy tables and records remain untouched.
+- Production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`. Google Auth is enabled; Site URL and redirect allow-list now contain `https://suzu-sensei.github.io/`.
+- GitHub Actions production variables are configured with public-only Supabase URL and publishable key, and Pages is configured for GitHub Actions deployment.
+- Next stage: publish the reviewed commit to root `main`, verify the new root and archived `/old/`, then run authenticated production smoke tests.

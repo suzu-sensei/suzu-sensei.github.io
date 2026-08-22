@@ -72,3 +72,10 @@
 - APPROVER: Project owner (user)
 - APPROVED_ON: 2026-08-22
 - EVIDENCE: Explicit user approval on 2026-08-22
+
+## D-011 — Production opening-balance migration
+
+- DECISION: Migrate all four legacy student profiles and the current aggregate balance of 27 unused lessons into the new ledger as auditable opening-balance purchases and credits. Keep legacy lesson history, payment, change-request, override, reminder, and quiz records untouched in their existing tables and available through the archived old site; do not transform them into the new runtime model.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit selection of recommended production migration option 1
