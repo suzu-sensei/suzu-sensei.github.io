@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: PUBLIC_HOME_RESTORE_READY
+STATUS: PUBLIC_HOME_AND_CLASSROOM_VERIFIED
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -46,4 +46,7 @@ OWNER: Project owner (user)
 - All six existing Column articles are now present in the home-page slider. Desktop arrow navigation and mobile horizontal swiping use the existing carousel behavior.
 - Legacy student and teacher URLs redirect to `/classroom/`, and production Supabase now allows the canonical classroom OAuth return URL alongside the root URL.
 - Local verification passed with 27/27 tests, a successful TypeScript/Vite build, six Column cards, working carousel navigation, visible quiz/classroom links, and both legacy role redirects.
-- Next stage: deploy the approved layout, verify public root/game/Column/classroom URLs, then run teacher and student OAuth smoke tests at `/classroom/`.
+- GitHub Pages workflow run 4 deployed commit `9706f1d` successfully. The public root renders the restored old home; quiz, JLPT cards, all six Column pages, and the `/classroom/` portal are reachable at their intended URLs.
+- Both legacy student and teacher bookmark URLs redirect to `/classroom/` in production.
+- Authenticated production smoke tests passed at `/classroom/`: UUID teacher routing loaded the teacher desk, and the linked test student saw only its own eight available credits. The browser was logged out afterward and no application data was changed.
+- Next stage: normal use and monitoring. The public site and classroom URL layout are complete.

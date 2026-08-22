@@ -197,3 +197,17 @@
 - STUDENT_SMOKE: PASS. The linked test student loaded the student portal with eight owned available credits, zero reserved/completed credits, and no booking, payment, or lesson-history records. No other student profile or balance was displayed.
 - WRITE_BOUNDARY: Both production sessions were read-only smoke tests. No student, booking, payment, credit, lesson, or Storage mutation was performed. The browser was logged out afterward.
 - KNOWN_LEGACY_FINDING: The preserved legacy `public.public_leaderboard` Security Advisor error remains unchanged and is outside the new classroom runtime.
+
+## E-023 — Public home restoration and classroom path verification
+
+- SOURCE: Reviewed old public commit `4a87a71`, Vite/Vitest/TypeScript, local assembled Pages artifact, production Supabase Auth URL configuration, GitHub Actions run 4, and public browser checks
+- DATE: 2026-08-22
+- AUTHORIZATION: The project owner approved restoring the original public home and moving only the role-aware student/teacher portal to the canonical `/classroom/` URL.
+- SAFE_SOURCE: Public assets were exported from the committed old-site snapshot, not the dirty old worktree. Uncommitted old-site files, governance drafts, credential material, archives, PDFs, and spreadsheets were not copied.
+- COLUMN_FIX: PASS. All six existing Column articles are now linked in the home carousel. Desktop arrow navigation reached the final articles; the existing horizontal swipe behavior remains available on mobile.
+- LOCAL_RESULT: PASS. Vitest passed 27/27, TypeScript and Vite builds passed, the assembled artifact contained the old home plus `/classroom/`, and both legacy role URLs redirected to the canonical portal.
+- AUTH_CONFIGURATION: The production redirect allow list retains the root URL and now also contains `https://suzu-sensei.github.io/classroom/`. Google client identity, callback, origins, and secrets were unchanged.
+- DEPLOYMENT: PASS. GitHub Pages workflow run 4 deployed commit `9706f1d` successfully.
+- PUBLIC_URLS: PASS. The root rendered `SUZU 先生 · 日本語レッスン`; quiz, JLPT cards, the sixth Column article, and `/classroom/` rendered successfully; six Column cards and the public quiz/classroom links were present.
+- LEGACY_REDIRECTS: PASS. `/site/classroom/student.html` and `/site/classroom/teacher.html` both redirected to `/classroom/`.
+- AUTH_SMOKE: PASS. Teacher and linked-student Google OAuth returned to `/classroom/`. Teacher-role routing loaded the teacher desk; the student displayed only its own eight available credits and no other-student list. Both checks were read-only and the browser was logged out afterward.
