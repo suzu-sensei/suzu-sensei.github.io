@@ -255,7 +255,15 @@ begin
   );
   perform public.confirm_payment_slip_upload(v_proxy.payment_id);
 
-  if (select count(*) from storage.objects where bucket_id = 'payment-slips') <> 4 then
+  if (
+    select count(*)
+    from storage.objects
+    where bucket_id = 'payment-slips'
+      and (
+        name like '21000000-0000-0000-0000-000000000001/%'
+        or name like '21000000-0000-0000-0000-000000000002/%'
+      )
+  ) <> 4 then
     raise exception 'teacher cannot view all uploaded slips';
   end if;
 

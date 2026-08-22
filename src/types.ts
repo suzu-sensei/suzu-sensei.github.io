@@ -3,11 +3,12 @@ export type ReviewStatus = 'pending' | 'approved' | 'rejected';
 
 export type Student = {
   id: string; auth_user_id: string | null; email: string; full_name: string;
-  nickname: string | null; status: 'active' | 'paused' | 'inactive';
+  status: 'active' | 'paused' | 'inactive';
   timezone: string; notes_folder_url: string | null; meeting_url: string | null;
 };
 export type Credit = { id: string; student_id: string; status: CreditStatus; created_at: string };
-export type Candidate = { id: string; request_id: string; starts_at: string; ends_at: string; status: string };
+export type Candidate = { id: string; request_id: string; starts_at: string; ends_at: string; day_rank: number; time_rank: number; status: string };
+export type TeacherLabel = { student_id: string; nickname: string };
 export type BookingRequest = { id: string; student_id: string; status: string; note: string | null; submitted_at: string };
 export type Booking = { id: string; student_id: string; starts_at: string; ends_at: string; status: string };
 export type LessonHistory = { id: string; student_id: string; starts_at: string; ends_at: string; note: string | null };
@@ -32,6 +33,7 @@ export type StudentSnapshot = {
 
 export type TeacherSnapshot = {
   students: Student[];
+  labels: TeacherLabel[];
   credits: Credit[];
   requests: BookingRequest[];
   candidates: Candidate[];

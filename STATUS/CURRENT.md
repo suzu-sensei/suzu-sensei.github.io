@@ -1,7 +1,7 @@
 # Current Status
 
-MODE: DOCUMENT
-STATUS: PUBLIC_HOME_AND_CLASSROOM_VERIFIED
+MODE: IMPLEMENT
+STATUS: BOOKING_LANGUAGE_PRODUCTION_DB_VERIFIED_RELEASE_IN_PROGRESS
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -49,4 +49,11 @@ OWNER: Project owner (user)
 - GitHub Pages workflow run 4 deployed commit `9706f1d` successfully. The public root renders the restored old home; quiz, JLPT cards, all six Column pages, and the `/classroom/` portal are reachable at their intended URLs.
 - Both legacy student and teacher bookmark URLs redirect to `/classroom/` in production.
 - Authenticated production smoke tests passed at `/classroom/`: UUID teacher routing loaded the teacher desk, and the linked test student saw only its own eight available credits. The browser was logged out afterward and no application data was changed.
-- Next stage: normal use and monitoring. The public site and classroom URL layout are complete.
+- Development now accepts five candidate dates with up to three ranked availability ranges per date; every boundary and final lesson start is restricted to `:00` or `:30`, and the final booking remains a transactional 50-minute reservation.
+- Students now submit their registration name during first claim. Teacher-only nicknames were moved out of `students` into a separate teacher-only RLS table, so students cannot retrieve them.
+- Student login, claim, dashboard, booking, payment, and history copy now supports Japanese, Traditional Chinese, and English. Teacher UI remains Japanese.
+- Ambiguous payment wording was simplified to `送信する`; credit voiding is collapsed under an administrator-only correction/refund explanation.
+- Migrations `20260822001000` through `20260822001200` passed development rollback suites and are now applied to production ref `ploropobmgwlpphtkndo` under explicit approval.
+- Existing linked students now have a teacher-only nickname edit control backed by an audited teacher RPC. The development test student is verified as registration name `林さん（テスト）` and teacher-only nickname `たい時間` with zero pending or reserved bookings.
+- Read-only production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`: four students, 27 available credits, four migrated teacher-only labels, and zero pending requests/candidates/payments or reserved bookings. Required RPCs remain SECURITY DEFINER with fixed search paths.
+- Matching frontend commit, push, GitHub Pages deployment, and public read-only verification are in progress. The original public home, games, textbook, and Columns remain outside the classroom bundle and must remain unchanged.

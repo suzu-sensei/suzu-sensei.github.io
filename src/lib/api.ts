@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Booking, BookingRequest, Candidate, Credit, LessonHistory, Payment, Student, StudentInvitation, StudentSnapshot, TeacherSnapshot } from '../types';
+import type { Booking, BookingRequest, Candidate, Credit, LessonHistory, Payment, Student, StudentInvitation, StudentSnapshot, TeacherLabel, TeacherSnapshot } from '../types';
 import { validateSlip } from './validation';
 import { uuid } from './format';
 import { friendlyMessage } from './errors';
@@ -30,8 +30,8 @@ export async function isTeacher(userId: string): Promise<boolean> {
   return (data?.length ?? 0) > 0;
 }
 
-export async function claimProfile(token: string): Promise<void> {
-  unwrap(await supabase.rpc('claim_student_profile', { p_claim_token: token }));
+export async function claimProfile(token: string, fullName: string): Promise<void> {
+  unwrap(await supabase.rpc('claim_student_profile', { p_claim_token: token, p_full_name: fullName }));
 }
 
 async function list<T>(table: string, orderColumn?: string, ascending = true): Promise<T[]> {
@@ -54,22 +54,23 @@ export async function loadStudent(): Promise<StudentSnapshot | null> {
 }
 
 export async function loadTeacher(): Promise<TeacherSnapshot> {
-  const [students, credits, requests, candidates, bookings, history, payments] = await Promise.all([
-    list<Student>('students', 'full_name'), list<Credit>('lesson_credits', 'created_at'),
+  const [students, labels, credits, requests, candidates, bookings, history, payments] = await Promise.all([
+    list<Student>('students', 'full_name'), list<TeacherLabel>('student_teacher_labels', 'nickname'),
+    list<Credit>('lesson_credits', 'created_at'),
     list<BookingRequest>('booking_requests', 'submitted_at'), list<Candidate>('booking_candidates', 'starts_at'),
     list<Booking>('bookings', 'starts_at'), list<LessonHistory>('lesson_history', 'starts_at', false),
     list<Payment>('payments', 'submitted_at'),
   ]);
-  return { students, credits, requests, candidates, bookings, history, payments };
+  return { students, labels, credits, requests, candidates, bookings, history, payments };
 }
 
-export async function submitBooking(starts: string[], note: string): Promise<void> {
-  const candidates = starts.map((starts_at) => ({ starts_at, ends_at: new Date(new Date(starts_at).getTime() + 50 * 60_000).toISOString() }));
+export type BookingWindow = { starts_at: string; ends_at: string; day_rank: number; time_rank: number };
+export async function submitBooking(candidates: BookingWindow[], note: string): Promise<void> {
   unwrap(await supabase.rpc('submit_booking_request', { p_candidates: candidates, p_idempotency_key: uuid(), p_note: note || null }));
 }
 
-export async function approveBooking(requestId: string, candidateId: string): Promise<void> {
-  unwrap(await supabase.rpc('approve_booking_request', { p_request_id: requestId, p_candidate_id: candidateId }));
+export async function approveBooking(requestId: string, candidateId: string, startsAt: string): Promise<void> {
+  unwrap(await supabase.rpc('approve_booking_request', { p_request_id: requestId, p_candidate_id: candidateId, p_starts_at: startsAt }));
 }
 export async function rejectBooking(requestId: string, reason: string): Promise<void> {
   unwrap(await supabase.rpc('reject_booking_request', { p_request_id: requestId, p_reason: reason }));
@@ -91,11 +92,10 @@ export async function voidCredit(creditId: string, reason: string): Promise<void
 }
 
 export async function inviteStudent(input: {
-  email: string; fullName: string; nickname?: string; timezone?: string;
+  email: string; nickname?: string; timezone?: string;
 }): Promise<StudentInvitation> {
   return unwrap<StudentInvitation>(await supabase.rpc('invite_student', {
     p_email: input.email,
-    p_full_name: input.fullName,
     p_nickname: input.nickname || null,
     p_timezone: input.timezone || 'Asia/Taipei',
     p_token_ttl_hours: 72,
@@ -106,6 +106,13 @@ export async function reissueClaimCode(studentId: string): Promise<StudentInvita
   return unwrap<StudentInvitation>(await supabase.rpc('reissue_student_claim_code', {
     p_student_id: studentId,
     p_token_ttl_hours: 72,
+  }));
+}
+
+export async function setStudentTeacherLabel(studentId: string, nickname: string): Promise<void> {
+  unwrap(await supabase.rpc('set_student_teacher_label', {
+    p_student_id: studentId,
+    p_nickname: nickname || null,
   }));
 }
 

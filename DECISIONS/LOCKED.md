@@ -87,3 +87,17 @@
 - APPROVED_ON: 2026-08-22
 - EVIDENCE: Explicit user approval on 2026-08-22
 - SUPERSEDES: D-009
+
+## D-013 — Booking availability, identity labels, and student languages
+
+- DECISION: Accept up to five candidate dates per request and up to three ranked availability ranges per date, using only half-hour boundaries. The teacher selects the exact 50-minute start transactionally. The student supplies the registration name during claim; teacher-only nicknames are stored separately behind teacher-only RLS. Student-facing UI supports Japanese, Traditional Chinese, and English; teacher UI remains Japanese.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit user instructions on 2026-08-22; `REQUIREMENTS.md`
+
+## D-014 — Production release of the booking/language update
+
+- DECISION: Apply migrations `20260822001000` through `20260822001200` to production ref `ploropobmgwlpphtkndo`, then commit and push the matching frontend and run read-only production verification.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit user statement `本番反映を承認します` on 2026-08-22

@@ -101,3 +101,16 @@ Booking approval, lesson completion, and payment approval must be transactional 
 Design → schema migration → RLS → RPC → Storage → frontend → development testing → security review → review → production migration only after explicit approval.
 
 At every stage, report changes, test results, and unresolved matters.
+
+## Booking and language update approved on 2026-08-22
+
+- A booking request may contain up to five candidate dates.
+- Each candidate date may contain a first, second, and third preferred availability range.
+- All selectable time boundaries and the teacher's final lesson start use only `:00` or `:30`.
+- A teacher selects an exact 50-minute lesson start inside a submitted availability range.
+- Students enter their own registration name during first profile claim.
+- Teacher-only nicknames must not be retrievable by students.
+- Student login, claim, dashboard, booking, payment, and history UI support Japanese, Traditional Chinese, and English.
+- The teacher dashboard remains Japanese-only.
+- Payment submission is labelled simply as sending, without the ambiguous phrase `安全に送信`.
+- Credit voiding remains available only as a collapsed administrator correction/refund tool.

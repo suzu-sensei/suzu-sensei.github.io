@@ -3,7 +3,7 @@
 do $$
 declare
   v_required_tables constant text[] := array[
-    'profiles', 'students', 'student_claim_tokens', 'teacher_roles',
+    'profiles', 'students', 'student_claim_tokens', 'student_teacher_labels', 'teacher_roles',
     'purchases', 'lesson_credits', 'booking_requests', 'booking_candidates',
     'bookings', 'lesson_history', 'payments', 'audit_logs'
   ];
@@ -11,7 +11,7 @@ declare
     'claim_student_profile', 'register_manual_purchase',
     'submit_booking_request', 'approve_booking_request',
     'reject_booking_request', 'complete_booking', 'approve_payment',
-    'reject_payment', 'void_credit'
+    'reject_payment', 'void_credit', 'set_student_teacher_label'
   ];
 begin
   if (
@@ -39,6 +39,20 @@ begin
       and routine_name = any(v_required_rpcs)
   ) <> cardinality(v_required_rpcs) then
     raise exception 'required production RPCs are missing';
+  end if;
+
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'students' and column_name = 'nickname'
+  ) then
+    raise exception 'teacher-only nickname remains exposed on students';
+  end if;
+
+  if to_regprocedure('public.claim_student_profile(text,text)') is null
+     or to_regprocedure('public.approve_booking_request(uuid,uuid,timestamp with time zone)') is null
+     or to_regprocedure('public.invite_student(text,text,text,integer)') is null
+     or to_regprocedure('public.set_student_teacher_label(uuid,text)') is null then
+    raise exception 'current onboarding or booking RPC signatures are missing';
   end if;
 
   if (select count(*) from public.students)

@@ -21,6 +21,7 @@ declare
   v_booking_a public.bookings;
   v_reuse_booking public.bookings;
   v_booking_b public.bookings;
+  v_deadline_start timestamptz := date_trunc('hour', now()) + interval '6 hours';
 begin
   insert into auth.users (id)
   values (v_teacher), (v_student_user_a), (v_student_user_b);
@@ -44,7 +45,6 @@ begin
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
   v_invitation := public.invite_student(
     '  ONBOARDING-A@example.invalid ',
-    'Onboarding Student A',
     'A',
     'Asia/Taipei',
     72
@@ -84,12 +84,12 @@ begin
 
   perform set_config('request.jwt.claim.sub', v_student_user_a::text, true);
   begin
-    perform public.claim_student_profile(v_old_code);
+    perform public.claim_student_profile(v_old_code, 'Onboarding Student A');
     raise exception 'old claim code was unexpectedly accepted';
   exception
     when sqlstate '22023' then null;
   end;
-  perform public.claim_student_profile(v_new_code);
+  perform public.claim_student_profile(v_new_code, 'Onboarding Student A');
   if not exists (
     select 1 from public.students
     where id = v_student_a and auth_user_id = v_student_user_a
@@ -99,7 +99,7 @@ begin
 
   perform set_config('request.jwt.claim.sub', v_student_user_b::text, true);
   begin
-    perform public.claim_student_profile(v_new_code);
+    perform public.claim_student_profile(v_new_code, 'Another Student');
     raise exception 'consumed claim code was unexpectedly reusable';
   exception
     when sqlstate '22023' then null;
@@ -130,7 +130,7 @@ begin
     jsonb_build_array(
       jsonb_build_object(
         'starts_at', '2036-04-10T10:00:00Z',
-        'ends_at', '2036-04-10T10:50:00Z'
+        'ends_at', '2036-04-10T11:00:00Z'
       )
     ),
     '41000000-0000-0000-0000-000000000001',
@@ -141,7 +141,7 @@ begin
       jsonb_build_array(
         jsonb_build_object(
           'starts_at', '2036-04-11T10:00:00Z',
-          'ends_at', '2036-04-11T10:50:00Z'
+          'ends_at', '2036-04-11T11:00:00Z'
         )
       ),
       '41000000-0000-0000-0000-000000000002',
@@ -156,7 +156,7 @@ begin
   from public.booking_candidates
   where request_id = v_request_a.id;
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
-  v_booking_a := public.approve_booking_request(v_request_a.id, v_candidate);
+  v_booking_a := public.approve_booking_request(v_request_a.id, v_candidate, '2036-04-10T10:00:00Z');
 
   perform set_config('request.jwt.claim.sub', v_student_user_a::text, true);
   perform public.cancel_own_booking(v_booking_a.id, '予定変更');
@@ -183,7 +183,7 @@ begin
     jsonb_build_array(
       jsonb_build_object(
         'starts_at', '2036-04-12T10:00:00Z',
-        'ends_at', '2036-04-12T10:50:00Z'
+        'ends_at', '2036-04-12T11:00:00Z'
       )
     ),
     '41000000-0000-0000-0000-000000000004',
@@ -194,7 +194,7 @@ begin
   where request_id = v_reuse_request.id;
 
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
-  v_reuse_booking := public.approve_booking_request(v_reuse_request.id, v_candidate);
+  v_reuse_booking := public.approve_booking_request(v_reuse_request.id, v_candidate, '2036-04-12T10:00:00Z');
   if v_reuse_booking.lesson_credit_id <> v_booking_a.lesson_credit_id then
     raise exception 'cancellation did not reuse the returned credit';
   end if;
@@ -214,11 +214,14 @@ begin
   end if;
 
   perform set_config('request.jwt.claim.sub', v_student_user_b::text, true);
+  if extract(hour from v_deadline_start at time zone 'Asia/Taipei') = 23 then
+    v_deadline_start := v_deadline_start + interval '1 hour';
+  end if;
   v_request_b := public.submit_booking_request(
     jsonb_build_array(
       jsonb_build_object(
-        'starts_at', now() + interval '6 hours',
-        'ends_at', now() + interval '6 hours 50 minutes'
+        'starts_at', v_deadline_start,
+        'ends_at', v_deadline_start + interval '1 hour'
       )
     ),
     '41000000-0000-0000-0000-000000000003',
@@ -229,7 +232,7 @@ begin
   where request_id = v_request_b.id;
 
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
-  v_booking_b := public.approve_booking_request(v_request_b.id, v_candidate);
+  v_booking_b := public.approve_booking_request(v_request_b.id, v_candidate, v_deadline_start);
 
   perform set_config('request.jwt.claim.sub', v_student_user_a::text, true);
   begin

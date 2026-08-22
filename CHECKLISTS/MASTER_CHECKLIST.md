@@ -12,3 +12,6 @@ STATUS: ACTIVE
 - [x] Development security review completed, including OAuth secret rotation. Evidence: EVIDENCE/INDEX.md E-015 and E-017.
 - [x] Final review completed. Evidence: EVIDENCE/INDEX.md E-020.
 - [x] Explicit production migration approval obtained and migration verified. Evidence: DECISIONS/LOCKED.md D-011 and EVIDENCE/INDEX.md E-021.
+- [x] Five-date/three-range booking update, student registration-name claim, teacher-only labels, and three-language student frontend verified in development. Evidence: EVIDENCE/INDEX.md E-024.
+- [x] Obtain explicit production approval for the booking/language update and apply its three migrations with read-only database verification. Evidence: DECISIONS/LOCKED.md D-014 and EVIDENCE/INDEX.md E-025.
+- [ ] Deploy the matching frontend and complete public production verification.

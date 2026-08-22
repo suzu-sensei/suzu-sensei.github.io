@@ -6,16 +6,37 @@ import { bindStudentActions, renderStudent } from './ui/student';
 import { bindTeacherActions, renderTeacher } from './ui/teacher';
 import { shell, showToast } from './ui/shared';
 import { authErrorNotice } from './lib/auth-url';
+import { getStudentLocale, languageSwitch, setStudentLocale, studentCopy, type StudentLocale } from './i18n';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
+let locale: StudentLocale = getStudentLocale();
+
+function bindLanguageSwitch(): void {
+  document.querySelectorAll<HTMLButtonElement>('[data-language]').forEach(button => button.addEventListener('click', () => {
+    const dirty = [...document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('#booking-form input, #booking-form textarea, #payment-form input[type="file"], #payment-form input[name="amount"]')].some(input => input.type === 'file' ? Boolean((input as HTMLInputElement).files?.length) : Boolean(input.value));
+    if (dirty && !window.confirm(studentCopy[locale].languageReset)) return;
+    locale = button.dataset.language as StudentLocale;
+    setStudentLocale(locale);
+    void render();
+  }));
+}
 
 async function render(): Promise<void> {
-  app.innerHTML = '<div class="loading"><span></span><p>教室を準備しています…</p></div>';
+  const t = studentCopy[locale];
+  setStudentLocale(locale);
+  app.innerHTML = `<div class="loading"><span></span><p>${escapeHtml(t.loading)}</p></div>`;
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
     const authNotice = authErrorNotice(window.location.href);
-    app.innerHTML = `<main class="login-page"><section class="login-card"><p class="eyebrow">SUZU CLASSROOM</p><h1>すず先生の教室</h1><p>予約、授業回数、お支払いを安全に管理する教室portalです。</p>${authNotice ? `<div class="notice auth-notice" role="alert">${escapeHtml(authNotice)}</div>` : ''}<button class="button google" id="login">Googleでログイン</button><small>ログイン後も、データの閲覧範囲はデータベース側で保護されます。</small></section></main><div id="toast" class="toast" role="status" aria-live="polite"></div>`;
-    document.querySelector<HTMLButtonElement>('#login')?.addEventListener('click', async event => { const button = event.currentTarget as HTMLButtonElement; button.disabled = true; button.textContent = 'Googleへ移動中…'; window.history.replaceState({}, '', window.location.pathname); try { await loginWithGoogle(); } catch (error) { button.disabled = false; button.textContent = 'Googleでログイン'; showToast(error instanceof Error ? error.message : 'ログインを開始できませんでした。', 'error'); } });
+    app.innerHTML = `<main class="login-page"><section class="login-card">${languageSwitch(locale)}<p class="eyebrow">SUZU CLASSROOM</p><h1>${escapeHtml(t.title)}</h1><p>${escapeHtml(t.loginLead)}</p>${authNotice ? `<div class="notice auth-notice" role="alert">${escapeHtml(authNotice)}</div>` : ''}<button class="button google" id="login">${escapeHtml(t.login)}</button><small>${escapeHtml(t.privacy)}</small></section></main><div id="toast" class="toast" role="status" aria-live="polite"></div>`;
+    bindLanguageSwitch();
+    document.querySelector<HTMLButtonElement>('#login')?.addEventListener('click', async event => {
+      const button = event.currentTarget as HTMLButtonElement;
+      button.disabled = true; button.textContent = t.loggingIn;
+      window.history.replaceState({}, '', window.location.pathname);
+      try { await loginWithGoogle(); }
+      catch (error) { button.disabled = false; button.textContent = t.login; showToast(error instanceof Error ? error.message : t.login, 'error'); }
+    });
     return;
   }
   try {
@@ -25,10 +46,17 @@ async function render(): Promise<void> {
       bindTeacherActions(render);
     } else {
       const data = await loadStudent();
-      if (data) { app.innerHTML = shell(renderStudent(data), session.user.email ?? 'Student'); bindStudentActions(render); }
-      else {
-        app.innerHTML = shell(`<section class="claim-card"><p class="eyebrow">WELCOME</p><h1>生徒profileを連携</h1><p>先生から受け取ったclaim codeを入力してください。他の生徒の情報は表示されません。</p><form id="claim-form"><label>Claim code<input name="token" required autocomplete="one-time-code"></label><button class="button">連携する</button></form></section>`, session.user.email ?? 'User');
-        document.querySelector('#claim-form')?.addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget as HTMLFormElement; const token = String(new FormData(form).get('token')); try { await claimProfile(token); await render(); } catch (error) { showToast(error instanceof Error ? error.message : '連携できませんでした。', 'error'); } });
+      if (data) {
+        app.innerHTML = shell(renderStudent(data, locale), session.user.email ?? 'Student', t.logout, languageSwitch(locale));
+        bindLanguageSwitch(); bindStudentActions(render, locale);
+      } else {
+        app.innerHTML = shell(`<section class="claim-card"><p class="eyebrow">WELCOME</p><h1>${escapeHtml(t.claimTitle)}</h1><p>${escapeHtml(t.claimLead)}</p><form id="claim-form"><label>${escapeHtml(t.registrationName)}<input name="fullName" required maxlength="120" autocomplete="name"><small>${escapeHtml(t.registrationHint)}</small></label><label>${escapeHtml(t.claimCode)}<input name="token" required autocomplete="one-time-code"></label><button class="button">${escapeHtml(t.link)}</button></form></section>`, session.user.email ?? 'User', t.logout, languageSwitch(locale));
+        bindLanguageSwitch();
+        document.querySelector('#claim-form')?.addEventListener('submit', async event => {
+          event.preventDefault(); const form = event.currentTarget as HTMLFormElement; const fd = new FormData(form);
+          try { await claimProfile(String(fd.get('token')), String(fd.get('fullName'))); await render(); }
+          catch (error) { showToast(error instanceof Error ? error.message : t.link, 'error'); }
+        });
       }
     }
     document.querySelector('[data-action="logout"]')?.addEventListener('click', () => logout().then(render));

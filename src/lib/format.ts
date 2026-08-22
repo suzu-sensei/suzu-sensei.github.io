@@ -1,8 +1,16 @@
-export const money = (amountMinor: number | null, currency: string | null) =>
-  amountMinor === null || !currency ? '—' : new Intl.NumberFormat('ja-JP', { style: 'currency', currency }).format(amountMinor / 100);
+export const money = (amountMinor: number | null, currency: string | null, locale = 'ja-JP') =>
+  amountMinor === null || !currency ? '—' : new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amountMinor / 100);
 
-export const dateTime = (value: string, timeZone = 'Asia/Tokyo') => new Intl.DateTimeFormat('ja-JP', {
+export const dateTime = (value: string, timeZone = 'Asia/Tokyo', locale = 'ja-JP') => new Intl.DateTimeFormat(locale, {
   dateStyle: 'medium', timeStyle: 'short', timeZone,
+}).format(new Date(value));
+
+export const dateOnly = (value: string, timeZone = 'Asia/Tokyo', locale = 'ja-JP') => new Intl.DateTimeFormat(locale, {
+  dateStyle: 'medium', timeZone,
+}).format(new Date(value));
+
+export const timeOnly = (value: string, timeZone = 'Asia/Tokyo', locale = 'ja-JP') => new Intl.DateTimeFormat(locale, {
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone,
 }).format(new Date(value));
 
 export const escapeHtml = (value: unknown) => String(value ?? '')

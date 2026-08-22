@@ -39,3 +39,27 @@ export function toIsoInterval(localStart: string, minutes = 50, timeZone?: strin
   if (!localStart || Number.isNaN(start.getTime()) || start.getTime() <= Date.now()) throw new Error('未来の日時を選んでください。');
   return { starts_at: start.toISOString(), ends_at: new Date(start.getTime() + minutes * 60_000).toISOString() };
 }
+
+export function toAvailabilityWindow(localDate: string, startTime: string, endTime: string, timeZone?: string): { starts_at: string; ends_at: string } {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(localDate)
+      || !/^\d{2}:(00|30)$/.test(startTime)
+      || !/^\d{2}:(00|30)$/.test(endTime)) {
+    throw new Error('日付と、00分または30分の時刻を選んでください。');
+  }
+  let start: Date;
+  let end: Date;
+  try {
+    start = zonedLocalDate(`${localDate}T${startTime}`, timeZone);
+    end = zonedLocalDate(`${localDate}T${endTime}`, timeZone);
+  } catch {
+    throw new Error('登録されたタイムゾーンを確認してください。');
+  }
+  const duration = end.getTime() - start.getTime();
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start.getTime() <= Date.now()) {
+    throw new Error('未来の日付と時刻を選んでください。');
+  }
+  if (duration < 50 * 60_000 || duration > 4 * 60 * 60_000) {
+    throw new Error('時間範囲は50分以上、4時間以内にしてください。');
+  }
+  return { starts_at: start.toISOString(), ends_at: end.toISOString() };
+}

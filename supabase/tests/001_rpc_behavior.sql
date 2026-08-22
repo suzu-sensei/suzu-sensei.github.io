@@ -52,7 +52,7 @@ begin
   );
 
   perform set_config('request.jwt.claim.sub', v_claim_user::text, true);
-  perform public.claim_student_profile('one-time-claim-token');
+  perform public.claim_student_profile('one-time-claim-token', 'Claimed Registration Name');
   if not exists (
     select 1 from public.students
     where id = v_claim_student and auth_user_id = v_claim_user
@@ -79,15 +79,15 @@ begin
   perform set_config('request.jwt.claim.sub', v_student_user_a::text, true);
   v_request_a := public.submit_booking_request(
     jsonb_build_array(
-      jsonb_build_object('starts_at', '2035-01-10T10:00:00Z', 'ends_at', '2035-01-10T10:50:00Z'),
-      jsonb_build_object('starts_at', '2035-01-11T10:00:00Z', 'ends_at', '2035-01-11T10:50:00Z')
+      jsonb_build_object('starts_at', '2035-01-10T10:00:00Z', 'ends_at', '2035-01-10T11:00:00Z'),
+      jsonb_build_object('starts_at', '2035-01-11T10:00:00Z', 'ends_at', '2035-01-11T11:00:00Z')
     ),
     '40000000-0000-0000-0000-000000000001',
     'booking request A'
   );
   perform public.submit_booking_request(
     jsonb_build_array(
-      jsonb_build_object('starts_at', '2035-01-10T10:00:00Z', 'ends_at', '2035-01-10T10:50:00Z')
+      jsonb_build_object('starts_at', '2035-01-10T10:00:00Z', 'ends_at', '2035-01-10T11:00:00Z')
     ),
     '40000000-0000-0000-0000-000000000001',
     'retry'
@@ -103,8 +103,8 @@ begin
   limit 1;
 
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
-  v_booking := public.approve_booking_request(v_request_a.id, v_candidate_a);
-  perform public.approve_booking_request(v_request_a.id, v_candidate_a);
+  v_booking := public.approve_booking_request(v_request_a.id, v_candidate_a, '2035-01-10T10:00:00Z');
+  perform public.approve_booking_request(v_request_a.id, v_candidate_a, '2035-01-10T10:00:00Z');
   if (select count(*) from public.bookings where request_id = v_request_a.id) <> 1
      or (select count(*) from public.lesson_credits where booking_id = v_booking.id and status = 'reserved') <> 1 then
     raise exception 'booking approval idempotency or credit reservation failed';
@@ -113,7 +113,7 @@ begin
   perform set_config('request.jwt.claim.sub', v_student_user_b::text, true);
   v_request_b := public.submit_booking_request(
     jsonb_build_array(
-      jsonb_build_object('starts_at', '2035-01-10T10:25:00Z', 'ends_at', '2035-01-10T11:15:00Z')
+      jsonb_build_object('starts_at', '2035-01-10T10:30:00Z', 'ends_at', '2035-01-10T11:30:00Z')
     ),
     '40000000-0000-0000-0000-000000000002',
     'overlap test'
@@ -124,7 +124,7 @@ begin
 
   perform set_config('request.jwt.claim.sub', v_teacher::text, true);
   begin
-    perform public.approve_booking_request(v_request_b.id, v_candidate_b);
+    perform public.approve_booking_request(v_request_b.id, v_candidate_b, '2035-01-10T10:30:00Z');
     raise exception 'overlapping booking was unexpectedly approved';
   exception
     when exclusion_violation then null;
@@ -196,7 +196,7 @@ begin
   perform set_config('request.jwt.claim.sub', v_student_user_a::text, true);
   v_reject_request := public.submit_booking_request(
     jsonb_build_array(
-      jsonb_build_object('starts_at', '2035-01-12T10:00:00Z', 'ends_at', '2035-01-12T10:50:00Z')
+      jsonb_build_object('starts_at', '2035-01-12T10:00:00Z', 'ends_at', '2035-01-12T11:00:00Z')
     ),
     '40000000-0000-0000-0000-000000000003',
     'reject test'

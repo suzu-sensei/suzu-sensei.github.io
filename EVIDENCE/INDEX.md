@@ -211,3 +211,27 @@
 - PUBLIC_URLS: PASS. The root rendered `SUZU 先生 · 日本語レッスン`; quiz, JLPT cards, the sixth Column article, and `/classroom/` rendered successfully; six Column cards and the public quiz/classroom links were present.
 - LEGACY_REDIRECTS: PASS. `/site/classroom/student.html` and `/site/classroom/teacher.html` both redirected to `/classroom/`.
 - AUTH_SMOKE: PASS. Teacher and linked-student Google OAuth returned to `/classroom/`. Teacher-role routing loaded the teacher desk; the student displayed only its own eight available credits and no other-student list. Both checks were read-only and the browser was logged out afterward.
+
+## E-024 — Booking availability, registration-name separation, and student i18n
+
+- SOURCE: Migrations `20260822001000_booking_availability_windows.sql` through `20260822001200_teacher_label_management.sql`, rollback SQL tests 001/002/003/005, TypeScript, Vitest, Vite build, and authenticated development teacher browser inspection.
+- DATE: 2026-08-22
+- DEVELOPMENT_RESULT: PASS. All three migrations were applied to `suzu2-dev` ref `cjypnhxouqxvwwctzojs`. The database has zero pending requests/candidates and zero reserved bookings after tests.
+- BOOKING: PASS. A request accepts up to five candidate dates and three ranked availability ranges per date. Boundaries and final starts use only `:00`/`:30`; teacher approval selects an exact start inside the submitted window and creates a 50-minute booking in the existing credit-reservation transaction.
+- IDENTITY: PASS. Student claim now requires the student's submitted registration name. Teacher-only nicknames were migrated to `student_teacher_labels`; the column was removed from `students`; student RLS returned zero teacher labels while teacher RLS returned the test label.
+- FRONTEND: PASS. Student login, claim, dashboard, booking, payment, and history UI render in Japanese, Traditional Chinese, and English. Booking input clearly presents candidate dates and first/second/third range preferences. Payment action is `送信する`. The teacher dashboard is Japanese-only and shows exact-start approval controls, an audited edit control for existing teacher-only nicknames, and collapsed credit correction/refund tooling.
+- AUTOMATED_RESULT: TypeScript passed; Vitest passed 32/32; Vite production build passed. SQL returned `RPC_BEHAVIOR_TEST=PASS`, `STORAGE_BEHAVIOR_TEST=PASS`, `ONBOARDING_CANCELLATION_TEST=PASS`, and `BOOKING_WINDOWS_REGISTRATION_TEST=PASS`.
+- SECURITY: Required tables have RLS enabled; the teacher-label policy count is 1; all four new candidate constraints exist; all checked RPCs are SECURITY DEFINER with fixed search paths. Student A/B and Storage isolation regressions remain passing.
+- DEVELOPMENT_DATA: Through the authenticated teacher UI and audited RPC, the existing test student was set to registration name `林さん（テスト）` and teacher-only nickname `たい時間`. Read-only verification returned zero pending requests and zero reserved bookings.
+- PRODUCTION_BOUNDARY: Production ref `ploropobmgwlpphtkndo`, the public site, old-site reference, commit, and push were not changed for this update.
+
+## E-025 — Production database release of the booking/language update
+
+- SOURCE: Explicit owner approval, Supabase SQL Editor on production ref `ploropobmgwlpphtkndo`, migrations `20260822001000` through `20260822001200`, and `supabase/tests/004_production_migration_verification.sql`.
+- DATE: 2026-08-22
+- AUTHORIZATION: The owner explicitly approved production release, including the three migrations and matching frontend commit/push.
+- MIGRATION_RESULT: PASS. All three migrations completed successfully on the exact production project ref; no migration was run against the development project during this release step.
+- VERIFICATION_RESULT: PASS. Read-only SQL returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` and confirmed the required tables, RLS, RPC signatures, constraints, private Storage configuration, and migrated ownership/credit invariants.
+- DATA_RESULT: Four students, 27 available credits, and four teacher-only labels are present. Pending booking requests, pending candidates, reserved bookings, and pending payments are all zero.
+- RPC_SECURITY: All ten checked protected transition/identity RPCs are SECURITY DEFINER functions with fixed empty search paths, including the new exact-start booking approval and audited teacher-label RPC.
+- PUBLIC_RELEASE: In progress; matching frontend deployment and read-only public checks remain before this evidence item is complete.

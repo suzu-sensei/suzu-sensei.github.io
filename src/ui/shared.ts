@@ -1,8 +1,8 @@
 import { escapeHtml } from '../lib/format';
 
-export const shell = (content: string, userLabel: string) => `
+export const shell = (content: string, userLabel: string, logoutLabel = 'ログアウト', controls = '') => `
   <header class="topbar"><a class="brand" href="#">すず先生の教室 <span>Suzu Classroom</span></a>
-    <div class="session"><span>${escapeHtml(userLabel)}</span><button class="button ghost" data-action="logout">ログアウト</button></div>
+    <div class="session">${controls}<span>${escapeHtml(userLabel)}</span><button class="button ghost" data-action="logout">${escapeHtml(logoutLabel)}</button></div>
   </header><main class="page">${content}</main><div id="toast" class="toast" role="status" aria-live="polite"></div>`;
 
 export const card = (title: string, body: string, className = '') => `<section class="card ${className}"><h2>${title}</h2>${body}</section>`;
