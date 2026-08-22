@@ -15,9 +15,11 @@ declare
   v_new_code text;
   v_purchase public.purchases;
   v_request_a public.booking_requests;
+  v_reuse_request public.booking_requests;
   v_request_b public.booking_requests;
   v_candidate uuid;
   v_booking_a public.bookings;
+  v_reuse_booking public.bookings;
   v_booking_b public.bookings;
 begin
   insert into auth.users (id)
@@ -173,6 +175,42 @@ begin
     where id = v_request_a.id and status = 'cancelled' and approved_candidate_id is null
   ) then
     raise exception 'student cancellation did not close the request';
+  end if;
+
+  -- The cancelled booking remains as history, but its returned credit must be
+  -- reservable again without weakening the one-active-booking-per-credit guard.
+  v_reuse_request := public.submit_booking_request(
+    jsonb_build_array(
+      jsonb_build_object(
+        'starts_at', '2036-04-12T10:00:00Z',
+        'ends_at', '2036-04-12T10:50:00Z'
+      )
+    ),
+    '41000000-0000-0000-0000-000000000004',
+    'reuse returned credit'
+  );
+  select id into strict v_candidate
+  from public.booking_candidates
+  where request_id = v_reuse_request.id;
+
+  perform set_config('request.jwt.claim.sub', v_teacher::text, true);
+  v_reuse_booking := public.approve_booking_request(v_reuse_request.id, v_candidate);
+  if v_reuse_booking.lesson_credit_id <> v_booking_a.lesson_credit_id then
+    raise exception 'cancellation did not reuse the returned credit';
+  end if;
+  if (
+    select count(*)
+    from public.bookings
+    where lesson_credit_id = v_booking_a.lesson_credit_id
+      and status in ('reserved', 'completed')
+  ) <> 1 then
+    raise exception 'returned credit has more than one active booking';
+  end if;
+  if not exists (
+    select 1 from public.bookings
+    where id = v_booking_a.id and status = 'cancelled'
+  ) then
+    raise exception 'cancelled booking history was not retained';
   end if;
 
   perform set_config('request.jwt.claim.sub', v_student_user_b::text, true);

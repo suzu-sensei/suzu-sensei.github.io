@@ -150,3 +150,24 @@
 - DIRTY_WORKTREE_BOUNDARY: Modified local old-site classroom files, untracked governance/draft folders, `.claude`, credential-related material, and other uncommitted files were not included. The original local old-site worktree remains unchanged.
 - RELEASE_BOUNDARY: The current root site has not been replaced. Root activation is held until the separate production Supabase migration is approved and verified.
 - PRODUCTION_BOUNDARY: Production Supabase ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-019 — Returned-credit reuse and simultaneous approval
+
+- SOURCE: `supabase/migrations/20260822000800_reuse_credit_after_cancellation.sql`, updated `supabase/tests/003_onboarding_and_cancellation.sql`, two authenticated teacher browser tabs, and Supabase SQL Editor on `suzu2-dev`
+- DATE: 2026-08-22
+- REGRESSION_FOUND: A cancelled booking retained the original unconditional unique constraint on `lesson_credit_id`, so the correctly returned `available` credit could not be reserved again.
+- FIX: The cancelled booking remains as history. A partial unique index now allows only one `reserved` or `completed` booking per credit and excludes cancelled history, permitting safe reuse after transactional credit return.
+- RESULT: PASS. The updated rollback test returned `ONBOARDING_CANCELLATION_TEST=PASS`. A real returned credit was then approved for a later booking successfully.
+- RACE_RESULT: PASS. Two teacher tabs approved the same fresh request concurrently. Both client actions completed without creating duplicates; direct database verification returned `reserved_bookings=1`, `distinct_credits=1`, and `reserved_credits=1`.
+- CLEANUP: The test booking was cancelled through the teacher RPC. Direct database verification returned `reserved_bookings=0`, `pending_requests=0`, and `available_credits=1`.
+- UX: The reason dialog now labels booking rejection, booking cancellation, and payment rejection separately so the teacher can see exactly which action will be recorded.
+- PRODUCTION_BOUNDARY: The migration and all state-changing tests targeted only development ref `cjypnhxouqxvwwctzojs`. Production ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-020 — Final development review
+
+- SOURCE: Vitest, TypeScript, Vite builds, Git diff validation, repository secret scan, E-006 through E-019, and the development database cleanup query
+- DATE: 2026-08-22
+- RESULT: PASS. Unit/render/environment tests passed 22/22; the normal development-target build and an isolated production-target build-only check both passed; `git diff --check` passed; and no OAuth client secret or Supabase secret-key pattern was found in tracked project content.
+- MANDATORY_COVERAGE: Student A/B isolation, double booking approval, credit double use, booking overlap, double lesson completion, repeated payment approval, evidence-only approval, private Storage ownership, signed viewing, and teacher proxy upload are covered by rollback SQL tests and real browser flows.
+- RELEASE_BOUNDARY: The new site is pushed only to non-deployed branch `codex/classroom-ready`. Root activation remains blocked on explicit production migration approval and successful production verification.
+- PRODUCTION_BOUNDARY: No production database connection or state change was made during final review.

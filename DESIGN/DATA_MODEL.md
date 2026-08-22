@@ -31,7 +31,7 @@ reserved  -> voided      (teacher exception only if the booking is atomically ca
 
 - `booking_requests`: one student request, its review status, idempotency key, and selected candidate after approval.
 - `booking_candidates`: one or more concrete proposed intervals belonging to the same request and student.
-- `bookings`: exactly one approved candidate and exactly one reserved credit; one booking per request and candidate.
+- `bookings`: exactly one approved candidate and exactly one reserved credit; one booking per request and candidate. Cancelled rows remain as history, while a partial unique index permits only one `reserved` or `completed` booking per credit so a transactionally returned credit can be booked again.
 - Use `starts_at` and `ends_at`, require `ends_at > starts_at`, and apply a GiST exclusion constraint over `[starts_at, ends_at)` for active bookings.
 - `lesson_history`: one immutable completion record per booking and credit, enforced with unique indexes.
 

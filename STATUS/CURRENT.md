@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: DEVELOPMENT_FEATURE_COMPLETE_STUDENT_E2E_PASSED
+STATUS: DEVELOPMENT_COMPLETE_FINAL_REVIEW_PASSED
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -27,7 +27,10 @@ OWNER: Project owner (user)
 - Security Advisor reports 0 errors and 0 info suggestions; the remaining 20 warnings are the expected authenticated SECURITY DEFINER RPC entry points with internal authorization checks.
 - Real Google-account student E2E passed for profile claim, owned-credit display, booking submission, teacher approval, student cancellation, transactional credit return, private slip upload, signed-URL viewing, rejection-reason display, and no accidental credit issuance.
 - Teacher rejection reasons now use an accessible in-site dialog that tells teachers the reason will be shown to the student; browser-native prompt input was removed.
+- A cancelled booking no longer blocks reuse of its transactionally returned credit. The active-credit uniqueness guard now applies only to `reserved` and `completed` bookings, while cancelled booking history is retained.
+- Real two-tab simultaneous approval passed: both requests completed safely, with exactly one reserved booking, one distinct credit, and one reserved credit in the database. Test data was cancelled afterward, returning development state to zero active/pending bookings and one available test credit.
+- Teacher reason dialogs now distinguish booking rejection, booking cancellation, and payment rejection with explicit action-specific wording.
 - The currently published old-site snapshot is preserved and verified at `https://suzu-sensei.github.io/old/`; local uncommitted old-site work and credential-related files were excluded.
 - GitHub Pages root hosting is approved. The production workflow is prepared to fail closed unless its explicit production target matches ref `ploropobmgwlpphtkndo`.
 - Docker Desktop has been stopped and local Supabase will not be used.
-- Next stage: run the remaining multi-connection race checks and final review, then request the separate production Supabase migration approval before activating the root site. Production remains untouched.
+- Development testing and final review are complete. Next stage: obtain separate production Supabase migration approval, migrate and verify production, then activate the prepared GitHub Pages root workflow. Production remains untouched.

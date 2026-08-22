@@ -36,11 +36,11 @@ export function renderTeacher(data: TeacherSnapshot): string {
   </div>`;
 }
 
-function askReason(message: string): Promise<string> {
+function askReason(message: string, title: string, submitLabel: string): Promise<string> {
   return new Promise(resolve => {
     const dialog = document.createElement('dialog');
     dialog.className = 'reason-dialog';
-    dialog.innerHTML = `<form method="dialog"><h2>却下理由</h2><p>${escapeHtml(message)}</p><label>理由<textarea name="reason" required maxlength="500" rows="4" autofocus></textarea></label><div class="button-row"><button class="button ghost" value="cancel">戻る</button><button class="button danger" value="submit">理由を記録して却下</button></div></form>`;
+    dialog.innerHTML = `<form method="dialog"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(message)}</p><label>理由<textarea name="reason" required maxlength="500" rows="4" autofocus></textarea></label><div class="button-row"><button class="button ghost" value="cancel">戻る</button><button class="button danger" value="submit">${escapeHtml(submitLabel)}</button></div></form>`;
     document.body.append(dialog);
     dialog.addEventListener('close', () => {
       const value = dialog.returnValue === 'submit'
@@ -58,11 +58,11 @@ async function runButton(button: HTMLButtonElement, action: () => Promise<void>,
 
 export function bindTeacherActions(refresh: () => Promise<void>): void {
   document.querySelectorAll<HTMLButtonElement>('[data-approve-request]').forEach(b => b.addEventListener('click', () => { if (window.confirm(`${b.dataset.label}\nこの日時で予約を確定し、creditを1回予約済みにしますか？`)) void runButton(b, () => approveBooking(b.dataset.approveRequest!, b.dataset.candidate!), refresh, '予約を承認しました。'); }));
-  document.querySelectorAll<HTMLButtonElement>('[data-reject-request]').forEach(b => b.addEventListener('click', async () => { const value = await askReason('生徒にも表示されます。具体的で丁寧に入力してください。'); if (value) void runButton(b, () => rejectBooking(b.dataset.rejectRequest!, value), refresh, '予約を却下しました。'); }));
+  document.querySelectorAll<HTMLButtonElement>('[data-reject-request]').forEach(b => b.addEventListener('click', async () => { const value = await askReason('生徒にも表示されます。具体的で丁寧に入力してください。', '予約を却下', '理由を記録して却下'); if (value) void runButton(b, () => rejectBooking(b.dataset.rejectRequest!, value), refresh, '予約を却下しました。'); }));
   document.querySelectorAll<HTMLButtonElement>('[data-complete]').forEach(b => b.addEventListener('click', () => { if (window.confirm(`${b.dataset.label}\n授業を完了し、creditを使用済みにしますか？`)) void runButton(b, () => completeBooking(b.dataset.complete!), refresh, '授業を完了しました。'); }));
-  document.querySelectorAll<HTMLButtonElement>('[data-cancel-booking]').forEach(b => b.addEventListener('click', async () => { const value = await askReason(`${b.dataset.label ?? ''}\n生徒にも表示するキャンセル理由を入力してください。`); if (value && window.confirm('予約をキャンセルし、creditを未予約へ戻しますか？')) void runButton(b, () => cancelBookingAsTeacher(b.dataset.cancelBooking!, value), refresh, '予約をキャンセルし、creditを戻しました。'); }));
+  document.querySelectorAll<HTMLButtonElement>('[data-cancel-booking]').forEach(b => b.addEventListener('click', async () => { const value = await askReason(`${b.dataset.label ?? ''}\n生徒にも表示するキャンセル理由を入力してください。`, '予約をキャンセル', '理由を記録してキャンセル'); if (value && window.confirm('予約をキャンセルし、creditを未予約へ戻しますか？')) void runButton(b, () => cancelBookingAsTeacher(b.dataset.cancelBooking!, value), refresh, '予約をキャンセルし、creditを戻しました。'); }));
   document.querySelectorAll<HTMLButtonElement>('[data-approve-payment]').forEach(b => b.addEventListener('click', () => { if (window.confirm(`${b.dataset.paymentLabel}\n証拠と内容を確認しましたか？`)) void runButton(b, () => approvePayment(b.dataset.approvePayment!), refresh, '支払いを承認しました。'); }));
-  document.querySelectorAll<HTMLButtonElement>('[data-reject-payment]').forEach(b => b.addEventListener('click', async () => { const value = await askReason('生徒にも表示されます。再提出に必要なことが分かるように入力してください。'); if (value) void runButton(b, () => rejectPayment(b.dataset.rejectPayment!, value), refresh, '支払いを却下しました。'); }));
+  document.querySelectorAll<HTMLButtonElement>('[data-reject-payment]').forEach(b => b.addEventListener('click', async () => { const value = await askReason('生徒にも表示されます。再提出に必要なことが分かるように入力してください。', '支払いを却下', '理由を記録して却下'); if (value) void runButton(b, () => rejectPayment(b.dataset.rejectPayment!, value), refresh, '支払いを却下しました。'); }));
   document.querySelectorAll<HTMLButtonElement>('[data-slip]').forEach(b => b.addEventListener('click', async () => { try { window.open(await signedSlipUrl(b.dataset.slip!), '_blank', 'noopener,noreferrer'); } catch (error) { showToast(error instanceof Error ? error.message : '表示できませんでした。', 'error'); } }));
   document.querySelectorAll<HTMLButtonElement>('[data-retry-payment]').forEach(button => button.addEventListener('click', async () => { const file = document.querySelector<HTMLInputElement>(`[data-retry-file="${button.dataset.retryPayment}"]`)?.files?.[0]; if (!file) return showToast('再送信する証拠ファイルを選んでください。', 'error'); await runButton(button, () => retryPaymentSlip(button.dataset.retryPayment!, file), refresh, '証拠ファイルを再送信しました。'); }));
   document.querySelector('#invite-form')?.addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget as HTMLFormElement; const fd = new FormData(form); const button = form.querySelector('button')!; try { setBusy(button, true); latestInvitation = await inviteStudent({ email: String(fd.get('email')), fullName: String(fd.get('fullName')), nickname: String(fd.get('nickname') ?? ''), timezone: String(fd.get('timezone')) }); showToast('生徒を作成し、claim codeを発行しました。'); await refresh(); } catch (error) { showToast(error instanceof Error ? error.message : '発行できませんでした。', 'error'); setBusy(button, false); } });
