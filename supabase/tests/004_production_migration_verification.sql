@@ -11,7 +11,8 @@ declare
     'claim_student_profile', 'register_manual_purchase',
     'submit_booking_request', 'approve_booking_request',
     'reject_booking_request', 'complete_booking', 'approve_payment',
-    'reject_payment', 'void_credit', 'set_student_teacher_label'
+    'reject_payment', 'void_credit', 'set_student_teacher_label',
+    'update_student_classroom_settings'
   ];
 begin
   if (
@@ -51,7 +52,8 @@ begin
   if to_regprocedure('public.claim_student_profile(text,text)') is null
      or to_regprocedure('public.approve_booking_request(uuid,uuid,timestamp with time zone)') is null
      or to_regprocedure('public.invite_student(text,text,text,integer)') is null
-     or to_regprocedure('public.set_student_teacher_label(uuid,text)') is null then
+     or to_regprocedure('public.set_student_teacher_label(uuid,text)') is null
+     or to_regprocedure('public.update_student_classroom_settings(uuid,text,text,text)') is null then
     raise exception 'current onboarding or booking RPC signatures are missing';
   end if;
 

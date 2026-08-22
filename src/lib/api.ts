@@ -116,6 +116,20 @@ export async function setStudentTeacherLabel(studentId: string, nickname: string
   }));
 }
 
+export async function updateStudentClassroomSettings(input: {
+  studentId: string;
+  status: Student['status'];
+  notesFolderUrl?: string;
+  meetingUrl?: string;
+}): Promise<void> {
+  unwrap(await supabase.rpc('update_student_classroom_settings', {
+    p_student_id: input.studentId,
+    p_status: input.status,
+    p_notes_folder_url: input.notesFolderUrl || null,
+    p_meeting_url: input.meetingUrl || null,
+  }));
+}
+
 export async function cancelOwnBooking(bookingId: string, reason?: string): Promise<void> {
   unwrap(await supabase.rpc('cancel_own_booking', { p_booking_id: bookingId, p_reason: reason || null }));
 }

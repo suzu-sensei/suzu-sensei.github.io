@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: BOOKING_LANGUAGE_UPDATE_DEPLOYED_AND_VERIFIED
+STATUS: STUDENT_RESOURCES_PRODUCTION_DB_VERIFIED_DEPLOYMENT_PENDING
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -60,3 +60,13 @@ OWNER: Project owner (user)
 - Public read-only verification passed: the original home, Quiz, JLPT, and all six Column articles remain available; both legacy classroom URLs redirect to `/classroom/`; and the production student portal supports Japanese, Traditional Chinese, and English.
 - The authenticated production student view showed only its own eight available credits, hid teacher-only labels, rendered three ranked half-hour availability ranges per candidate date, and enforced the five-date UI maximum. No form was submitted.
 - Post-smoke database counts remained unchanged at four students, 27 available credits, four teacher-only labels, and zero pending requests/candidates/payments or reserved bookings.
+- The permanent language rule now requires Japanese, Traditional Chinese, and English parity on HOME and every student-facing classroom screen; teacher UI remains Japanese-only.
+- Development migration `20260822001300_student_classroom_access.sql` adds an audited teacher-only RPC for active/paused/inactive status and trusted Google Meet/Drive URLs. Non-Google and non-HTTPS links are rejected.
+- Inactive students retain owned history, booked lesson dates, and resource links while new booking and payment submission remains blocked at both UI and database boundaries.
+- Teacher and student development screens now include browser-local recording with device-only download, per-student lesson-date controls, and student-specific Meet/Drive actions.
+- Development SQL returned `STUDENT_CLASSROOM_ACCESS_TEST=PASS` plus the existing RPC, Storage, onboarding/cancellation, and booking-window PASS results. TypeScript, 36 unit/render tests, and production build pass.
+- Authenticated development visual checks passed for the teacher edit/lesson panels and the student Japanese/Traditional Chinese/English resource and lesson controls. Recording permission was not invoked; no recording or application row was created.
+- Development data remained at zero pending requests, zero reserved bookings, zero pending payments, and zero inactive students after rollback tests and visual checks.
+- The owner explicitly approved production migration, verification, commit, and push for this update; the approval is locked as D-016.
+- Migration `20260822001300_student_classroom_access.sql` is installed on production ref `ploropobmgwlpphtkndo`.
+- Read-only production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`; the matching frontend deployment is the remaining release step.

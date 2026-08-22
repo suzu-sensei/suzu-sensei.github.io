@@ -15,3 +15,6 @@ STATUS: ACTIVE
 - [x] Five-date/three-range booking update, student registration-name claim, teacher-only labels, and three-language student frontend verified in development. Evidence: EVIDENCE/INDEX.md E-024.
 - [x] Obtain explicit production approval for the booking/language update and apply its three migrations with read-only database verification. Evidence: DECISIONS/LOCKED.md D-014 and EVIDENCE/INDEX.md E-025.
 - [x] Deploy the matching frontend and complete public production verification. Evidence: EVIDENCE/INDEX.md E-025.
+- [x] Verify teacher-managed student status, Meet/Drive links, browser-local recording, and per-student lesson-date controls in development. Evidence: EVIDENCE/INDEX.md E-026.
+- [x] Obtain separate approval and apply the student-access migration to production with read-only verification. Evidence: DECISIONS/LOCKED.md D-016 and EVIDENCE/INDEX.md E-027.
+- [ ] Deploy the matching frontend and complete public production verification.

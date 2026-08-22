@@ -1,6 +1,8 @@
 import type { StudentInvitation, TeacherSnapshot } from '../types';
-import { approveBooking, approvePayment, cancelBookingAsTeacher, completeBooking, inviteStudent, registerPurchase, reissueClaimCode, rejectBooking, rejectPayment, retryPaymentSlip, setStudentTeacherLabel, signedSlipUrl, submitPayment, voidCredit } from '../lib/api';
+import { approveBooking, approvePayment, cancelBookingAsTeacher, completeBooking, inviteStudent, registerPurchase, reissueClaimCode, rejectBooking, rejectPayment, retryPaymentSlip, setStudentTeacherLabel, signedSlipUrl, submitPayment, updateStudentClassroomSettings, voidCredit } from '../lib/api';
 import { dateOnly, dateTime, escapeHtml, money, statusLabel, timeOnly } from '../lib/format';
+import { safeGoogleDriveUrl, safeGoogleMeetUrl } from '../lib/classroom-links';
+import { isRecording, startLessonRecording, stopLessonRecording } from '../lib/recording';
 import { badge, card, empty, setBusy, showToast } from './shared';
 
 let latestInvitation: StudentInvitation | null = null;
@@ -27,7 +29,22 @@ export function renderTeacher(data: TeacherSnapshot): string {
   const activeBookings = data.bookings.filter(b => b.status === 'reserved').map(b => `<div class="teacher-record"><div><strong>${escapeHtml(teacherName(b.student_id))}</strong><small>${dateTime(b.starts_at, zone(b.student_id))}（${escapeHtml(zone(b.student_id))}）</small></div><div class="button-row"><button class="button mini" data-complete="${b.id}" data-label="${escapeHtml(`${teacherName(b.student_id)}・${dateTime(b.starts_at, zone(b.student_id))}（${zone(b.student_id)}）`)}">授業完了</button><button class="button mini danger ghost" data-cancel-booking="${b.id}" data-label="${escapeHtml(`${teacherName(b.student_id)}・${dateTime(b.starts_at, zone(b.student_id))}（${zone(b.student_id)}）`)}">キャンセル</button></div></div>`).join('') || empty();
   const studentRows = data.students.map(student => {
     const counts = ['available', 'reserved', 'completed'].map(status => data.credits.filter(c => c.student_id === student.id && c.status === status).length);
-    return `<div class="student-line"><div><strong>${escapeHtml(teacherName(student.id))}</strong><small>${escapeHtml(student.email)}${nickname(student.id) ? ' · 括弧内は先生のみ表示' : ''}</small><form class="teacher-label-form" data-label-form="${student.id}"><label>先生用の呼び名<input name="nickname" value="${escapeHtml(nickname(student.id) ?? '')}" maxlength="80" placeholder="未設定"></label><button class="button mini ghost">保存</button></form></div><div class="student-actions">${student.auth_user_id ? badge('approved', '連携済み') : `<button class="button mini ghost" data-reissue="${student.id}">claim code再発行</button>`}<div class="credit-mini"><span>未予約 ${counts[0]}</span><span>予約 ${counts[1]}</span><span>完了 ${counts[2]}</span></div></div></div>`;
+    const meetingUrl = safeGoogleMeetUrl(student.meeting_url);
+    const notesFolderUrl = safeGoogleDriveUrl(student.notes_folder_url);
+    const statusText = student.status === 'active' ? '在籍中' : student.status === 'paused' ? '休止中' : '退会・停止中';
+    const reservedLessons = data.bookings.filter(booking => booking.student_id === student.id && booking.status === 'reserved')
+      .map(booking => `<div class="record"><strong>${dateTime(booking.starts_at, student.timezone)}</strong>${badge('reserved', '予約済み')}</div>`).join('') || empty('予約済み授業はありません');
+    const pastLessons = data.history.filter(history => history.student_id === student.id)
+      .map(history => `<div class="record"><div><strong>${dateTime(history.starts_at, student.timezone)}</strong><small>${escapeHtml(history.note || 'メモなし')}</small></div>${badge('completed', '完了')}</div>`).join('') || empty('過去の授業はありません');
+    return `<div class="student-entry">
+      <div class="student-line"><div><strong>${escapeHtml(teacherName(student.id))}</strong><small>${escapeHtml(student.email)}${nickname(student.id) ? ' · 括弧内は先生のみ表示' : ''}</small><div class="inline">${badge(student.status, statusText)}${student.auth_user_id ? badge('approved', '連携済み') : `<button class="button mini ghost" data-reissue="${student.id}">claim code再発行</button>`}</div></div>
+      <div class="student-actions"><div class="credit-mini"><span>未予約 ${counts[0]}</span><span>予約 ${counts[1]}</span><span>完了 ${counts[2]}</span></div><div class="button-row">${meetingUrl ? `<a class="button mini" href="${escapeHtml(meetingUrl)}" target="_blank" rel="noopener noreferrer">📹 Meet</a>` : ''}${notesFolderUrl ? `<a class="button mini ghost" href="${escapeHtml(notesFolderUrl)}" target="_blank" rel="noopener noreferrer">📁 Drive</a>` : ''}<button class="button mini ghost" data-recording data-recording-label="${escapeHtml(teacherName(student.id))}">🔴 録画</button><button class="button mini ghost" data-toggle-student-lessons="${student.id}" aria-expanded="false">授業を見る</button><button class="button mini ghost" data-toggle-student-settings="${student.id}" aria-expanded="false">編集</button></div></div></div>
+      <div class="student-lesson-panel" id="student-lessons-${student.id}" hidden><div><strong>予約済み授業</strong>${reservedLessons}</div><div><strong>過去の授業</strong>${pastLessons}</div></div>
+      <div class="student-settings-panel" id="student-settings-${student.id}" hidden>
+        <form class="teacher-label-form" data-label-form="${student.id}"><label>先生用の呼び名<input name="nickname" value="${escapeHtml(nickname(student.id) ?? '')}" maxlength="80" placeholder="未設定"></label><button class="button mini ghost">呼び名を保存</button></form>
+        <form class="student-settings-form" data-settings-form="${student.id}"><div class="form-grid"><label>在籍状態<select name="status"><option value="active" ${student.status === 'active' ? 'selected' : ''}>在籍中（Active）</option><option value="paused" ${student.status === 'paused' ? 'selected' : ''}>休止中</option><option value="inactive" ${student.status === 'inactive' ? 'selected' : ''}>退会・停止（Inactive）</option></select></label><label>Google Meet<input name="meetingUrl" type="url" value="${escapeHtml(meetingUrl ?? '')}" placeholder="https://meet.google.com/..."></label><label class="wide">Google Drive・学習ノート<input name="notesFolderUrl" type="url" value="${escapeHtml(notesFolderUrl ?? '')}" placeholder="https://drive.google.com/..."></label></div><p class="hint">Inactiveにすると、新しい予約と支払いをDB側で停止します。過去の授業とリンクは本人に残ります。</p><button class="button">設定を保存</button></form>
+      </div>
+    </div>`;
   }).join('') || empty();
   const voidable = data.credits.filter(c => c.status === 'available').slice(0, 100).map(c => `<option value="${c.id}">${escapeHtml(teacherName(c.student_id))} · ${c.id.slice(0, 8)}</option>`).join('');
 
@@ -40,6 +57,7 @@ export function renderTeacher(data: TeacherSnapshot): string {
     ${card('🗓️ 予約申請', pendingRequests, 'span-two')}
     ${card('💳 支払い確認', pendingPayments, 'span-two payment-card')}
     ${card('🎓 予約済み授業', activeBookings)}
+    ${card('🎥 録画（任意）', '<p class="hint">生徒一覧の「録画」を押し、Google Meetのタブと「タブの音声を共有」を選んでください。停止後、動画はこのMacへ保存されます。サーバーには送信されません。</p><span class="hint" data-teacher-recording-status></span>')}
     ${card('👥 生徒一覧', studentRows)}
     ${card('➕ 手動credit発行', `<form id="purchase-form"><label>生徒<select name="studentId" required><option value="">選択してください</option>${data.students.map(s => `<option value="${s.id}">${escapeHtml(teacherName(s.id))}</option>`).join('')}</select></label><label>回数<input type="number" name="lessons" min="1" max="100" value="10" required></label><label>理由<textarea name="note" required maxlength="500"></textarea></label><button class="button">発行する</button></form>`)}
     ${card('📷 先生が代理upload', `<form id="proxy-payment-form"><label>生徒<select name="studentId" required><option value="">選択してください</option>${data.students.map(s => `<option value="${s.id}">${escapeHtml(teacherName(s.id))}</option>`).join('')}</select></label><label>申請内容<select name="mode"><option value="grant_new_credits">新規購入</option><option value="evidence_only">証拠のみ</option></select></label><label>回数<input type="number" name="lessons" min="1" max="100" value="10"></label><label>証拠<input type="file" name="slip" accept="image/jpeg,image/png,image/webp,application/pdf" required></label><button class="button">代理送信</button></form>`)}
@@ -68,6 +86,41 @@ async function runButton(button: HTMLButtonElement, action: () => Promise<void>,
 }
 
 export function bindTeacherActions(refresh: () => Promise<void>): void {
+  document.querySelectorAll<HTMLButtonElement>('[data-toggle-student-lessons]').forEach(button => button.addEventListener('click', () => {
+    const panel = document.querySelector<HTMLElement>(`#student-lessons-${button.dataset.toggleStudentLessons}`);
+    if (!panel) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    button.setAttribute('aria-expanded', String(opening));
+    button.textContent = opening ? '授業を閉じる' : '授業を見る';
+  }));
+  document.querySelectorAll<HTMLButtonElement>('[data-toggle-student-settings]').forEach(button => button.addEventListener('click', () => {
+    const panel = document.querySelector<HTMLElement>(`#student-settings-${button.dataset.toggleStudentSettings}`);
+    if (!panel) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    button.setAttribute('aria-expanded', String(opening));
+    button.textContent = opening ? '編集を閉じる' : '編集';
+  }));
+  document.querySelectorAll<HTMLButtonElement>('[data-recording]').forEach(button => button.addEventListener('click', async () => {
+    if (isRecording()) return stopLessonRecording();
+    const allButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-recording]')];
+    const statusElement = document.querySelector<HTMLElement>('[data-teacher-recording-status]');
+    try {
+      allButtons.forEach(item => { item.disabled = true; });
+      await startLessonRecording(button.dataset.recordingLabel ?? 'lesson', state => {
+        allButtons.forEach(item => {
+          item.disabled = state === 'recording' && item !== button;
+          item.textContent = state === 'recording' && item === button ? '⏹ 録画停止' : '🔴 録画';
+        });
+        if (statusElement) statusElement.textContent = state === 'recording' ? `🔴 ${button.dataset.recordingLabel ?? ''}を録画中` : '録画をMacへ保存しました。';
+        if (state === 'stopped') showToast('録画をMacへ保存しました。');
+      });
+    } catch (error) {
+      allButtons.forEach(item => { item.disabled = false; });
+      showToast(error instanceof Error ? error.message : '録画を開始できませんでした。', 'error');
+    }
+  }));
   document.querySelectorAll<HTMLButtonElement>('[data-approve-request]').forEach(b => b.addEventListener('click', () => { const startsAt = document.querySelector<HTMLSelectElement>(`[data-approved-start="${b.dataset.candidate}"]`)?.value; if (!startsAt) return showToast('開始時刻を選んでください。', 'error'); if (window.confirm(`${b.dataset.label}\n開始：${dateTime(startsAt)}\nこの日時で予約を確定し、creditを1回予約済みにしますか？`)) void runButton(b, () => approveBooking(b.dataset.approveRequest!, b.dataset.candidate!, startsAt), refresh, '予約を承認しました。'); }));
   document.querySelectorAll<HTMLButtonElement>('[data-reject-request]').forEach(b => b.addEventListener('click', async () => { const value = await askReason('生徒にも表示されます。具体的で丁寧に入力してください。', '予約を却下', '理由を記録して却下'); if (value) void runButton(b, () => rejectBooking(b.dataset.rejectRequest!, value), refresh, '予約を却下しました。'); }));
   document.querySelectorAll<HTMLButtonElement>('[data-complete]').forEach(b => b.addEventListener('click', () => { if (window.confirm(`${b.dataset.label}\n授業を完了し、creditを使用済みにしますか？`)) void runButton(b, () => completeBooking(b.dataset.complete!), refresh, '授業を完了しました。'); }));
@@ -79,6 +132,18 @@ export function bindTeacherActions(refresh: () => Promise<void>): void {
   document.querySelector('#invite-form')?.addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget as HTMLFormElement; const fd = new FormData(form); const button = form.querySelector('button')!; try { setBusy(button, true); latestInvitation = await inviteStudent({ email: String(fd.get('email')), nickname: String(fd.get('nickname') ?? ''), timezone: String(fd.get('timezone')) }); showToast('claim codeを発行しました。'); await refresh(); } catch (error) { showToast(error instanceof Error ? error.message : '発行できませんでした。', 'error'); setBusy(button, false); } });
   document.querySelectorAll<HTMLButtonElement>('[data-reissue]').forEach(b => b.addEventListener('click', async () => { if (!window.confirm('新しいclaim codeを発行しますか？以前のcodeはすぐ無効になります。')) return; try { setBusy(b, true); latestInvitation = await reissueClaimCode(b.dataset.reissue!); showToast('新しいclaim codeを発行しました。'); await refresh(); } catch (error) { showToast(error instanceof Error ? error.message : '再発行できませんでした。', 'error'); setBusy(b, false); } }));
   document.querySelectorAll<HTMLFormElement>('[data-label-form]').forEach(form => form.addEventListener('submit', async event => { event.preventDefault(); const button = form.querySelector('button')!; const value = String(new FormData(form).get('nickname') ?? ''); await runButton(button, () => setStudentTeacherLabel(form.dataset.labelForm!, value), refresh, value.trim() ? '先生用の呼び名を保存しました。' : '先生用の呼び名を削除しました。'); }));
+  document.querySelectorAll<HTMLFormElement>('[data-settings-form]').forEach(form => form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const status = String(data.get('status')) as 'active' | 'paused' | 'inactive';
+    if (status === 'inactive' && !window.confirm('Inactiveにすると、この生徒は新しい予約と支払いを送れなくなります。保存しますか？')) return;
+    await runButton(form.querySelector('button')!, () => updateStudentClassroomSettings({
+      studentId: form.dataset.settingsForm!,
+      status,
+      meetingUrl: String(data.get('meetingUrl') ?? ''),
+      notesFolderUrl: String(data.get('notesFolderUrl') ?? ''),
+    }), refresh, '在籍状態とレッスンリンクを保存しました。');
+  }));
   document.querySelector('#copy-claim-code')?.addEventListener('click', async () => { try { await navigator.clipboard.writeText(latestInvitation?.claim_code ?? ''); showToast('claim codeをコピーしました。'); } catch { showToast('コピーできませんでした。codeを選択してコピーしてください。', 'error'); } });
   document.querySelector('#purchase-form')?.addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget as HTMLFormElement; const fd = new FormData(form); if (window.confirm(`${Number(fd.get('lessons'))}回のcreditを発行しますか？理由も記録されます。`)) await runButton(form.querySelector('button')!, () => registerPurchase(String(fd.get('studentId')), Number(fd.get('lessons')), String(fd.get('note'))), refresh, 'creditを発行しました。'); });
   document.querySelector('#void-form')?.addEventListener('submit', async e => { e.preventDefault(); const form = e.currentTarget as HTMLFormElement; const fd = new FormData(form); if (window.confirm('このcreditを無効化しますか？この操作は元に戻せません。')) await runButton(form.querySelector('button')!, () => voidCredit(String(fd.get('creditId')), String(fd.get('reason'))), refresh, 'creditを無効化しました。'); });

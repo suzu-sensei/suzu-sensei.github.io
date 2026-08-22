@@ -43,6 +43,39 @@ describe('student rendering', () => {
     expect(zh).toContain('候選日期');
     expect(en).toContain('Candidate date');
   });
+
+  it('renders owned lesson links, local recording, and lesson-date controls in all languages', () => {
+    const snapshot: StudentSnapshot = {
+      ...baseStudent,
+      student: {
+        ...student,
+        meeting_url: 'https://meet.google.com/abc-defg-hij',
+        notes_folder_url: 'https://drive.google.com/drive/folders/example',
+      },
+      bookings: [{ id: 'booking-a', student_id: student.id, starts_at: '2035-01-01T10:00:00Z', ends_at: '2035-01-01T10:50:00Z', status: 'reserved' }],
+      history: [{ id: 'history-a', student_id: student.id, starts_at: '2026-01-01T10:00:00Z', ends_at: '2026-01-01T10:50:00Z', note: null }],
+    };
+    const ja = renderStudent(snapshot, 'ja');
+    const zh = renderStudent(snapshot, 'zh');
+    const en = renderStudent(snapshot, 'en');
+    expect(ja).toContain('Google Meetに参加');
+    expect(ja).toContain('学習ノートを開く');
+    expect(ja).toContain('data-recording');
+    expect(ja).toContain('過去・予約済みの授業日時を見る');
+    expect(zh).toContain('查看過去與已預約的上課時間');
+    expect(en).toContain('View booked and past lesson dates');
+  });
+
+  it('keeps history and links visible but removes new actions for inactive students', () => {
+    const html = renderStudent({
+      ...baseStudent,
+      student: { ...student, status: 'inactive', meeting_url: 'https://meet.google.com/abc-defg-hij' },
+    });
+    expect(html).toContain('退会・停止中');
+    expect(html).toContain('Google Meetに参加');
+    expect(html).not.toContain('id="booking-form"');
+    expect(html).not.toContain('id="payment-form"');
+  });
 });
 
 describe('teacher rendering', () => {
@@ -66,5 +99,9 @@ describe('teacher rendering', () => {
     expect(html).toContain('たい時間');
     expect(html).toContain(`data-label-form="${student.id}"`);
     expect(html).toContain('括弧内は先生のみ表示');
+    expect(html).toContain(`data-settings-form="${student.id}"`);
+    expect(html).toContain(`data-toggle-student-lessons="${student.id}"`);
+    expect(html).toContain('Inactiveにすると');
+    expect(html).toContain('data-recording');
   });
 });

@@ -114,3 +114,18 @@ At every stage, report changes, test results, and unresolved matters.
 - The teacher dashboard remains Japanese-only.
 - Payment submission is labelled simply as sending, without the ambiguous phrase `安全に送信`.
 - Credit voiding remains available only as a collapsed administrator correction/refund tool.
+
+## Permanent student-facing language rule approved on 2026-08-22
+
+- The public HOME and every student-facing classroom screen must always support Japanese, Traditional Chinese, and English.
+- New student-facing labels, instructions, errors, empty states, and actions must be added in all three languages in the same change.
+- The teacher dashboard may remain Japanese-only because it is operated only by the project owner.
+- Releases that change HOME or student-facing UI must include regression checks for all three languages.
+
+## Student classroom access and lesson resources approved on 2026-08-22
+
+- Teachers can edit each student's operational status and set that student's Google Meet and Google Drive lesson-note URLs.
+- Only HTTPS URLs on `meet.google.com` and `drive.google.com` may be saved as classroom resource links.
+- An inactive student retains read-only access to owned lesson history, booked lesson dates, and teacher-provided links, but cannot submit a new booking request or payment.
+- Both teacher and student screens provide browser-local lesson recording. Recordings download to the operator's device and are never uploaded to Supabase by this feature.
+- Both teacher and student screens provide a clear control for viewing the student's booked and past lesson dates.

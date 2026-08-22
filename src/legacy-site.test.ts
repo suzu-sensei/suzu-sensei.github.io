@@ -27,6 +27,15 @@ describe('restored public site', () => {
     expect(siteHome).toContain('href="/classroom/"');
   });
 
+  it('keeps permanent Japanese, Traditional Chinese, and English HOME support', () => {
+    const home = readProjectFile('legacy-site/index.html');
+    for (const locale of ['ja', 'zh', 'en']) {
+      expect(home).toContain(`data-lang="${locale}"`);
+      expect(home).toContain(`'lang-${locale}'`);
+    }
+    expect(home).toContain('function setLang(lang)');
+  });
+
   it('redirects both legacy role URLs to the shared role-aware portal', () => {
     for (const role of ['student', 'teacher']) {
       const html = readProjectFile(`legacy-site/site/classroom/${role}.html`);

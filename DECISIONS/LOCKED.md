@@ -101,3 +101,17 @@
 - APPROVER: Project owner (user)
 - APPROVED_ON: 2026-08-22
 - EVIDENCE: Explicit user statement `本番反映を承認します` on 2026-08-22
+
+## D-015 — Student resources, inactive access, and permanent language coverage
+
+- DECISION: Add teacher-managed per-student Google Meet and Drive links, browser-local recording on teacher and student screens, editable active/paused/inactive status, and per-student booked/past lesson controls. Inactive students keep read-only history and links while new booking/payment submission is blocked. HOME and all student-facing screens permanently maintain Japanese, Traditional Chinese, and English parity; teacher UI remains Japanese-only.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit user instruction on 2026-08-22; `REQUIREMENTS.md`
+
+## D-016 — Production release of student classroom access
+
+- DECISION: Apply migration `20260822001300_student_classroom_access.sql` to production ref `ploropobmgwlpphtkndo`, verify the production database read-only, then commit and push the matching frontend and documentation.
+- APPROVER: Project owner (user)
+- APPROVED_ON: 2026-08-22
+- EVIDENCE: Explicit user instruction on 2026-08-22 to use the safest release method

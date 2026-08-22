@@ -239,3 +239,26 @@
 - CLASSROOM: PASS. `/classroom/` loaded the production student dashboard. Japanese, Traditional Chinese, and English switching worked; all time choices used `:00`/`:30`; five candidate-date sections could be added and a sixth could not.
 - PRIVACY: PASS. The authenticated linked student saw only its own eight available credits and did not receive the teacher-only label `たい時間`. Both legacy student/teacher URLs redirected to `/classroom/`.
 - WRITE_BOUNDARY: No classroom form was submitted. A post-smoke read-only database query remained at four students, 27 available credits, four teacher-only labels, and zero pending requests/candidates/payments or reserved bookings.
+
+## E-026 — Student resources, inactive access, lesson dates, and recording
+
+- SOURCE: Old-site read-only reference, migration `20260822001300_student_classroom_access.sql`, SQL tests 001/002/003/005/006, TypeScript, Vitest, Vite build, and authenticated development teacher/student browser checks.
+- DATE: 2026-08-22
+- DATABASE: PASS. The migration is applied only to development ref `cjypnhxouqxvwwctzojs`. `update_student_classroom_settings` is SECURITY DEFINER with a fixed empty search path and an internal UUID teacher-role check.
+- AUTHORIZATION: PASS. Students cannot execute the settings transition or directly update `students`; teacher changes append an audit row. Inactive students are rejected by both booking and payment RPCs.
+- LINKS: PASS. Only HTTPS `meet.google.com` and `drive.google.com` URLs are accepted by the RPC and rendered by the client. Existing RLS exposes each student only to owned resource links while teachers retain classroom-management reads.
+- FRONTEND: PASS. Teacher rows provide Meet, Drive, recording, lesson-list, and edit controls. Student pages provide translated resource, device-recording, and booked/past lesson controls in Japanese, Traditional Chinese, and English.
+- RECORDING_BOUNDARY: Recording uses browser display/microphone capture and downloads locally. No Storage or Supabase upload path exists for recording data. The permission dialog was intentionally not opened during automated visual inspection.
+- TEST_RESULT: `RPC_BEHAVIOR_TEST=PASS`, `STORAGE_BEHAVIOR_TEST=PASS`, `ONBOARDING_CANCELLATION_TEST=PASS`, `BOOKING_WINDOWS_REGISTRATION_TEST=PASS`, and `STUDENT_CLASSROOM_ACCESS_TEST=PASS`. TypeScript, 36 unit/render tests, Vite production build, and `git diff --check` pass.
+- DEVELOPMENT_DATA: Post-test read-only counts are zero pending booking requests, zero reserved bookings, zero pending payments, and zero inactive students. No teacher settings form or student application form was submitted during visual checks.
+- PRODUCTION_BOUNDARY: This development evidence predates the separately approved production release recorded as D-016 and E-027.
+
+## E-027 — Production database release of student classroom access
+
+- SOURCE: Explicit owner approval, Supabase SQL Editor on production ref `ploropobmgwlpphtkndo`, migration `20260822001300_student_classroom_access.sql`, and `supabase/tests/004_production_migration_verification.sql`.
+- DATE: 2026-08-22
+- TARGET_CHECK: PASS. The dashboard identified `suzu-sensei's Project`, branch `main Production`, and exact project ref `ploropobmgwlpphtkndo` before execution.
+- PRECONDITION: PASS. `update_student_classroom_settings(uuid,text,text,text)` was absent before migration; production contained four students and one active teacher role.
+- MIGRATION_RESULT: PASS. The transaction completed successfully and installed the audited teacher-only classroom-settings RPC with fixed empty search path and authenticated-only execute grant.
+- VERIFICATION_RESULT: PASS. Read-only SQL returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` for required tables, RLS, RPC signatures, Auth ownership bridge, 27-credit opening balance, teacher role, and private payment-slip Storage configuration.
+- FRONTEND_BOUNDARY: Matching frontend commit/push and public verification follow as the next release step.

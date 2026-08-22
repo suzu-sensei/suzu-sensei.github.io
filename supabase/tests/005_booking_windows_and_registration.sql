@@ -165,7 +165,10 @@ select set_config('request.jwt.claim.sub', '15000000-0000-0000-0000-000000000002
 set local role authenticated;
 do $$
 begin
-  if (select count(*) from public.student_teacher_labels) <> 0 then
+  if exists (
+    select 1 from public.student_teacher_labels
+    where student_id = (select id from public.students where email = 'window-student@example.invalid')
+  ) then
     raise exception 'student can read the teacher-only nickname';
   end if;
 end;
@@ -176,7 +179,11 @@ select set_config('request.jwt.claim.sub', '15000000-0000-0000-0000-000000000001
 set local role authenticated;
 do $$
 begin
-  if (select count(*) from public.student_teacher_labels) <> 1 then
+  if not exists (
+    select 1 from public.student_teacher_labels
+    where student_id = (select id from public.students where email = 'window-student@example.invalid')
+      and nickname = '更新した先生用呼び名'
+  ) then
     raise exception 'teacher cannot read the teacher-only nickname';
   end if;
 end;

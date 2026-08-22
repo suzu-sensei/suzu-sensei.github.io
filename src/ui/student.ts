@@ -3,6 +3,8 @@ import type { StudentLocale } from '../i18n';
 import { localeTag, studentCopy } from '../i18n';
 import { cancelOwnBooking, retryPaymentSlip, submitBooking, submitPayment, signedSlipUrl, type BookingWindow } from '../lib/api';
 import { dateOnly, dateTime, escapeHtml, money, timeOnly } from '../lib/format';
+import { safeGoogleDriveUrl, safeGoogleMeetUrl } from '../lib/classroom-links';
+import { isRecording, startLessonRecording, stopLessonRecording } from '../lib/recording';
 import { toAvailabilityWindow } from '../lib/validation';
 import { badge, card, empty, setBusy, showToast } from './shared';
 
@@ -67,7 +69,7 @@ export function renderStudent(data: StudentSnapshot, locale: StudentLocale = 'ja
     completed: data.credits.filter(c => c.status === 'completed').length,
   };
   const pendingCount = data.requests.filter(r => r.status === 'pending').length;
-  const canRequest = counts.available > pendingCount;
+  const canRequest = data.student.status === 'active' && counts.available > pendingCount;
   const candidateRows = data.requests.map(request => {
     const candidates = data.candidates.filter(c => c.request_id === request.id);
     return `<div class="record"><div><strong>${candidateSummary(candidates, timezone, locale) || '—'}</strong><small>${escapeHtml(request.note || t.noNote)} · ${escapeHtml(timezone)}</small></div>${badge(request.status, status(request.status, locale))}</div>`;
@@ -81,15 +83,30 @@ export function renderStudent(data: StudentSnapshot, locale: StudentLocale = 'ja
 
   const bookingForm = canRequest
     ? `<p class="hint">${escapeHtml(t.requestHelp)}<br><strong>${escapeHtml(timezone)}</strong></p><form id="booking-form" data-timezone="${escapeHtml(timezone)}"><div id="candidate-fields">${candidateDay(1, locale)}</div><div class="button-row"><button type="button" class="button ghost" id="add-candidate">${escapeHtml(t.addDay)}</button><button class="button">${escapeHtml(t.sendRequest)}</button></div><label>${escapeHtml(t.noteToTeacher)}<textarea name="note" rows="2" maxlength="500"></textarea></label></form>`
-    : `<div class="notice"><strong>${escapeHtml(t.cannotRequest)}</strong><p>${escapeHtml(t.cannotRequestHelp)}</p></div>`;
+    : `<div class="notice"><strong>${escapeHtml(data.student.status === 'inactive' ? t.inactiveTitle : t.cannotRequest)}</strong><p>${escapeHtml(data.student.status === 'inactive' ? t.inactiveHelp : data.student.status === 'paused' ? t.pausedHelp : t.cannotRequestHelp)}</p></div>`;
 
-  return `<div class="hero"><p class="eyebrow">MY CLASSROOM</p><h1>${escapeHtml(data.student.full_name)}${escapeHtml(t.hello)}</h1><p>${escapeHtml(t.intro)}</p></div>
+  const paymentForm = data.student.status === 'inactive'
+    ? `<div class="notice"><strong>${escapeHtml(t.inactiveTitle)}</strong><p>${escapeHtml(t.inactiveHelp)}</p></div>`
+    : `<p class="hint">${escapeHtml(t.paymentHelp)}</p><form id="payment-form"><div class="form-grid"><label>${escapeHtml(t.application)}<select name="mode"><option value="grant_new_credits">${escapeHtml(t.newCredits)}</option><option value="evidence_only">${escapeHtml(t.evidenceOnly)}</option></select></label><label data-lessons>${escapeHtml(t.lessonCount)}<input name="lessons" type="number" min="1" max="100" value="10" required></label><label>${escapeHtml(t.amount)}<input name="amount" type="number" min="0" step="0.01"></label><label>${escapeHtml(t.currency)}<select name="currency"><option>JPY</option><option>TWD</option><option>THB</option><option>USD</option></select></label><label class="wide">${escapeHtml(t.slip)}<input name="slip" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" required></label></div><button class="button">${escapeHtml(t.send)}</button></form>`;
+
+  const meetingUrl = safeGoogleMeetUrl(data.student.meeting_url);
+  const notesFolderUrl = safeGoogleDriveUrl(data.student.notes_folder_url);
+  const resourceLinks = [
+    meetingUrl ? `<a class="button resource-link" href="${escapeHtml(meetingUrl)}" target="_blank" rel="noopener noreferrer">📹 ${escapeHtml(t.joinMeet)}</a>` : '',
+    notesFolderUrl ? `<a class="button resource-link ghost" href="${escapeHtml(notesFolderUrl)}" target="_blank" rel="noopener noreferrer">📁 ${escapeHtml(t.openDrive)}</a>` : '',
+  ].filter(Boolean).join('');
+  const studentStatus = data.student.status === 'active' ? t.activeStatus : data.student.status === 'paused' ? t.pausedStatus : t.inactiveStatus;
+  const lessonTimeline = `<div class="lesson-columns"><div><strong>${escapeHtml(t.bookedLessons)}</strong>${bookingRows}</div><div><strong>${escapeHtml(t.pastLessons)}</strong>${historyRows}</div></div>`;
+
+  return `<div class="hero"><p class="eyebrow">MY CLASSROOM</p><h1>${escapeHtml(data.student.full_name)}${escapeHtml(t.hello)}</h1><p>${escapeHtml(t.intro)}</p><div class="hero-actions">${badge(data.student.status, studentStatus)}<button class="button mini ghost" data-toggle-student-lessons aria-expanded="false" aria-controls="student-lesson-timeline">${escapeHtml(t.showLessonDates)}</button></div></div>
   <ol class="flow-steps" aria-label="booking flow"><li class="done"><span>1</span>${escapeHtml(t.flow1)}</li><li class="${pendingCount ? 'active' : ''}"><span>2</span>${escapeHtml(t.flow2)}</li><li><span>3</span>${escapeHtml(t.flow3)}</li></ol>
   <div class="stats"><div><span>${escapeHtml(t.available)}</span><strong>${counts.available}</strong><small>${escapeHtml(t.count)}</small></div><div><span>${escapeHtml(t.reserved)}</span><strong>${counts.reserved}</strong><small>${escapeHtml(t.count)}</small></div><div><span>${escapeHtml(t.completed)}</span><strong>${counts.completed}</strong><small>${escapeHtml(t.count)}</small></div></div>
   <div class="grid two">
+    <section class="student-lesson-timeline span-two" id="student-lesson-timeline" hidden>${card(t.lessonDates, lessonTimeline)}</section>
+    ${card(t.resources, `${resourceLinks || `<p class="empty">${escapeHtml(t.noResources)}</p>`}<div class="recording-tool"><p class="hint">${escapeHtml(t.recordingHelp)}</p><button class="button" data-recording data-recording-label="${escapeHtml(data.student.full_name)}">🔴 ${escapeHtml(t.recordingStart)}</button><span class="hint" data-recording-status></span></div>`, 'span-two resource-card')}
     ${card(t.nextLesson, bookingRows, 'accent-card')}
     ${card(t.requestTitle, bookingForm)}
-    ${card(t.paymentTitle, `<p class="hint">${escapeHtml(t.paymentHelp)}</p><form id="payment-form"><div class="form-grid"><label>${escapeHtml(t.application)}<select name="mode"><option value="grant_new_credits">${escapeHtml(t.newCredits)}</option><option value="evidence_only">${escapeHtml(t.evidenceOnly)}</option></select></label><label data-lessons>${escapeHtml(t.lessonCount)}<input name="lessons" type="number" min="1" max="100" value="10" required></label><label>${escapeHtml(t.amount)}<input name="amount" type="number" min="0" step="0.01"></label><label>${escapeHtml(t.currency)}<select name="currency"><option>JPY</option><option>TWD</option><option>THB</option><option>USD</option></select></label><label class="wide">${escapeHtml(t.slip)}<input name="slip" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" required></label></div><button class="button">${escapeHtml(t.send)}</button></form>`, 'payment-card')}
+    ${card(t.paymentTitle, paymentForm, 'payment-card')}
     ${card(t.requests, candidateRows)}${card(t.payments, paymentRows)}${card(t.history, historyRows)}
   </div>`;
 }
@@ -119,6 +136,33 @@ function applyDateMinimum(timezone: string): void {
 
 export function bindStudentActions(refresh: () => Promise<void>, locale: StudentLocale = 'ja'): void {
   const t = studentCopy[locale];
+  document.querySelector<HTMLButtonElement>('[data-toggle-student-lessons]')?.addEventListener('click', event => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const panel = document.querySelector<HTMLElement>('#student-lesson-timeline');
+    if (!panel) return;
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    button.setAttribute('aria-expanded', String(opening));
+    button.textContent = opening ? t.hideLessonDates : t.showLessonDates;
+    if (opening) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.querySelector<HTMLButtonElement>('[data-recording]')?.addEventListener('click', async event => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const statusElement = document.querySelector<HTMLElement>('[data-recording-status]');
+    if (isRecording()) return stopLessonRecording();
+    try {
+      button.disabled = true;
+      await startLessonRecording(button.dataset.recordingLabel ?? 'lesson', state => {
+        button.disabled = false;
+        button.textContent = state === 'recording' ? `⏹ ${t.recordingStop}` : `🔴 ${t.recordingStart}`;
+        if (statusElement) statusElement.textContent = state === 'recording' ? `🔴 ${t.recording}` : t.recordingSaved;
+        if (state === 'stopped') showToast(t.recordingSaved);
+      });
+    } catch (error) {
+      button.disabled = false;
+      showToast(error instanceof Error ? error.message : t.recording, 'error');
+    }
+  });
   document.querySelector('#add-candidate')?.addEventListener('click', () => {
     const container = document.querySelector('#candidate-fields');
     const count = container?.querySelectorAll('.candidate-day').length ?? 0;

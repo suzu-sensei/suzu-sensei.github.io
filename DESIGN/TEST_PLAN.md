@@ -23,6 +23,12 @@ STATUS: PROPOSED_FOR_APPROVAL
 
 ## Additional checks
 
+- Public HOME and student-facing classroom changes maintain Japanese, Traditional Chinese, and English parity.
+- Inactive students can read only their owned history and links but cannot submit new bookings or payments.
+- Students cannot edit their status or resource URLs; teacher changes are audited.
+- Classroom links reject non-HTTPS, non-Google Meet, and non-Google Drive origins.
+- Browser-local recording never uploads a recording object to Supabase.
+
 - Anonymous access returns no application data.
 - Direct client updates to protected status fields fail.
 - Revoked teacher roles lose access after the next database authorization check.
