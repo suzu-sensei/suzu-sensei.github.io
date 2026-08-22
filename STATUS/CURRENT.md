@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: PRODUCTION_MIGRATED_RELEASE_READY
+STATUS: PRODUCTION_DEPLOYED_VERIFIED
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -37,4 +37,9 @@ OWNER: Project owner (user)
 - Four legacy student profiles and 27 unused lessons were converted into the new ledger as auditable opening-balance purchases and available credits. Three profiles are linked to existing Auth UUIDs; one remains unclaimed. All legacy tables and records remain untouched.
 - Production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`. Google Auth is enabled; Site URL and redirect allow-list now contain `https://suzu-sensei.github.io/`.
 - GitHub Actions production variables are configured with public-only Supabase URL and publishable key, and Pages is configured for GitHub Actions deployment.
-- Next stage: publish the reviewed commit to root `main`, verify the new root and archived `/old/`, then run authenticated production smoke tests.
+- GitHub Pages now serves the new classroom portal at `https://suzu-sensei.github.io/`; the preserved old site remains available at `https://suzu-sensei.github.io/old/`.
+- The initial Pages workflow failure was limited to missing production variables in the test step. The workflow was corrected, local production-target tests passed 22/22, and the subsequent production deployment completed successfully.
+- The production Supabase callback URL was added to the existing Google OAuth client without removing the development callback, old-site origin, or existing secret. The known-good OAuth secret was transferred from development Supabase to production Supabase without reading or recording it.
+- Authenticated production smoke tests passed for both roles. The UUID teacher account saw four students and 27 aggregate available credits with no pending bookings or payments. The linked test student saw only its own eight available credits and no other student records.
+- The browser was logged out after verification. No booking, payment, credit, student, or Storage record was created or changed during production smoke testing.
+- Next stage: begin normal use with a small first cohort and monitor authentication, booking, payment, and Storage logs; production schema and root deployment are complete.

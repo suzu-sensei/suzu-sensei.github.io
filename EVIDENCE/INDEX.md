@@ -185,3 +185,15 @@
 - AUTH: Production Google provider is enabled. Site URL and redirect allow-list were set to `https://suzu-sensei.github.io/` without changing the Google OAuth client or secret.
 - VERIFICATION: Read-only verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` for required tables, RLS, RPCs, student/Auth mapping, 27-credit balance, teacher role, Storage policy removal, and bucket configuration.
 - ADVISOR: Production Security Advisor reported one error on the preserved legacy `public.public_leaderboard` SECURITY DEFINER view. It is unrelated to the new classroom schema and was left unchanged to preserve old-site behavior; new classroom tables produced no error-level finding.
+
+## E-022 — Production deployment and authenticated smoke test
+
+- SOURCE: GitHub Actions/Pages, public root and `/old/` browser checks, Google Cloud OAuth client, production Supabase Auth, and authenticated teacher/student browser sessions
+- DATE: 2026-08-22
+- DEPLOYMENT: PASS. GitHub Pages was switched to GitHub Actions and production public Supabase variables were configured. The first workflow run exposed that the test step did not receive those variables; the workflow was corrected, local production-target tests passed 22/22, and the next deployment completed successfully.
+- URLS: The new portal renders at `https://suzu-sensei.github.io/`. The read-only archived site continues to render at `https://suzu-sensei.github.io/old/`.
+- OAUTH: PASS. The production Supabase callback URL was added alongside the existing development callback. The known-good secret was copied directly from the development Supabase provider to the production provider without reading, displaying, or persisting it. Existing Google client identity, old-site origin, and other secret were preserved.
+- TEACHER_SMOKE: PASS. UUID teacher-role routing loaded the production teacher dashboard, showing four migrated students, 27 total available credits, zero pending bookings, zero pending payments, and zero reserved lessons.
+- STUDENT_SMOKE: PASS. The linked test student loaded the student portal with eight owned available credits, zero reserved/completed credits, and no booking, payment, or lesson-history records. No other student profile or balance was displayed.
+- WRITE_BOUNDARY: Both production sessions were read-only smoke tests. No student, booking, payment, credit, lesson, or Storage mutation was performed. The browser was logged out afterward.
+- KNOWN_LEGACY_FINDING: The preserved legacy `public.public_leaderboard` Security Advisor error remains unchanged and is outside the new classroom runtime.
