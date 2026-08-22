@@ -261,4 +261,7 @@
 - PRECONDITION: PASS. `update_student_classroom_settings(uuid,text,text,text)` was absent before migration; production contained four students and one active teacher role.
 - MIGRATION_RESULT: PASS. The transaction completed successfully and installed the audited teacher-only classroom-settings RPC with fixed empty search path and authenticated-only execute grant.
 - VERIFICATION_RESULT: PASS. Read-only SQL returned `PRODUCTION_MIGRATION_VERIFICATION=PASS` for required tables, RLS, RPC signatures, Auth ownership bridge, 27-credit opening balance, teacher role, and private payment-slip Storage configuration.
-- FRONTEND_BOUNDARY: Matching frontend commit/push and public verification follow as the next release step.
+- PUBLIC_RELEASE: PASS. Commit `d284f80` was pushed to `main`; GitHub Pages workflow run 8 completed successfully.
+- PUBLIC_ROOT: PASS. The original public home remained at the root with Quiz, classroom navigation, and seven Column links including the final `みたい／らしい／っぽい` article.
+- STUDENT_SMOKE: PASS. The authenticated linked student saw only its own eight available credits and the new Meet, Drive, browser-local recording, and past/booked lesson controls. Japanese, Chinese, and English selectors remained present.
+- WRITE_BOUNDARY: No booking, payment, recording, student-setting, or Storage form was submitted. The production smoke session was logged out after verification.

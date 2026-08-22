@@ -1,7 +1,7 @@
 # Current Status
 
 MODE: DOCUMENT
-STATUS: STUDENT_RESOURCES_PRODUCTION_DB_VERIFIED_DEPLOYMENT_PENDING
+STATUS: STUDENT_RESOURCES_DEPLOYED_AND_VERIFIED
 LAST_UPDATED: 2026-08-22
 OWNER: Project owner (user)
 
@@ -69,4 +69,7 @@ OWNER: Project owner (user)
 - Development data remained at zero pending requests, zero reserved bookings, zero pending payments, and zero inactive students after rollback tests and visual checks.
 - The owner explicitly approved production migration, verification, commit, and push for this update; the approval is locked as D-016.
 - Migration `20260822001300_student_classroom_access.sql` is installed on production ref `ploropobmgwlpphtkndo`.
-- Read-only production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`; the matching frontend deployment is the remaining release step.
+- Read-only production verification returned `PRODUCTION_MIGRATION_VERIFICATION=PASS`.
+- Frontend commit `d284f80` was pushed to `main`, and GitHub Pages workflow run 8 completed successfully.
+- Public verification confirmed that the original home, Quiz, classroom navigation, and all seven Column links remain available.
+- Authenticated production student verification confirmed owned Meet/Drive links, browser-local recording, lesson-date controls, and Japanese/Chinese/English selectors. No form was submitted, and the session was logged out afterward.
