@@ -1,0 +1,152 @@
+# Evidence Index
+
+## E-001 — Repository baseline
+
+- SOURCE: Local Git inspection
+- DATE: 2026-08-21
+- RESULT: New repository on `main`, no commits, no remote, no product files before governance setup.
+
+## E-002 — Old-site reference inventory
+
+- SOURCE: Read-only filesystem inspection of `/Users/suzui/suzu-sensei`
+- DATE: 2026-08-21
+- RESULT: Required auth, theme, student/teacher UI, SQL drafts, and migrations are present. Credential and excluded legacy artifacts were identified but not imported.
+
+## E-003 — Design pre-work gate
+
+- SOURCE: Governance, Git, toolchain, and old-site read-only inspection
+- DATE: 2026-08-21
+- RESULT: READY for design only. Requirements and repository identity are consistent; old-site uncommitted work is preserved; new repository has no remote or commits; implementation remains blocked on pending design decisions and a confirmed non-production Supabase target.
+
+## E-004 — Old implementation findings
+
+- SOURCE: Read-only inspection of classroom auth, UI, drafts, and migrations
+- DATE: 2026-08-21
+- RESULT: Reusable concepts include Supabase Google session exchange, composite ownership constraints, GiST overlap exclusion, row-locked RPC transitions, idempotency keys, RLS, and private slip policies. Excluded legacy counters, fixed-email authorization, browser-generated schedules, legacy fallbacks, and student-specific migration data were not imported.
+
+## E-005 — Initial schema migration
+
+- SOURCE: `supabase/migrations/20260821000100_initial_classroom_schema.sql`
+- DATE: 2026-08-21
+- RESULT: STATIC CHECK PASSED; NOT YET EXECUTED. All required tables and four credit states are present; same-student composite foreign keys, uniqueness/idempotency constraints, booking overlap exclusion, and supporting indexes were detected. No excluded compatibility identifiers or production ref are present.
+
+## E-006 — Hosted development schema verification
+
+- SOURCE: Supabase SQL Editor on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. Migration completed successfully; 12/12 required tables, 6/6 sampled critical constraints, 4/4 sampled critical indexes, and RLS enabled on 12/12 application tables.
+- PRODUCTION_BOUNDARY: Production ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-007 — Hosted development RLS structural verification
+
+- SOURCE: `supabase/migrations/20260822000100_classroom_rls.sql` and Supabase SQL Editor on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. RLS enabled and forced on 12/12 application tables; 20 policies installed; anonymous table grants 0; authenticated direct write grants 0.
+- LIMITATION: Student A/B authenticated behavioral isolation remains pending until test identities and RPC fixture setup exist.
+- PRODUCTION_BOUNDARY: Production ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-008 — Hosted development RPC verification
+
+- SOURCE: `supabase/migrations/20260822000200_classroom_rpcs.sql`, `supabase/tests/001_rpc_behavior.sql`, and Supabase SQL Editor on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. Ten public RPCs exist with fixed search paths; nine state-changing entry points are security definers; public/anon execute grants are zero and authenticated grants cover all ten RPCs. Transaction-and-rollback behavior tests passed for claim, purchase idempotency, booking submission/approval/rejection, overlap rejection, single-credit reservation, single completion/history, payment issuance idempotency, evidence-only approval, payment rejection, credit voiding, Student A/B isolation, and direct-update denial.
+- CLEANUP: Test transaction rolled back; Auth users, students, purchases, bookings, payments, and audit logs returned to zero rows.
+- LIMITATION: True simultaneous multi-connection race tests remain part of the later development test stage; row locks, conditional updates, uniqueness constraints, and exclusion constraints are installed now.
+- PRODUCTION_BOUNDARY: Production ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-009 — Hosted development private payment-slip Storage verification
+
+- SOURCE: `supabase/migrations/20260822000300_payment_slip_storage.sql`, `supabase/tests/002_storage_behavior.sql`, and Supabase SQL Editor on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. The private `payment-slips` bucket has a 10 MiB limit and allows JPEG, PNG, WebP, and PDF only. Two object policies permit inserts for a matching pending payment and selects for a matching uploaded payment; both require the owning student or a UUID-based teacher role. No object update or delete policy exists. Tests passed for Student A/B read and upload separation, teacher proxy upload and global teacher visibility, missing payment/object rejection, metadata validation, duplicate-path rejection, overwrite denial, confirmation checks, and approval denial before a confirmed upload.
+- CONSISTENCY: `submit_payment` allocates the payment row and random immutable object path before upload; `confirm_payment_slip_upload` verifies the stored object and metadata before changing the slip state to `uploaded`. Teachers can mark an uploaded-but-missing object as `missing`; the owner or teacher can then request a fresh retry path/state. Payment approval requires `uploaded` state.
+- SIGNED_URL_BOUNDARY: Storage SELECT authorization required by signed-URL creation was behaviorally verified. Actual client `createSignedUrl` integration and expiry selection remain part of frontend implementation.
+- CLEANUP: The behavior test ran inside a transaction and rolled back. Storage objects, payments, students, and Auth test users returned to zero rows.
+- PRODUCTION_BOUNDARY: Production ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.
+
+## E-010 — Frontend implementation baseline
+
+- SOURCE: `src/`, `package.json`, Vitest, TypeScript, Vite production build, and local browser inspection at `127.0.0.1`
+- DATE: 2026-08-22
+- RESULT: PARTIAL PASS. Vite + TypeScript student and teacher portals implement role-based routing, owned RLS reads, RPC-only protected transitions, credit summaries, booking candidates and decisions, lesson completion, payment submission/review, private slip upload with `upsert: false`, five-minute signed URLs, teacher proxy upload, manual purchase registration, and credit voiding. TypeScript passed; 10/10 unit tests passed; production build passed; unauthenticated login view rendered successfully.
+- SAFETY: Runtime environment validation rejects production ref `ploropobmgwlpphtkndo` and any unknown Supabase project. `.env.local` contains only the development URL and publishable key and is Git-ignored. No direct application-table insert, update, or delete path was added.
+- VISUAL_CONTINUITY: The rebuilt UI selectively carries forward the old pink/purple palette, serif headings, card treatment, student credit overview, booking, payment, and teacher management layout without copying legacy state generation or fallback code.
+- BLOCKER: Google Auth is currently disabled in `suzu2-dev`; authenticated Student A/B and teacher browser flows require an approved development OAuth client configuration.
+- PRODUCTION_BOUNDARY: Production Supabase, the old site, commit, and push were not modified.
+
+## E-011 — Hosted development Google Auth configuration
+
+- SOURCE: Google Cloud OAuth client settings and Supabase Auth dashboard on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: CONFIGURED. MFA was enabled for Google Cloud access; the development Supabase callback URL was added to the existing OAuth client; a separate active client secret was added without revoking the existing secret; Google provider is enabled in `suzu2-dev`; and `http://127.0.0.1:4173/` is in the development redirect allow list.
+- OLD_SITE_BOUNDARY: The existing `https://suzu-sensei.github.io` JavaScript origin remains present. No old-site file, URL, or existing OAuth secret was removed or replaced.
+- SECRET_HANDLING: The new secret was copied through the browser directly into the development Supabase provider configuration and was not written to the repository, local environment files, evidence, or user-facing output.
+- AUTH_RESULT: Interactive Google OAuth sign-in completed successfully after correcting the development Client Secret. Auth logs identified and resolved the earlier `invalid_client` exchange failure.
+- LIMITATION: Student A/B and complete teacher workflow browser flows remain pending.
+- PRODUCTION_BOUNDARY: Production Supabase ref `ploropobmgwlpphtkndo` was not opened or modified.
+
+## E-012 — Development teacher authorization bootstrap
+
+- SOURCE: Supabase SQL Editor on `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. The authenticated project-owner Google identity was inserted into `profiles` and assigned an active `teacher` row in `teacher_roles`; verification returned `teacher / active=true`.
+- AUTHORIZATION_MODEL: The frontend resolves teacher access through the Auth user UUID and `teacher_roles`. No fixed-email browser authorization was introduced.
+- PRODUCTION_BOUNDARY: Production Supabase, the old site, commit, and push were not modified.
+
+## E-013 — Student onboarding and booking cancellation
+
+- SOURCE: `supabase/migrations/20260822000400_student_onboarding_and_booking_cancellation.sql`, `supabase/tests/003_onboarding_and_cancellation.sql`, frontend teacher/student views, and Supabase SQL Editor on `suzu2-dev`
+- DATE: 2026-08-22
+- RESULT: PASS. Teacher-only student invitation and claim-code reissue, hash-only token storage, previous-code invalidation, single-use claiming, uncommitted-credit request capacity, 12-hour student cancellation, teacher cancellation, transactional credit return, and audit logging were added. The development behavior test returned `ONBOARDING_CANCELLATION_TEST=PASS` after the final claim-token policy change.
+- ISOLATION: Student invitation by a student, reuse of an old/consumed code, Student A cancellation of Student B's booking, cancellation within 12 hours by a student, and excess pending requests were rejected. Test fixtures rolled back.
+- FRONTEND: The teacher dashboard now includes student creation, one-time code copy/reissue, explicit confirmation before credit/payment/booking transitions, and cancellation. The student view explains the three-step booking flow and cancellation deadline.
+- PRODUCTION_BOUNDARY: Production Supabase, old-site files, commit, and push were not modified.
+
+## E-014 — Payment-slip upload recovery
+
+- SOURCE: `supabase/migrations/20260822000500_payment_slip_retry.sql`, updated `supabase/tests/002_storage_behavior.sql`, and frontend retry controls
+- DATE: 2026-08-22
+- RESULT: PASS. A browser upload failure leaves the payment row in `missing`, and the owning student or teacher can restart using a new random private object path and updated validated metadata. A potentially successful upload with a lost response is confirmed before being marked failed.
+- ISOLATION: Student A could not mark or restart Student B's slip. Retry upload, object metadata confirmation, teacher proxy upload, signed-read separation, overwrite denial, and approval-only-after-upload all passed in `STORAGE_BEHAVIOR_TEST=PASS`.
+- PRODUCTION_BOUNDARY: Production Supabase, old-site files, commit, and push were not modified.
+
+## E-015 — Usability, timezone, and security review
+
+- SOURCE: Vite/TypeScript/Vitest build, authenticated local browser inspection, and Supabase Security Advisor on `suzu2-dev`
+- DATE: 2026-08-22
+- RESULT: PASS WITH EXPECTED ADVISORIES. TypeScript passed; 19/19 unit/render tests passed; production build passed; the authenticated teacher dashboard rendered the onboarding workflow. Booking input and display now use each student's stored IANA timezone, including tested `Asia/Taipei` conversion. OAuth failures show a safe actionable message without exposing provider details.
+- SECURITY_ADVISOR: 0 errors and 0 info suggestions. An unintended public grant on the RLS DDL helper was removed, and claim-token client denial is explicit. The remaining 20 warnings identify intended authenticated SECURITY DEFINER RPCs; each has fixed `search_path` and internal ownership or UUID teacher-role checks covered by the behavior tests.
+- LIMITATION: A real second-Google-account student browser flow and simultaneous multi-connection race test remain pending before production approval.
+- PRODUCTION_BOUNDARY: Production Supabase, old-site files, commit, and push were not modified.
+
+## E-016 — Real Google student workflow and payment-slip E2E
+
+- SOURCE: Authenticated local Vite frontend, Google OAuth, and hosted development Supabase `suzu2-dev` ref `cjypnhxouqxvwwctzojs`
+- DATE: 2026-08-22
+- RESULT: PASS. A second Google account claimed only its invited student profile, displayed its single owned credit, submitted a booking request, was prevented from overcommitting that credit, received teacher approval, cancelled outside the 12-hour cutoff, and recovered the same credit transactionally.
+- STORAGE: The student uploaded a payment proof to the private `payment-slips` bucket and opened it through a time-limited signed URL. The object path followed the immutable `student_id/payment_id/random_uuid.ext` structure. The teacher saw the pending payment and its evidence.
+- SAFE_FAILURE: The browser submission was intentionally treated as test data after its mode was observed as `grant_new_credits` with 10 requested lessons. It was not approved. The teacher rejected it with a recorded resubmission reason; the student saw the reason and rejected status; available credit remained exactly 1.
+- CREDIT_GUARD: Evidence-only approval with no credit issuance remains covered by the rollback DB behavior test in E-008. No credit was issued by the real mistaken browser submission.
+- UX: Teacher rejection and cancellation reasons now use an in-site dialog explaining that the student will see the reason. TypeScript, 19/19 unit/render tests, and the production build passed after the change.
+- LIMITATION: Automated browser file-chooser selection did not retain a second non-sensitive fixture, so the already-passed real upload was not duplicated. Simultaneous multi-connection race testing remains pending.
+- PRODUCTION_BOUNDARY: Production Supabase, old-site files, commit, and push were not modified.
+
+## E-017 — Development OAuth secret rotation
+
+- SOURCE: Google Cloud OAuth client, Supabase Auth provider settings for `suzu2-dev` ref `cjypnhxouqxvwwctzojs`, and a fresh interactive Google OAuth login
+- DATE: 2026-08-22
+- RESULT: PASS. The development secret exposed during setup was first disabled and then deleted. A new development secret was created, transferred directly into the `suzu2-dev` Google provider, and accepted by Supabase.
+- AUTH_RESULT: A complete logout, Google account selection, OAuth callback, Supabase code exchange, and UUID teacher-role routing succeeded with the replacement secret.
+- OLD_SITE_BOUNDARY: Google Cloud permits two active secrets. The pre-existing secret created before the rebuild remains active and unchanged for the old site; only the exposed development secret was removed and replaced. The existing old-site JavaScript origin also remains unchanged.
+- SECRET_HANDLING: The replacement secret was held only in transient browser automation memory for direct provider configuration, was not written to project files or evidence, and was cleared from automation memory after verification.
+- PRODUCTION_BOUNDARY: Production Supabase ref `ploropobmgwlpphtkndo`, old-site files, commit, and push were not modified.
+
+## E-018 — Old-site GitHub Pages archive
+
+- SOURCE: GitHub repos `suzu-sensei/suzu-sensei.github.io` and `suzu-sensei/old`, local old-repo Git inspection, GitHub Pages deployment, and browser verification
+- DATE: 2026-08-22
+- RESULT: PASS. Public `origin/main` commit `4a87a71` and its existing history were pushed to the new public `old` repo. GitHub Pages deployment completed successfully and `https://suzu-sensei.github.io/old/` rendered the old landing page.
+- LINK_CHECK: The archived textbook page and legacy student login page also rendered at their `/old/` paths with relative assets and navigation intact.
+- DIRTY_WORKTREE_BOUNDARY: Modified local old-site classroom files, untracked governance/draft folders, `.claude`, credential-related material, and other uncommitted files were not included. The original local old-site worktree remains unchanged.
+- RELEASE_BOUNDARY: The current root site has not been replaced. Root activation is held until the separate production Supabase migration is approved and verified.
+- PRODUCTION_BOUNDARY: Production Supabase ref `ploropobmgwlpphtkndo` was not opened, linked, or modified.

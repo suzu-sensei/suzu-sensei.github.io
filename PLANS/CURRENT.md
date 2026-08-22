@@ -1,0 +1,4 @@
+# Current Plan
+
+MODE: POINTER
+TARGET: PLANS/MASTER_PLAN.md
